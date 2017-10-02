@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TFSDependencyVisualizer.Helpers;
 
 namespace TFSDependenciesVisualizer
 {
@@ -22,7 +24,16 @@ namespace TFSDependenciesVisualizer
     {
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            var theViewModel = new MainViewModel();
+
+            this.DataContext = theViewModel;
+            TreeViewHelper.BuildTreeViewFromTFS(
+                                                ref this.Queries,
+                                                theViewModel.WorkItemStore.Projects[ConfigurationManager.AppSettings["projectName"]].QueryHierarchy,
+                                                ConfigurationManager.AppSettings["projectName"],
+                                                theViewModel.DoubleClickDelegate);
         }
     }
 }

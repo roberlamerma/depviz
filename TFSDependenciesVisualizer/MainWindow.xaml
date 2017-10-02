@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TFSDependenciesVisualizer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="TFS Dependencies Visualizer" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TreeView Name="Queries" 
+            Grid.Column="0" Grid.Row="1" />
+        <GridSplitter HorizontalAlignment="Right" 
+            VerticalAlignment="Stretch" 
+            Grid.Column="1" Grid.Row="1" ResizeBehavior="PreviousAndNext"
+            Width="5" Background="#FFBCBCBC"/>
     </Grid>
 </Window>
