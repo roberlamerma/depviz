@@ -121,9 +121,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\WpfDialogManagement\WpfDialogManagement.csproj">
+      <Project>{104D608C-81EF-4110-B0FA-6E78166F93D0}</Project>
+      <Name>WpfDialogManagement</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\DView.png" />
     <Resource Include="Resources\Folder.png" />

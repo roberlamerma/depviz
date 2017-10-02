@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Technewlogic.WpfDialogManagement;
 using TFSDependencyVisualizer.Helpers;
 
 namespace TFSDependenciesVisualizer
@@ -26,14 +27,19 @@ namespace TFSDependenciesVisualizer
         {
             this.InitializeComponent();
 
-            var theViewModel = new MainViewModel();
+            var theViewModel = new MainViewModel(new DialogManager(this, this.Dispatcher));
 
-            this.DataContext = theViewModel;
-            TreeViewHelper.BuildTreeViewFromTFS(
-                                                ref this.Queries,
-                                                theViewModel.WorkItemStore.Projects[ConfigurationManager.AppSettings["projectName"]].QueryHierarchy,
-                                                ConfigurationManager.AppSettings["projectName"],
-                                                theViewModel.DoubleClickDelegate);
+            if (theViewModel.IsAppValidAndReady)
+            {
+                this.DataContext = theViewModel;
+                //TreeViewHelper.BuildTreeViewFromTFS(
+                //                                ref this.Queries,
+                //                                theViewModel.WorkItemStore.Projects[ConfigurationManager.AppSettings["projectName"]].QueryHierarchy,
+                //                                ConfigurationManager.AppSettings["projectName"],
+                //                                theViewModel.DoubleClickDelegate);
+                theViewModel.BuildTreeView(ref this.Queries);
+
+            }
         }
     }
 }
