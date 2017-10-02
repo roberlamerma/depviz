@@ -100,5 +100,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DView.png" />
+    <Resource Include="Resources\Folder.png" />
+    <Resource Include="Resources\FView.png" />
+    <Resource Include="Resources\HView.png" />
+    <Resource Include="Resources\MyQ.png" />
+    <Resource Include="Resources\TeamQ.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
