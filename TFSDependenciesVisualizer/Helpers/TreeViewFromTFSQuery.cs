@@ -1,12 +1,9 @@
-﻿using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using TFSDependenciesVisualizer.Properties;
 
 namespace TFSDependencyVisualizer.Helpers
@@ -15,16 +12,19 @@ namespace TFSDependencyVisualizer.Helpers
     {
         private static Action<object, MouseButtonEventArgs> doubleClickDelegate;
 
-        public static void BuildTreeViewFromTFS(ref TreeView queryTreeView, QueryHierarchy queryHierarchy, string header, Action<object, MouseButtonEventArgs> _doubleClickDelegate)
+        public static void BuildTreeViewFromTfs(ref TreeView queryTreeView, QueryHierarchy queryHierarchy, string header, Action<object, MouseButtonEventArgs> _doubleClickDelegate)
         {
             doubleClickDelegate = _doubleClickDelegate;
 
             TreeViewItem root = new TreeViewItem();
             root.Header = header;
 
-            foreach (QueryFolder query in queryHierarchy)
+            foreach (var queryItem in queryHierarchy)
             {
-                DefineFolder(query, root);
+                if (queryItem is QueryFolder qf)
+                {
+                    DefineFolder(qf, root);
+                }
             }
 
             queryTreeView.Items.Add(root);
@@ -42,16 +42,16 @@ namespace TFSDependencyVisualizer.Helpers
 
             father.Items.Add(item);
 
-            foreach (QueryItem sub_query in query)
+            foreach (QueryItem subQuery in query)
             {
-                if (sub_query.GetType() == typeof(QueryFolder))
-                    DefineFolder((QueryFolder)sub_query, item);
+                if (subQuery.GetType() == typeof(QueryFolder))
+                    DefineFolder((QueryFolder)subQuery, item);
                 else
-                    DefineQuery((QueryDefinition)sub_query, item);
+                    DefineQuery((QueryDefinition)subQuery, item);
             }
         }
 
-        private static void DefineQuery(QueryDefinition query, TreeViewItem QueryFolder)
+        private static void DefineQuery(QueryDefinition query, TreeViewItem queryFolder)
         {
             TreeViewItem item = new TreeViewItem();
             QueryTypes type;
@@ -67,10 +67,8 @@ namespace TFSDependencyVisualizer.Helpers
             item.Header = CreateTreeItem(query.Name, type);
             item.Tag = query.Id;
             item.MouseDoubleClick += new MouseButtonEventHandler(doubleClickDelegate);
-            QueryFolder.Items.Add(item);
+            queryFolder.Items.Add(item);
         }
-
-
 
         private static StackPanel CreateTreeItem(string value, QueryTypes type)
         {
@@ -78,7 +76,7 @@ namespace TFSDependencyVisualizer.Helpers
             stake.Orientation = Orientation.Horizontal;
 
             Image img = new Image();
-            img.Stretch = System.Windows.Media.Stretch.Uniform;
+            img.Stretch = Stretch.Uniform;
             img.Source = GetImage(type);
             Label lbl = new Label();
             lbl.Content = value;

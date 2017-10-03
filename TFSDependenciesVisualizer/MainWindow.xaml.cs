@@ -32,13 +32,8 @@ namespace TFSDependenciesVisualizer
             if (theViewModel.IsAppValidAndReady)
             {
                 this.DataContext = theViewModel;
-                //TreeViewHelper.BuildTreeViewFromTFS(
-                //                                ref this.Queries,
-                //                                theViewModel.WorkItemStore.Projects[ConfigurationManager.AppSettings["projectName"]].QueryHierarchy,
-                //                                ConfigurationManager.AppSettings["projectName"],
-                //                                theViewModel.DoubleClickDelegate);
+                
                 theViewModel.BuildTreeView(ref this.Queries);
-
             }
         }
     }
