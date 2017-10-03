@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TFSDependencyVisualizer.Helpers
 {
-    static class TfsConnector
+    static class TfsHelper
     {
         public static WorkItemStore GetWorkItemStore(Uri tfsUri)
         {

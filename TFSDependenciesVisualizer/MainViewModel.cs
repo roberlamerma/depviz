@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Shields.GraphViz.Components;
+using Shields.GraphViz.Models;
+using Shields.GraphViz.Services;
 using Technewlogic.WpfDialogManagement;
 using Technewlogic.WpfDialogManagement.Contracts;
 using TFSDependencyVisualizer;
@@ -70,11 +75,11 @@ namespace TFSDependenciesVisualizer
                     var urlString = ConfigurationManager.AppSettings["tfsUrl"];
                     var projectString = ConfigurationManager.AppSettings["projectName"];
 
-                    if (TfsConnector.IsTfsUrlValid(urlString, projectString, out Uri uri))
+                    if (TfsHelper.IsTfsUrlValid(urlString, projectString, out Uri uri))
                     {
                         try
                         {
-                            this.WorkItemStore = TfsConnector.GetWorkItemStore(uri);
+                            this.WorkItemStore = TfsHelper.GetWorkItemStore(uri);
                         }
                         catch (Exception)
                         {
@@ -136,7 +141,7 @@ namespace TFSDependenciesVisualizer
                     {
                         if (!this.Model.ContainsKey(workItemInfo.TargetId))
                         {
-                            var dependencyListItem = TfsConnector.GetDependencyListItemFromWorkItem(this.WorkItemStore, workItemInfo.TargetId);
+                            var dependencyListItem = TfsHelper.GetDependencyListItemFromWorkItem(this.WorkItemStore, workItemInfo.TargetId);
 
                             this.Model.Add(workItemInfo.TargetId, dependencyListItem);
                         }
@@ -145,6 +150,85 @@ namespace TFSDependenciesVisualizer
                     //this.CreateDependencyGraph(queryDef.Name);
                 });
             }
+        }
+
+        private async Task CreateDependencyGraph(string queryName)
+        {
+            try
+            {
+                List<Statement> statements = new List<Statement>();
+
+                var generalStyleSettings = new Dictionary<Id, Id>();
+                generalStyleSettings.Add(new Id("rankdir"), new Id("LR"));
+                var generalStyleAttributes = new AttributeStatement(AttributeKinds.Graph, generalStyleSettings.ToImmutableDictionary());
+
+                statements.Add(generalStyleAttributes);
+
+                var generalNodeStyleSettings = new Dictionary<Id, Id>();
+                generalNodeStyleSettings.Add(new Id("shape"), new Id("rectangle"));
+                generalNodeStyleSettings.Add(new Id("style"), new Id("filled"));
+                //generalNodeStyleSettings.Add(new Id("fontname"), new Id("Monospace"));
+                var generalNodeStyleAttributes = new AttributeStatement(AttributeKinds.Node, generalNodeStyleSettings.ToImmutableDictionary());
+
+                statements.Add(generalNodeStyleAttributes);
+
+                var emptyDict = new Dictionary<Id, Id>();
+
+                foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                {
+                    if (entry.Value.Successors.Any())
+                    {
+                        foreach (var succesor in entry.Value.Successors)
+                        {
+                            var edge = new EdgeStatement(
+                                new NodeId(entry.Value.ToString()),
+                                new NodeId(this.Model[succesor].ToString()),
+                                emptyDict.ToImmutableDictionary());
+
+                            statements.Add(edge);
+                        }
+                    }
+
+                    if (entry.Value.Tags.Any())
+                    {
+                        Dictionary<Id, Id> nodeStyleSettings = null;
+                        //if (entry.Value.Tags.Any(str => str.Contains("Internal")))
+                        //{
+                        //    nodeStyleSettings = new Dictionary<Id, Id>();
+                        //    nodeStyleSettings.Add(new Id("color"), new Id("0.647 0.204 1.000"));
+                        //}
+                        //else 
+                        if (entry.Value.Tags.Any(str => str.Contains("External")))
+                        {
+                            nodeStyleSettings = new Dictionary<Id, Id>();
+                            nodeStyleSettings.Add(new Id("color"), new Id("0.408 0.498 1.000"));
+                        }
+
+                        if (nodeStyleSettings != null)
+                        {
+                            var node = new NodeStatement(new Id(entry.Value.ToString()), nodeStyleSettings.ToImmutableDictionary());
+                            statements.Add(node);
+                        }
+                    }
+                }
+
+                Graph graph = new Graph(GraphKinds.Directed, queryName, statements.ToImmutableList());
+
+                IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+                using (Stream file = File.Create(string.Format(@"{0}.png", queryName)))
+                {
+                    await renderer.RunAsync(
+                        graph, file,
+                        RendererLayouts.Dot,
+                        RendererFormats.Png,
+                        CancellationToken.None);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
     }
 }

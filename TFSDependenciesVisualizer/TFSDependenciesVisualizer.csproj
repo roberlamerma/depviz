@@ -89,8 +89,8 @@
     <Compile Include="DependencyListItem.cs" />
     <Compile Include="Helpers\DisplayImage.cs" />
     <Compile Include="Helpers\QueryTypesEnum.cs" />
-    <Compile Include="Helpers\TfsConnector.cs" />
-    <Compile Include="Helpers\TreeViewFromTfsQuery.cs" />
+    <Compile Include="Helpers\TfsHelper.cs" />
+    <Compile Include="Helpers\TreeViewHelper.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
