@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="DependencyListItem.cs" />
     <Compile Include="Helpers\DisplayImage.cs" />
+    <Compile Include="Helpers\GraphVizHelper.cs" />
     <Compile Include="Helpers\QueryTypesEnum.cs" />
     <Compile Include="Helpers\TfsHelper.cs" />
     <Compile Include="Helpers\TreeViewHelper.cs" />

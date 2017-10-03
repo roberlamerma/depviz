@@ -2,9 +2,6 @@
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TFSDependencyVisualizer.Helpers
 {
@@ -24,22 +21,7 @@ namespace TFSDependencyVisualizer.Helpers
             return result;
         }
 
-        public static DependencyListItem GetDependencyListItemFromWorkItem(WorkItemStore store, int targetId)
-        {
-            var workItem = store.GetWorkItem(targetId);
-
-            var dependencyListItem = new DependencyListItem() { Id = targetId, Title = workItem.Title };
-
-            // here we retrieve the succesors
-            dependencyListItem.Successors.AddRange(GetLinksOfType(workItem, "Successor"));
-
-            // Here we retrieve the tags
-            dependencyListItem.Tags.AddRange(GetTags(workItem));
-
-            return dependencyListItem;
-        }
-
-        private static IEnumerable<int> GetLinksOfType(WorkItem workItem, string type)
+        public static IEnumerable<int> GetLinksOfType(WorkItem workItem, string type)
         {
             foreach (var link in workItem.Links)
             {
@@ -50,7 +32,7 @@ namespace TFSDependencyVisualizer.Helpers
             }
         }
 
-        private static IEnumerable<string> GetTags(WorkItem workItem)
+        public static IEnumerable<string> GetTags(WorkItem workItem)
         {
             foreach (Field field in workItem.Fields)
             {

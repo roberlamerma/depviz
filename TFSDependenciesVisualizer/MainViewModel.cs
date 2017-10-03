@@ -15,6 +15,7 @@ using Shields.GraphViz.Models;
 using Shields.GraphViz.Services;
 using Technewlogic.WpfDialogManagement;
 using Technewlogic.WpfDialogManagement.Contracts;
+using TFSDependenciesVisualizer.Helpers;
 using TFSDependencyVisualizer;
 using TFSDependencyVisualizer.Helpers;
 
@@ -131,48 +132,51 @@ namespace TFSDependenciesVisualizer
             else
             {
                 var dialog = this.dialogManager.
-                    CreateWaitDialog(string.Format(@"1.- Retreiving items from the '{0}' query. This operation might take a while{1}2.- After this message dissapears, search for your image '{2}.png' on this path:{3}", queryDef.Name, Environment.NewLine, queryDef.Name, Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)), DialogMode.None);
+                    CreateWaitDialog(string.Format(@"1.- Retreiving items from the '{0}' query. This operation might take a while{1}2.- After this message dissapears, search for your image '{2}.png' on this path: '{3}'", queryDef.Name, Environment.NewLine, queryDef.Name, Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)), DialogMode.None);
 
-                dialog.Show(() => {
-
+                dialog.Show(async () => 
+                {
                     var queryResults = query.RunLinkQuery();
 
                     foreach (WorkItemLinkInfo workItemInfo in queryResults)
                     {
                         if (!this.Model.ContainsKey(workItemInfo.TargetId))
                         {
-                            var dependencyListItem = TfsHelper.GetDependencyListItemFromWorkItem(this.WorkItemStore, workItemInfo.TargetId);
+                            var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId);
 
                             this.Model.Add(workItemInfo.TargetId, dependencyListItem);
                         }
                     }
 
-                    //this.CreateDependencyGraph(queryDef.Name);
+                    var graph = this.CreateDependencyGraph(queryDef.Name);
+
+                    await this.Render(graph, queryDef.Name);
                 });
             }
         }
 
-        private async Task CreateDependencyGraph(string queryName)
+        private DependencyListItem GetDependencyListItemFromWorkItem(int targetId)
+        {
+            var workItem = this.WorkItemStore.GetWorkItem(targetId);
+
+            var dependencyListItem = new DependencyListItem() { Id = targetId, Title = workItem.Title };
+
+            // here we retrieve the succesors
+            dependencyListItem.Successors.AddRange(TfsHelper.GetLinksOfType(workItem, "Successor"));
+
+            // Here we retrieve the tags
+            dependencyListItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+
+            return dependencyListItem;
+        }
+
+        private Graph CreateDependencyGraph(string queryName)
         {
             try
             {
-                List<Statement> statements = new List<Statement>();
+                var statements = new List<Statement>();
 
-                var generalStyleSettings = new Dictionary<Id, Id>();
-                generalStyleSettings.Add(new Id("rankdir"), new Id("LR"));
-                var generalStyleAttributes = new AttributeStatement(AttributeKinds.Graph, generalStyleSettings.ToImmutableDictionary());
-
-                statements.Add(generalStyleAttributes);
-
-                var generalNodeStyleSettings = new Dictionary<Id, Id>();
-                generalNodeStyleSettings.Add(new Id("shape"), new Id("rectangle"));
-                generalNodeStyleSettings.Add(new Id("style"), new Id("filled"));
-                //generalNodeStyleSettings.Add(new Id("fontname"), new Id("Monospace"));
-                var generalNodeStyleAttributes = new AttributeStatement(AttributeKinds.Node, generalNodeStyleSettings.ToImmutableDictionary());
-
-                statements.Add(generalNodeStyleAttributes);
-
-                var emptyDict = new Dictionary<Id, Id>();
+                GraphVizHelper.AddGeneralStatements(ref statements);
 
                 foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
                 {
@@ -180,55 +184,38 @@ namespace TFSDependenciesVisualizer
                     {
                         foreach (var succesor in entry.Value.Successors)
                         {
-                            var edge = new EdgeStatement(
-                                new NodeId(entry.Value.ToString()),
-                                new NodeId(this.Model[succesor].ToString()),
-                                emptyDict.ToImmutableDictionary());
-
-                            statements.Add(edge);
+                            GraphVizHelper.AddEdgeStatement(ref statements, entry.Value.ToString(), this.Model[succesor].ToString());
                         }
                     }
 
                     if (entry.Value.Tags.Any())
                     {
-                        Dictionary<Id, Id> nodeStyleSettings = null;
-                        //if (entry.Value.Tags.Any(str => str.Contains("Internal")))
-                        //{
-                        //    nodeStyleSettings = new Dictionary<Id, Id>();
-                        //    nodeStyleSettings.Add(new Id("color"), new Id("0.647 0.204 1.000"));
-                        //}
-                        //else 
                         if (entry.Value.Tags.Any(str => str.Contains("External")))
                         {
-                            nodeStyleSettings = new Dictionary<Id, Id>();
-                            nodeStyleSettings.Add(new Id("color"), new Id("0.408 0.498 1.000"));
-                        }
-
-                        if (nodeStyleSettings != null)
-                        {
-                            var node = new NodeStatement(new Id(entry.Value.ToString()), nodeStyleSettings.ToImmutableDictionary());
-                            statements.Add(node);
+                            GraphVizHelper.ColorizeNode(ref statements, entry.Value.ToString(), Colors.Green);
                         }
                     }
                 }
 
-                Graph graph = new Graph(GraphKinds.Directed, queryName, statements.ToImmutableList());
-
-                IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
-                using (Stream file = File.Create(string.Format(@"{0}.png", queryName)))
-                {
-                    await renderer.RunAsync(
-                        graph, file,
-                        RendererLayouts.Dot,
-                        RendererFormats.Png,
-                        CancellationToken.None);
-                }
+                return new Graph(GraphKinds.Directed, queryName, statements.ToImmutableList());
             }
             catch (Exception ex)
             {
-
+                throw;
             }
+        }
 
+        private async Task Render(Graph graph, string queryName)
+        {
+            IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+            using (Stream file = File.Create(string.Format(@"{0}.png", queryName)))
+            {
+                await renderer.RunAsync(graph,
+                    file,
+                    RendererLayouts.Dot,
+                    RendererFormats.Png,
+                    CancellationToken.None);
+            }
         }
     }
 }
