@@ -137,15 +137,88 @@ namespace TFSDependenciesVisualizer
                 {
                     var queryResults = query.RunLinkQuery();
 
+                    // ToDo: Make this more elegantly, using the helper or some Service
+                    // Populate the model (parent id's and successors) from the query
                     foreach (WorkItemLinkInfo workItemInfo in queryResults)
                     {
-                        if (!this.Model.ContainsKey(workItemInfo.TargetId))
+                        if (workItemInfo.SourceId == 0) // parent
                         {
-                            var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId);
-
-                            this.Model.Add(workItemInfo.TargetId, dependencyListItem);
+                            if (!this.Model.ContainsKey(workItemInfo.TargetId))
+                            {
+                                this.Model.Add(workItemInfo.TargetId, new DependencyListItem(workItemInfo.TargetId));
+                            }
+                        } else // child
+                        {
+                            // ToDo: Make this also work with Predecessors
+                            if (workItemInfo.LinkTypeId == 3) // successor
+                            {
+                                this.Model.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
+                                if (dependencyItem != null) dependencyItem.Successors.Add(workItemInfo.TargetId);
+                            }
                         }
                     }
+
+                    var successorsThatAreNotParents = new List<DependencyListItem>();
+
+                    // Add Title and Tags to items in the Model
+                    foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                    {
+                        if (entry.Value.Title == null)
+                        {
+                            var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
+                            entry.Value.Title = workItem.Title;
+
+                            entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
+                        }
+
+                        foreach (var successor in entry.Value.Successors)
+                        {
+                            // If successors are not parents, retrieve them from TFS and add them
+                            if (!this.Model.ContainsKey(successor))
+                            {
+                                var workItem = this.WorkItemStore.GetWorkItem(successor);
+                                var dependencyItem = new DependencyListItem(successor) { Title = workItem.Title };
+                                dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+
+                                successorsThatAreNotParents.Add(dependencyItem);
+                            }
+                        }
+                    }
+
+                    foreach (var successor in successorsThatAreNotParents)
+                    {
+                        if (!this.Model.ContainsKey(successor.Id))
+                        {
+                            this.Model.Add(successor.Id, successor);
+                        }
+                    }
+
+                    //foreach (WorkItemLinkInfo workItemInfo in queryResults)
+                    //{
+                    //    if (!this.Model.ContainsKey(workItemInfo.TargetId))
+                    //    {
+                    //        var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId, true);
+
+                    //        this.Model.Add(workItemInfo.TargetId, dependencyListItem);
+                    //    }
+                    //}
+
+                    //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
+                    //foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                    //{
+                    //    if (entry.Value.Successors.Any())
+                    //    {
+                    //        foreach (var succesor in entry.Value.Successors)
+                    //        {
+                    //            if (!this.Model.ContainsKey(succesor))
+                    //            {
+                    //                var dependencyListItem = this.GetDependencyListItemFromWorkItem(succesor, false);
+
+                    //                this.Model.Add(succesor, dependencyListItem);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
                     var graph = this.CreateDependencyGraph(queryDef.Name);
 
@@ -154,20 +227,20 @@ namespace TFSDependenciesVisualizer
             }
         }
 
-        private DependencyListItem GetDependencyListItemFromWorkItem(int targetId)
-        {
-            var workItem = this.WorkItemStore.GetWorkItem(targetId);
+        //private DependencyListItem GetDependencyListItemFromWorkItem(int targetId, bool addSuccesors)
+        //{
+        //    var workItem = this.WorkItemStore.GetWorkItem(targetId);
 
-            var dependencyListItem = new DependencyListItem() { Id = targetId, Title = workItem.Title };
+        //    var dependencyListItem = new DependencyListItem() { Id = targetId, Title = workItem.Title };
 
-            // here we retrieve the succesors
-            dependencyListItem.Successors.AddRange(TfsHelper.GetLinksOfType(workItem, "Successor"));
+        //    // here we retrieve the succesors
+        //    dependencyListItem.Successors.AddRange(TfsHelper.GetLinksOfType(workItem, "Successor"));
 
-            // Here we retrieve the tags
-            dependencyListItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+        //    // Here we retrieve the tags
+        //    dependencyListItem.Tags.AddRange(TfsHelper.GetTags(workItem));
 
-            return dependencyListItem;
-        }
+        //    return dependencyListItem;
+        //}
 
         private Graph CreateDependencyGraph(string queryName)
         {
@@ -200,6 +273,8 @@ namespace TFSDependenciesVisualizer
             }
             catch (Exception ex)
             {
+                // ToDo: Add message with error
+                // ToDo: Add Logger!
                 throw;
             }
         }

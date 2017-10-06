@@ -5,16 +5,17 @@ namespace TFSDependencyVisualizer
 {
     class DependencyListItem
     {
-        public DependencyListItem()
+        public DependencyListItem(int id)
         {
+            this.Id = id;
             this.Successors = new List<int>();
             this.Tags = new List<string>();
         }
 
-        public int Id { get; set; }
+        public int Id { get; }
         public string Title { get; set; }
-        public List<int> Successors { get; set; }
-        public List<string> Tags { get; set; }
+        public List<int> Successors { get; }
+        public List<string> Tags { get; }
 
         public override string ToString()
         {
