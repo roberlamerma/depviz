@@ -8,17 +8,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using DependenciesVisualizer.Helpers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Shields.GraphViz.Components;
 using Shields.GraphViz.Models;
 using Shields.GraphViz.Services;
 using Technewlogic.WpfDialogManagement;
 using Technewlogic.WpfDialogManagement.Contracts;
-using TFSDependenciesVisualizer.Helpers;
-using TFSDependencyVisualizer;
-using TFSDependencyVisualizer.Helpers;
+using DependenciesVisualizer;
 
-namespace TFSDependenciesVisualizer
+namespace DependenciesVisualizer
 {
     class MainViewModel
     {

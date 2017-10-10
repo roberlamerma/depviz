@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFSDependenciesVisualizer", "TFSDependenciesVisualizer\TFSDependenciesVisualizer.csproj", "{700AE368-05F9-471A-A2D2-EC2132A9FCE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenciesVisualizer", "TFSDependenciesVisualizer\DependenciesVisualizer.csproj", "{700AE368-05F9-471A-A2D2-EC2132A9FCE9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDialogManagement", "WpfDialogManagement\WpfDialogManagement.csproj", "{104D608C-81EF-4110-B0FA-6E78166F93D0}"
 EndProject

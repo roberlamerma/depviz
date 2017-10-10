@@ -1,4 +1,4 @@
-﻿namespace TFSDependencyVisualizer.Helpers
+﻿namespace DependenciesVisualizer.Helpers
 {
     enum QueryTypes
     {

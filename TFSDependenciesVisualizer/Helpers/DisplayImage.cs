@@ -4,7 +4,7 @@ using System.Windows.Interop;
 using System.Drawing;
 using System.Windows;
 
-namespace TFSDependencyVisualizer.Helpers
+namespace DependenciesVisualizer.Helpers
 {
     public static class DisplayImage
     {

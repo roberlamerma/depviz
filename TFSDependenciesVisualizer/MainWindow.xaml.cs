@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Technewlogic.WpfDialogManagement;
 
-namespace TFSDependenciesVisualizer
+namespace DependenciesVisualizer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

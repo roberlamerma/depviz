@@ -3,7 +3,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System;
 using System.Collections.Generic;
 
-namespace TFSDependencyVisualizer.Helpers
+namespace DependenciesVisualizer.Helpers
 {
     static class TfsHelper
     {

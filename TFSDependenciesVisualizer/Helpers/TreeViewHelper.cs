@@ -4,9 +4,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using TFSDependenciesVisualizer.Properties;
+using DependenciesVisualizer.Properties;
 
-namespace TFSDependencyVisualizer.Helpers
+namespace DependenciesVisualizer.Helpers
 {
     static class TreeViewHelper
     {

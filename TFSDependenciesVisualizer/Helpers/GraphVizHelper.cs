@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using Shields.GraphViz.Models;
 
-namespace TFSDependenciesVisualizer.Helpers
+namespace DependenciesVisualizer.Helpers
 {
     public enum Colors
     {
