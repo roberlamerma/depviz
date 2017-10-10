@@ -135,6 +135,7 @@ namespace TFSDependenciesVisualizer
 
                 dialog.Show(async () => 
                 {
+                    // ToDo: Force that on each query run no cache is used
                     var queryResults = query.RunLinkQuery();
 
                     // ToDo: Make this more elegantly, using the helper or some Service
@@ -185,6 +186,7 @@ namespace TFSDependenciesVisualizer
                         }
                     }
 
+                    // Adde successors That Are Not Parents to the Model
                     foreach (var successor in successorsThatAreNotParents)
                     {
                         if (!this.Model.ContainsKey(successor.Id))

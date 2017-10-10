@@ -1,0 +1,17 @@
+Services
+   Logger
+   TFSService?
+   
+Views
+   LoggerView
+   TreeQueryView
+   DependenciesImageView
+
+Models
+   DependencyListItem
+   
+ViewModels
+   DependenciesImageVM
+   LoggerVM
+   
+Helpers...
