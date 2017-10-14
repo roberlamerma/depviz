@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DependenciesVisualizer.Connectors.Services;
+using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
+using DependenciesVisualizer.Model;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace DependenciesVisualizer.Services
+namespace DependenciesVisualizer.Connectors.Services
 {
     public class TfsService : IDependencyItemImporter, ITfsService
     {

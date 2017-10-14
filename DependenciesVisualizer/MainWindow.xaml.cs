@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using DependenciesVisualizer.ViewModels;
 using Ninject;
-using Technewlogic.WpfDialogManagement;
 
 namespace DependenciesVisualizer
 {

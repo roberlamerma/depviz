@@ -1,7 +1,6 @@
-﻿<Application x:Class="DependenciesVisualizer.App"
+﻿<Application x:Class="DependenciesVisualizer.Model.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DependenciesVisualizer"
              >
     <Application.Resources>
          

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DependenciesVisualizer.Contracts;
+using DependenciesVisualizer.ViewModels;
 
-namespace DependenciesVisualizer.ViewModels
+namespace DependenciesVisualizer.Connectors.ViewModels
 {
     public class CsvConnectorViewModel : ViewModelBase, IConnectorViewModel
     {

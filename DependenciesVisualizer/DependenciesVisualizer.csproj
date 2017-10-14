@@ -81,19 +81,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\ITfsService.cs" />
-    <Compile Include="UserControls\CsvConnector.xaml.cs">
+    <Compile Include="Connectors\Services\CsvService.cs" />
+    <Compile Include="Connectors\Services\ITfsService.cs" />
+    <Compile Include="Connectors\UserControls\CsvConnector.xaml.cs">
       <DependentUpon>CsvConnector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\CsvConnectorViewModel.cs" />
-    <Compile Include="ViewModels\IConnectorViewModel.cs" />
+    <Compile Include="UserControls\DependenciesImage.xaml.cs">
+      <DependentUpon>DependenciesImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Connectors\ViewModels\CsvConnectorViewModel.cs" />
+    <Compile Include="ViewModels\DependenciesImageViewModel.cs" />
+    <Compile Include="Contracts\IConnectorViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Services\IDependencyItemImporter.cs" />
-    <Compile Include="Services\TfsService.cs" />
-    <Compile Include="UserControls\TfsConnector.xaml.cs">
+    <Compile Include="Contracts\IDependencyItemImporter.cs" />
+    <Compile Include="Connectors\Services\TfsService.cs" />
+    <Compile Include="Connectors\UserControls\TfsConnector.xaml.cs">
       <DependentUpon>TfsConnector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\TfsConnectorViewModel.cs" />
+    <Compile Include="Connectors\ViewModels\TfsConnectorViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -103,7 +108,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DependencyItem.cs" />
+    <Compile Include="Model\DependencyItem.cs" />
     <Compile Include="Helpers\DisplayImage.cs" />
     <Compile Include="Helpers\GraphVizHelper.cs" />
     <Compile Include="Helpers\QueryTypesEnum.cs" />
@@ -114,11 +119,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\CsvConnector.xaml">
+    <Page Include="Connectors\UserControls\CsvConnector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\TfsConnector.xaml">
+    <Page Include="UserControls\DependenciesImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Connectors\UserControls\TfsConnector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -169,5 +178,6 @@
   <ItemGroup>
     <Resource Include="Resources\green-plug.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

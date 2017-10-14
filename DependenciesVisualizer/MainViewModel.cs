@@ -8,18 +8,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using DependenciesVisualizer.Helpers;
+using DependenciesVisualizer.Connectors.Services;
+using DependenciesVisualizer.Contracts;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Shields.GraphViz.Components;
 using Shields.GraphViz.Models;
 using Shields.GraphViz.Services;
 using Technewlogic.WpfDialogManagement;
 using Technewlogic.WpfDialogManagement.Contracts;
-using DependenciesVisualizer;
-using DependenciesVisualizer.Services;
 
-namespace DependenciesVisualizer
+namespace DependenciesVisualizer.Model
 {
+    /*
     class MainViewModel
     {
         //public WorkItemStore WorkItemStore { get; private set; }
@@ -297,5 +297,5 @@ namespace DependenciesVisualizer
                     CancellationToken.None);
             }
         }
-    }
+    }*/
 }

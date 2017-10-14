@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DependenciesVisualizer.Properties {
+namespace DependenciesVisualizer.Model.Model.Properties {
     using System;
     
     

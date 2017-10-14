@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using DependenciesVisualizer.Contracts;
 using Ninject;
 
 namespace DependenciesVisualizer.ViewModels

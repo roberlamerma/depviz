@@ -1,6 +1,6 @@
 ﻿#region Copyright
 // // --------------------------------------------------------------------------------------------------------------------
-// // <copyright file="ITfsService.cs" company="Roche Diagnostics International Ltd">
+// // <copyright file="IConnectorViewModel.cs" company="Roche Diagnostics International Ltd">
 // //   Copyright (c) Roche Diagnostics International Ltd. All rights reserved.
 // // </copyright>
 // // <summary>
@@ -8,16 +8,12 @@
 // // </summary>
 // // --------------------------------------------------------------------------------------------------------------------
 #endregion
-
-using System;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
-
-namespace DependenciesVisualizer.Services
+namespace DependenciesVisualizer.Contracts
 {
-    public interface ITfsService
+    public interface IConnectorViewModel
     {
-        WorkItemStore WorkItemStore { get; }
+        string Name { get; }
 
-        void SetWorkItemStore(Uri tfsUri, string project);
+        void Initialize();
     }
 }

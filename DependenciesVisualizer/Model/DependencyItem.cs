@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DependenciesVisualizer
+namespace DependenciesVisualizer.Model
 {
     public class DependencyItem
     {

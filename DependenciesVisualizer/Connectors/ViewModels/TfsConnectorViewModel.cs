@@ -6,10 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using DependenciesVisualizer.Connectors.Services;
+using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
-using DependenciesVisualizer.Services;
+using DependenciesVisualizer.ViewModels;
 
-namespace DependenciesVisualizer.ViewModels
+namespace DependenciesVisualizer.Connectors.ViewModels
 {
     public class TfsConnectorViewModel : ViewModelBase, IConnectorViewModel
     {

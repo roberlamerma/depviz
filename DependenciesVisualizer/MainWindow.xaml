@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DependenciesVisualizer"
-        xmlns:viewModels="clr-namespace:DependenciesVisualizer.ViewModels"
-        xmlns:userControls="clr-namespace:DependenciesVisualizer.UserControls"
+        xmlns:userControls1="clr-namespace:DependenciesVisualizer.UserControls"
+        xmlns:viewModels="clr-namespace:DependenciesVisualizer.Connectors.ViewModels"
+        xmlns:userControls="clr-namespace:DependenciesVisualizer.Connectors.UserControls"
         mc:Ignorable="d"
         Title="Dependencies Visualizer" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
@@ -34,6 +34,11 @@
             ItemsSource="{Binding ConnectorNames}"
             SelectedIndex="{Binding SelectedVMIndex}" />
         <ContentControl Grid.Column="0" Grid.Row="2" Content="{Binding CurrentConnectorViewModel}" />
+        <GridSplitter HorizontalAlignment="Right" 
+            VerticalAlignment="Stretch" 
+            Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" ResizeBehavior="PreviousAndNext"
+            Width="5" Background="#FFBCBCBC"/>
+        <userControls1:DependenciesImage Grid.Column="2" Grid.Row="2" />
         <!--<TreeView Name="Queries" 
             Grid.Column="0" Grid.Row="1" />
         <GridSplitter HorizontalAlignment="Right" 

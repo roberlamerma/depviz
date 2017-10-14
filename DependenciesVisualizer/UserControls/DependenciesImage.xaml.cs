@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,26 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DependenciesVisualizer.Helpers;
-using DependenciesVisualizer.Services;
 using DependenciesVisualizer.ViewModels;
 
 namespace DependenciesVisualizer.UserControls
 {
     /// <summary>
-    /// Interaction logic for TfsConnector.xaml
+    /// Interaction logic for DependenciesImage.xaml
     /// </summary>
-    public partial class TfsConnector : UserControl
+    public partial class DependenciesImage : UserControl
     {
-        public TfsConnector()
+        public DependenciesImage()
         {
+            this.DataContext = new DependenciesImageViewModel();
             InitializeComponent();
         }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            ((TfsConnectorViewModel)this.DataContext).BuildTreeView(ref this.Queries);
-        }
-
     }
 }

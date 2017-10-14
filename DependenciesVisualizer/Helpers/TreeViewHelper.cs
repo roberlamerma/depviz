@@ -3,8 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using DependenciesVisualizer.Helpers;
+using DependenciesVisualizer.Model.Model.Properties;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using DependenciesVisualizer.Properties;
 
 namespace DependenciesVisualizer.Helpers
 {

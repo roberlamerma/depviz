@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DependenciesVisualizer.UserControls
+namespace DependenciesVisualizer.Connectors.UserControls
 {
     /// <summary>
     /// Interaction logic for CsvConnector.xaml
