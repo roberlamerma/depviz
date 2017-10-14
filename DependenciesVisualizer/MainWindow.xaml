@@ -4,8 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DependenciesVisualizer"
+        xmlns:viewModels="clr-namespace:DependenciesVisualizer.ViewModels"
+        xmlns:userControls="clr-namespace:DependenciesVisualizer.UserControls"
         mc:Ignorable="d"
-        Title="TFS Dependencies Visualizer" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="Dependencies Visualizer" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:TfsConnectorViewModel}">
+            <userControls:TfsConnector />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:CsvConnectorViewModel}">
+            <userControls:CsvConnector />
+        </DataTemplate>
+    </Window.Resources>
+    <!--<Grid DataContext="{StaticResource MainWindowViewModel}">-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
@@ -14,13 +25,21 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TreeView Name="Queries" 
+        <ComboBox Grid.Row="0" Grid.Column="0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemsSource="{Binding ConnectorNames}"
+            SelectedIndex="{Binding SelectedVMIndex}" />
+        <ContentControl Grid.Column="0" Grid.Row="2" Content="{Binding CurrentConnectorViewModel}" />
+        <!--<TreeView Name="Queries" 
             Grid.Column="0" Grid.Row="1" />
         <GridSplitter HorizontalAlignment="Right" 
             VerticalAlignment="Stretch" 
             Grid.Column="1" Grid.Row="1" ResizeBehavior="PreviousAndNext"
-            Width="5" Background="#FFBCBCBC"/>
+            Width="5" Background="#FFBCBCBC"/>-->
     </Grid>
 </Window>
+

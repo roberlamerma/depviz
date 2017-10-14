@@ -50,6 +50,9 @@
       <HintPath>..\packages\TeamFoundation.11.11.0.50727.1\lib\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.1.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.1\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="Shields.GraphViz, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Shields.GraphViz.1.0.2.0\lib\net45\Shields.GraphViz.dll</HintPath>
     </Reference>
@@ -78,6 +81,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\ITfsService.cs" />
+    <Compile Include="UserControls\CsvConnector.xaml.cs">
+      <DependentUpon>CsvConnector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\CsvConnectorViewModel.cs" />
+    <Compile Include="ViewModels\IConnectorViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Services\IDependencyItemImporter.cs" />
+    <Compile Include="Services\TfsService.cs" />
+    <Compile Include="UserControls\TfsConnector.xaml.cs">
+      <DependentUpon>TfsConnector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\TfsConnectorViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,7 +103,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DependencyListItem.cs" />
+    <Compile Include="DependencyItem.cs" />
     <Compile Include="Helpers\DisplayImage.cs" />
     <Compile Include="Helpers\GraphVizHelper.cs" />
     <Compile Include="Helpers\QueryTypesEnum.cs" />
@@ -97,6 +114,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\CsvConnector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TfsConnector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -140,6 +165,9 @@
     <Resource Include="Resources\HView.png" />
     <Resource Include="Resources\MyQ.png" />
     <Resource Include="Resources\TeamQ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\green-plug.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

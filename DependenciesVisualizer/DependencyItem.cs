@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DependenciesVisualizer
 {
-    class DependencyListItem
+    public class DependencyItem
     {
-        public DependencyListItem(int id)
+        public DependencyItem(int id)
         {
             this.Id = id;
             this.Successors = new List<int>();

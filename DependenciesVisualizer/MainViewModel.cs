@@ -16,30 +16,34 @@ using Shields.GraphViz.Services;
 using Technewlogic.WpfDialogManagement;
 using Technewlogic.WpfDialogManagement.Contracts;
 using DependenciesVisualizer;
+using DependenciesVisualizer.Services;
 
 namespace DependenciesVisualizer
 {
     class MainViewModel
     {
-        public WorkItemStore WorkItemStore { get; private set; }
+        //public WorkItemStore WorkItemStore { get; private set; }
 
         public bool IsAppValidAndReady { get; private set; }
 
-        public Dictionary<int, DependencyListItem> Model { get; private set; }
+        public Dictionary<int, DependencyItem> Model { get; private set; }
 
         private readonly Action<object, MouseButtonEventArgs> doubleClickDelegate;
 
         private readonly IDialogManager dialogManager;
 
+        private IDependencyItemImporter dependencyItemImporter;
+
         public MainViewModel(IDialogManager dialogManager)
         {
             this.IsAppValidAndReady = false;
             this.dialogManager = dialogManager;
+            this.dependencyItemImporter = new TfsService();
 
             this.Initialize();
 
             this.doubleClickDelegate = this.BuildModelFromTfsQuery;
-            this.Model = new Dictionary<int, DependencyListItem>();
+            this.Model = new Dictionary<int, DependencyItem>();
         }
 
         public void BuildTreeView(ref TreeView queryTreeView)
@@ -52,8 +56,8 @@ namespace DependenciesVisualizer
             {
                 TreeViewHelper.BuildTreeViewFromTfs(
                                                     ref queryTreeView,
-                                                    this.WorkItemStore.Projects[ConfigurationManager.AppSettings["projectName"]].QueryHierarchy,
-                                                    ConfigurationManager.AppSettings["projectName"],
+                                                    ((TfsService)this.dependencyItemImporter).WorkItemStore.Projects[ConfigurationManager.AppSettings["tfsprojectName"]].QueryHierarchy,
+                                                    ConfigurationManager.AppSettings["tfsprojectName"],
                                                     this.doubleClickDelegate);
             }
             catch (Exception ex)
@@ -72,27 +76,27 @@ namespace DependenciesVisualizer
                 if (Directory.Exists(graphvizPath))
                 {
                     var urlString = ConfigurationManager.AppSettings["tfsUrl"];
-                    var projectString = ConfigurationManager.AppSettings["projectName"];
+                    var projectString = ConfigurationManager.AppSettings["tfsprojectName"];
 
                     if (TfsHelper.IsTfsUrlValid(urlString, projectString, out Uri uri))
                     {
-                        try
-                        {
-                            this.WorkItemStore = TfsHelper.GetWorkItemStore(uri);
-                        }
-                        catch (Exception)
-                        {
-                            this.dialogManager
-                                .CreateMessageDialog(string.Format(@"Make sure you are connected to the corporate network, and that the 'tfsUrl' and 'projectName' settings are correct. Current values: {0}tfsUrl = '{1}'{2}projectName = '{3}'", Environment.NewLine, urlString, Environment.NewLine, projectString), "ERROR", DialogMode.Ok)
-                                .Show();
-                        }
+                        //try
+                        //{
+                        //    ((TfsService)this.dependencyItemImporter).WorkItemStore = TfsHelper.GetWorkItemStore(uri);
+                        //}
+                        //catch (Exception)
+                        //{
+                        //    this.dialogManager
+                        //        .CreateMessageDialog(string.Format(@"Make sure you are connected to the corporate network, and that the 'tfsUrl' and 'tfsprojectName' settings are correct. Current values: {0}tfsUrl = '{1}'{2}projectName = '{3}'", Environment.NewLine, urlString, Environment.NewLine, projectString), "ERROR", DialogMode.Ok)
+                        //        .Show();
+                        //}
 
-                        this.IsAppValidAndReady = true;
+                        //this.IsAppValidAndReady = true;
                     }
                     else
                     {
                         this.dialogManager
-                            .CreateMessageDialog(string.Format(@"Please check on the application config file if the 'tfsUrl' and 'projectName' settings are correct. Current values: {0}tfsUrl = '{1}'{2}projectName = '{3}'", Environment.NewLine, urlString, Environment.NewLine, projectString), "ERROR", DialogMode.Ok)
+                            .CreateMessageDialog(string.Format(@"Please check on the application config file if the 'tfsUrl' and 'tfsprojectName' settings are correct. Current values: {0}tfsUrl = '{1}'{2}projectName = '{3}'", Environment.NewLine, urlString, Environment.NewLine, projectString), "ERROR", DialogMode.Ok)
                             .Show();
                     }
                 }
@@ -115,11 +119,12 @@ namespace DependenciesVisualizer
         {
             TreeViewItem item = (TreeViewItem)sender;
 
-            var queryDef = this.WorkItemStore.GetQueryDefinition((Guid)item.Tag);
+            // ToDo: Cannot have on this ViewModel references to the TFSDI
+            var queryDef = ((TfsService)this.dependencyItemImporter).WorkItemStore.GetQueryDefinition((Guid)item.Tag);
 
-            var queryTextWithProject = queryDef.QueryText.Replace("@project", string.Format("'{0}'", ConfigurationManager.AppSettings["projectName"]));
+            var queryTextWithProject = queryDef.QueryText.Replace("@project", string.Format("'{0}'", ConfigurationManager.AppSettings["tfsprojectName"]));
 
-            var query = new Query(this.WorkItemStore, queryTextWithProject);
+            var query = new Query(((TfsService)this.dependencyItemImporter).WorkItemStore, queryTextWithProject);
 
             if (!query.IsLinkQuery || query.IsTreeQuery)
             {
@@ -145,7 +150,7 @@ namespace DependenciesVisualizer
                         {
                             if (!this.Model.ContainsKey(workItemInfo.TargetId))
                             {
-                                this.Model.Add(workItemInfo.TargetId, new DependencyListItem(workItemInfo.TargetId));
+                                this.Model.Add(workItemInfo.TargetId, new DependencyItem(workItemInfo.TargetId));
                             }
                         } else // child
                         {
@@ -158,14 +163,14 @@ namespace DependenciesVisualizer
                         }
                     }
 
-                    var successorsThatAreNotParents = new List<DependencyListItem>();
+                    var successorsThatAreNotParents = new List<DependencyItem>();
 
                     // Add Title and Tags to items in the Model
-                    foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                    foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
                     {
                         if (entry.Value.Title == null)
                         {
-                            var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
+                            var workItem = ((TfsService)this.dependencyItemImporter).WorkItemStore.GetWorkItem(entry.Key);
                             entry.Value.Title = workItem.Title;
 
                             entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
@@ -176,8 +181,8 @@ namespace DependenciesVisualizer
                             // If successors are not parents, retrieve them from TFS and add them
                             if (!this.Model.ContainsKey(successor))
                             {
-                                var workItem = this.WorkItemStore.GetWorkItem(successor);
-                                var dependencyItem = new DependencyListItem(successor) { Title = workItem.Title };
+                                var workItem = ((TfsService)this.dependencyItemImporter).WorkItemStore.GetWorkItem(successor);
+                                var dependencyItem = new DependencyItem(successor) { Title = workItem.Title };
                                 dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
 
                                 successorsThatAreNotParents.Add(dependencyItem);
@@ -205,7 +210,7 @@ namespace DependenciesVisualizer
                     //}
 
                     //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
-                    //foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                    //foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
                     //{
                     //    if (entry.Value.Successors.Any())
                     //    {
@@ -228,11 +233,11 @@ namespace DependenciesVisualizer
             }
         }
 
-        //private DependencyListItem GetDependencyListItemFromWorkItem(int targetId, bool addSuccesors)
+        //private DependencyItem GetDependencyListItemFromWorkItem(int targetId, bool addSuccesors)
         //{
         //    var workItem = this.WorkItemStore.GetWorkItem(targetId);
 
-        //    var dependencyListItem = new DependencyListItem() { Id = targetId, Title = workItem.Title };
+        //    var dependencyListItem = new DependencyItem() { Id = targetId, Title = workItem.Title };
 
         //    // here we retrieve the succesors
         //    dependencyListItem.Successors.AddRange(TfsHelper.GetLinksOfType(workItem, "Successor"));
@@ -251,7 +256,7 @@ namespace DependenciesVisualizer
 
                 GraphVizHelper.AddGeneralStatements(ref statements);
 
-                foreach (KeyValuePair<int, DependencyListItem> entry in this.Model)
+                foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
                 {
                     if (entry.Value.Successors.Any())
                     {
