@@ -15,5 +15,7 @@ namespace DependenciesVisualizer.Contracts
         string Name { get; }
 
         void Initialize();
+
+        IDependencyItemImporter Service { get; set; }
     }
 }

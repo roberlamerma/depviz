@@ -136,7 +136,7 @@ namespace DependenciesVisualizer.Model
             {
                 var dialog = this.dialogManager.
                     CreateWaitDialog(string.Format(@"1.- Retreiving items from the '{0}' query. This operation might take a while{1}2.- After this message dissapears, search for your image '{2}.png' on this path: '{3}'", queryDef.Name, Environment.NewLine, queryDef.Name, Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)), DialogMode.None);
-
+                    
                 dialog.Show(async () => 
                 {
                     // ToDo: Force that on each query run no cache is used

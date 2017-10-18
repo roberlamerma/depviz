@@ -26,6 +26,8 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             this.tfsService.SetWorkItemStore(new Uri(ConfigurationManager.AppSettings["tfsUrl"]), ConfigurationManager.AppSettings["tfsprojectName"]);
         }
 
+        public IDependencyItemImporter Service { get; set; }
+
         public void BuildTreeView(ref TreeView treeViewQuery)
         {
             TreeViewHelper.BuildTreeViewFromTfs(
@@ -39,9 +41,10 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
         }
 
-        public TfsConnectorViewModel(ITfsService tfsService)
+        public TfsConnectorViewModel(IDependencyItemImporter tfsService)
         {
-            this.tfsService = tfsService;
+            this.Service = tfsService;
+            //this.tfsService = tfsService;
             this.ProjectName = ConfigurationManager.AppSettings["tfsprojectName"];
         }
         public string ProjectName { get; private set; }

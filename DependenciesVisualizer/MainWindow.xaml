@@ -33,11 +33,18 @@
             VerticalAlignment="Top"
             ItemsSource="{Binding ConnectorNames}"
             SelectedIndex="{Binding SelectedVMIndex}" />
-        <ContentControl Grid.Column="0" Grid.Row="2" Content="{Binding CurrentConnectorViewModel}" />
+        <ContentControl Grid.Column="0" Grid.Row="2" Content="{Binding Path=CurrentConnectorViewModel}" />
         <GridSplitter HorizontalAlignment="Right" 
             VerticalAlignment="Stretch" 
             Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" ResizeBehavior="PreviousAndNext"
             Width="5" Background="#FFBCBCBC"/>
+        <!-- Add a bindable property Image to DependenciesImage, and bind it to the prop below (add converter!)-->
+        <!-- On MainViewViewModel add the Dict<DependencyItem> Model -->
+        <!-- on the IDependencyItemImporter (CHANGE NAME!), add the Dict<DependencyItem> Model, the services changes it, and raises and event -->
+        <!-- The MainViewViewModel is subscribed to this event. When it receives it, it retrieves the currentConnectorViewModel.IDependencyItemImporter.Model --> 
+        <!-- NotifyPropertyChanged -> this should go all the way up to the DependenciesImage user control -->
+        
+        
         <userControls1:DependenciesImage Grid.Column="2" Grid.Row="2" />
         <!--<TreeView Name="Queries" 
             Grid.Column="0" Grid.Row="1" />

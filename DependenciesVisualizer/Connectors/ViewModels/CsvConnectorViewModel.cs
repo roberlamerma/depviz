@@ -10,5 +10,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         public void Initialize()
         {
         }
+
+        public IDependencyItemImporter Service { get; set; }
     }
 }

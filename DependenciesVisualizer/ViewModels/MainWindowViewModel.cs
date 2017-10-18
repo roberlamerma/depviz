@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using DependenciesVisualizer.Contracts;
+using DependenciesVisualizer.Model;
 using Ninject;
 
 namespace DependenciesVisualizer.ViewModels
@@ -10,6 +11,8 @@ namespace DependenciesVisualizer.ViewModels
         public ObservableCollection<string> ConnectorNames { get; private set; }
 
         public IKernel Ioc { get; private set; }
+
+        private Dictionary<int, DependencyItem> Model { get; set; }
 
         private int selectedVMIndex;
 
