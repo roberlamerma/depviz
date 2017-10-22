@@ -26,13 +26,13 @@ namespace DependenciesVisualizer.Model
 
         public bool IsAppValidAndReady { get; private set; }
 
-        public Dictionary<int, DependencyItem> Model { get; private set; }
+        public Dictionary<int, DependencyItem> DependenciesModel { get; private set; }
 
         private readonly Action<object, MouseButtonEventArgs> doubleClickDelegate;
 
         private readonly IDialogManager dialogManager;
 
-        private IDependencyItemImporter dependencyItemImporter;
+        private IDependenciesService dependencyItemImporter;
 
         public MainViewModel(IDialogManager dialogManager)
         {
@@ -43,14 +43,14 @@ namespace DependenciesVisualizer.Model
             this.Initialize();
 
             this.doubleClickDelegate = this.BuildModelFromTfsQuery;
-            this.Model = new Dictionary<int, DependencyItem>();
+            this.DependenciesModel = new Dictionary<int, DependencyItem>();
         }
 
         public void BuildTreeView(ref TreeView queryTreeView)
         {
-            // This should be done with a Model with Bindings, not
+            // This should be done with a DependenciesModel with Bindings, not
             // modifying the TreeView directly...
-            // ToDo: change this to a Model bound to the Main view
+            // ToDo: change this to a DependenciesModel bound to the Main view
 
             try
             {
@@ -142,22 +142,22 @@ namespace DependenciesVisualizer.Model
                     // ToDo: Force that on each query run no cache is used
                     var queryResults = query.RunLinkQuery();
 
-                    // ToDo: Make this more elegantly, using the helper or some Service
+                    // ToDo: Make this more elegantly, using the helper or some DependenciesService
                     // Populate the model (parent id's and successors) from the query
                     foreach (WorkItemLinkInfo workItemInfo in queryResults)
                     {
                         if (workItemInfo.SourceId == 0) // parent
                         {
-                            if (!this.Model.ContainsKey(workItemInfo.TargetId))
+                            if (!this.DependenciesModel.ContainsKey(workItemInfo.TargetId))
                             {
-                                this.Model.Add(workItemInfo.TargetId, new DependencyItem(workItemInfo.TargetId));
+                                this.DependenciesModel.Add(workItemInfo.TargetId, new DependencyItem(workItemInfo.TargetId));
                             }
                         } else // child
                         {
                             // ToDo: Make this also work with Predecessors
                             if (workItemInfo.LinkTypeId == 3) // successor
                             {
-                                this.Model.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
+                                this.DependenciesModel.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
                                 if (dependencyItem != null) dependencyItem.Successors.Add(workItemInfo.TargetId);
                             }
                         }
@@ -165,8 +165,8 @@ namespace DependenciesVisualizer.Model
 
                     var successorsThatAreNotParents = new List<DependencyItem>();
 
-                    // Add Title and Tags to items in the Model
-                    foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
+                    // Add Title and Tags to items in the DependenciesModel
+                    foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
                     {
                         if (entry.Value.Title == null)
                         {
@@ -179,7 +179,7 @@ namespace DependenciesVisualizer.Model
                         foreach (var successor in entry.Value.Successors)
                         {
                             // If successors are not parents, retrieve them from TFS and add them
-                            if (!this.Model.ContainsKey(successor))
+                            if (!this.DependenciesModel.ContainsKey(successor))
                             {
                                 var workItem = ((TfsService)this.dependencyItemImporter).WorkItemStore.GetWorkItem(successor);
                                 var dependencyItem = new DependencyItem(successor) { Title = workItem.Title };
@@ -190,37 +190,37 @@ namespace DependenciesVisualizer.Model
                         }
                     }
 
-                    // Adde successors That Are Not Parents to the Model
+                    // Adde successors That Are Not Parents to the DependenciesModel
                     foreach (var successor in successorsThatAreNotParents)
                     {
-                        if (!this.Model.ContainsKey(successor.Id))
+                        if (!this.DependenciesModel.ContainsKey(successor.Id))
                         {
-                            this.Model.Add(successor.Id, successor);
+                            this.DependenciesModel.Add(successor.Id, successor);
                         }
                     }
 
                     //foreach (WorkItemLinkInfo workItemInfo in queryResults)
                     //{
-                    //    if (!this.Model.ContainsKey(workItemInfo.TargetId))
+                    //    if (!this.DependenciesModel.ContainsKey(workItemInfo.TargetId))
                     //    {
                     //        var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId, true);
 
-                    //        this.Model.Add(workItemInfo.TargetId, dependencyListItem);
+                    //        this.DependenciesModel.Add(workItemInfo.TargetId, dependencyListItem);
                     //    }
                     //}
 
                     //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
-                    //foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
+                    //foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
                     //{
                     //    if (entry.Value.Successors.Any())
                     //    {
                     //        foreach (var succesor in entry.Value.Successors)
                     //        {
-                    //            if (!this.Model.ContainsKey(succesor))
+                    //            if (!this.DependenciesModel.ContainsKey(succesor))
                     //            {
                     //                var dependencyListItem = this.GetDependencyListItemFromWorkItem(succesor, false);
 
-                    //                this.Model.Add(succesor, dependencyListItem);
+                    //                this.DependenciesModel.Add(succesor, dependencyListItem);
                     //            }
                     //        }
                     //    }
@@ -256,13 +256,13 @@ namespace DependenciesVisualizer.Model
 
                 GraphVizHelper.AddGeneralStatements(ref statements);
 
-                foreach (KeyValuePair<int, DependencyItem> entry in this.Model)
+                foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
                 {
                     if (entry.Value.Successors.Any())
                     {
                         foreach (var succesor in entry.Value.Successors)
                         {
-                            GraphVizHelper.AddEdgeStatement(ref statements, entry.Value.ToString(), this.Model[succesor].ToString());
+                            GraphVizHelper.AddEdgeStatement(ref statements, entry.Value.ToString(), this.DependenciesModel[succesor].ToString());
                         }
                     }
 

@@ -11,6 +11,6 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
         }
 
-        public IDependencyItemImporter Service { get; set; }
+        public IDependenciesService DependenciesService { get; set; }
     }
 }

@@ -23,13 +23,21 @@ namespace DependenciesVisualizer.Model
         {
             IKernel kernel = new StandardKernel();
             //kernel.Bind<ITfsService, TfsService>();
-            kernel.Bind(typeof(ITfsService)).To(typeof(TfsService)).InSingletonScope();
+            //kernel.Bind<ICsvService, CsvService>();
 
-            kernel.Bind<IDependencyItemImporter>().To<TfsService>().When(this.ChooseTfsImporter);
-            kernel.Bind<IDependencyItemImporter>().To<TfsService>().When(this.ChooseCsvImporter);
+            //kernel.Bind(typeof(ITfsService)).To(typeof(TfsService)).InSingletonScope();
+            //kernel.Bind(typeof(ICsvService)).To(typeof(CsvService)).InSingletonScope();
 
-            kernel.Bind(typeof(IConnectorViewModel)).To(typeof(TfsConnectorViewModel)).Named("TfsConnectorViewModel");
-            kernel.Bind(typeof(IConnectorViewModel)).To(typeof(CsvConnectorViewModel)).Named("CsvConnectorViewModel");
+            kernel.Bind<ITfsService>().To<TfsService>().InSingletonScope();
+            kernel.Bind<ICsvService>().To<CsvService>().InSingletonScope();
+
+            //kernel.Bind<IDependenciesService>().To<TfsService>().When(this.ChooseTfsImporter);
+            //kernel.Bind<IDependenciesService>().To<CsvService>().When(this.ChooseCsvImporter);
+
+            //kernel.Bind(typeof(IConnectorViewModel)).To(typeof(TfsConnectorViewModel)).Named("TfsConnectorViewModel");
+            //kernel.Bind(typeof(IConnectorViewModel)).To(typeof(CsvConnectorViewModel)).Named("CsvConnectorViewModel");
+            kernel.Bind<IConnectorViewModel>().To<TfsConnectorViewModel>().InSingletonScope().Named("TfsConnectorViewModel");
+            kernel.Bind<IConnectorViewModel>().To<CsvConnectorViewModel>().InSingletonScope().Named("CsvConnectorViewModel");
 
             this.MainWindow = new MainWindow(kernel);
             this.MainWindow.Show();
@@ -49,7 +57,7 @@ namespace DependenciesVisualizer.Model
 
         private bool ChooseImporter(string target)
         {
-            return ConfigurationManager.AppSettings["tfsprojectName"].ToLower().Equals(target);
+            return ConfigurationManager.AppSettings["selectedConnector"].ToLower().Equals(target);
         }
     }
 }

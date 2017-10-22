@@ -82,6 +82,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Connectors\Services\CsvService.cs" />
+    <Compile Include="Connectors\Services\ICsvService.cs" />
     <Compile Include="Connectors\Services\ITfsService.cs" />
     <Compile Include="Connectors\UserControls\CsvConnector.xaml.cs">
       <DependentUpon>CsvConnector.xaml</DependentUpon>
@@ -93,7 +94,7 @@
     <Compile Include="ViewModels\DependenciesImageViewModel.cs" />
     <Compile Include="Contracts\IConnectorViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Contracts\IDependencyItemImporter.cs" />
+    <Compile Include="Contracts\IDependenciesService.cs" />
     <Compile Include="Connectors\Services\TfsService.cs" />
     <Compile Include="Connectors\UserControls\TfsConnector.xaml.cs">
       <DependentUpon>TfsConnector.xaml</DependentUpon>

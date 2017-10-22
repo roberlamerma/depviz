@@ -14,6 +14,6 @@ namespace DependenciesVisualizer.ViewModels
         public Dictionary<int, DependencyItem> Model { get; set; }
 
         [Inject]
-        public IDependencyItemImporter Importer { private get; set; }
+        public IDependenciesService Importer { private get; set; }
     }
 }

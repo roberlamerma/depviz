@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Tracing;
+using System.Windows;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Model;
 using Ninject;
@@ -34,6 +37,7 @@ namespace DependenciesVisualizer.ViewModels
 
             this.CurrentConnectorViewModel = this.connectorViewModels[0];
         }
+
         public int SelectedVMIndex
         {
             get => this.selectedVMIndex;
@@ -62,10 +66,25 @@ namespace DependenciesVisualizer.ViewModels
                     return;
                 }
 
+                if (this.currentConnectorViewModel != null)
+                {
+                    WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
+                }
+
                 this.currentConnectorViewModel = value;
                 this.currentConnectorViewModel.Initialize();
+
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
+
                 this.OnPropertyChanged("CurrentConnectorViewModel");
             }
+        }
+
+        private Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
+
+        private void DependenciesModelChangedHandler(object sender, EventArgs e)
+        {
+            this.OnPropertyChanged("DependenciesModel");
         }
 
     }

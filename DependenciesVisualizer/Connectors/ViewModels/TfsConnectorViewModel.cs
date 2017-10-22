@@ -10,6 +10,7 @@ using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.ViewModels;
+using Ninject;
 
 namespace DependenciesVisualizer.Connectors.ViewModels
 {
@@ -17,7 +18,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
     {
         public string Name => "TFS";
 
-        public Guid QueryId { get; set; }
+        //public Guid QueryId { get; set; }
 
         private readonly ITfsService tfsService;
 
@@ -26,7 +27,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             this.tfsService.SetWorkItemStore(new Uri(ConfigurationManager.AppSettings["tfsUrl"]), ConfigurationManager.AppSettings["tfsprojectName"]);
         }
 
-        public IDependencyItemImporter Service { get; set; }
+        public IDependenciesService DependenciesService => (IDependenciesService)this.tfsService;
 
         public void BuildTreeView(ref TreeView treeViewQuery)
         {
@@ -39,12 +40,13 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         private void QuerySelected(object sender, MouseButtonEventArgs mouseEvtArgs)
         {
+            this.tfsService.ImportDependenciesFromTfs((Guid)((TreeViewItem)sender).Tag);
         }
 
-        public TfsConnectorViewModel(IDependencyItemImporter tfsService)
+        [Inject]
+        public TfsConnectorViewModel(ITfsService tfsService)
         {
-            this.Service = tfsService;
-            //this.tfsService = tfsService;
+            this.tfsService = tfsService;
             this.ProjectName = ConfigurationManager.AppSettings["tfsprojectName"];
         }
         public string ProjectName { get; private set; }

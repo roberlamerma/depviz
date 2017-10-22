@@ -18,6 +18,10 @@ namespace DependenciesVisualizer.Connectors.Services
     {
         WorkItemStore WorkItemStore { get; }
 
+        //Guid QueryId { get; set; }
+
         void SetWorkItemStore(Uri tfsUri, string project);
+
+        void ImportDependenciesFromTfs(Guid queryGuid);
     }
 }
