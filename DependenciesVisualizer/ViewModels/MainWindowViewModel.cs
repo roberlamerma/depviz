@@ -80,11 +80,23 @@ namespace DependenciesVisualizer.ViewModels
             }
         }
 
-        private Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
+        //public Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
+        public int DependenciesModelCount
+        {
+            get
+            {
+                if (this.currentConnectorViewModel.DependenciesService.DependenciesModel != null)
+                {
+                    return this.currentConnectorViewModel.DependenciesService.DependenciesModel.Count;
+                }
+                return 0;
+            }
+        }
 
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {
             this.OnPropertyChanged("DependenciesModel");
+            this.OnPropertyChanged("DependenciesModelCount");
         }
 
     }

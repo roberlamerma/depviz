@@ -2,8 +2,16 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dependenciesVisualizer="clr-namespace:DependenciesVisualizer"
+             xmlns:userControls="clr-namespace:DependenciesVisualizer.UserControls"
              mc:Ignorable="d" 
              >
-    <Label Content="Image"></Label>
+    <UserControl.Resources>
+        <userControls:ToImageConverter x:Key="toImageConverter" />
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <Label Content="{Binding DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>
+        <Image Source="{Binding MyImage, Converter={StaticResource toImageConverter}}"></Image>
+    </StackPanel>
 </UserControl>
