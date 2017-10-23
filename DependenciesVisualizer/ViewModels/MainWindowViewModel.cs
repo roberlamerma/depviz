@@ -80,7 +80,7 @@ namespace DependenciesVisualizer.ViewModels
             }
         }
 
-        //public Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
+        public Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
         public int DependenciesModelCount
         {
             get

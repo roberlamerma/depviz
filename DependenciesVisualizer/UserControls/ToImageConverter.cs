@@ -14,28 +14,21 @@ namespace DependenciesVisualizer.UserControls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            BitmapImage img = new BitmapImage();
-            if (value is byte[])
+            if (value != null && value is byte[])
             {
-                img = this.ConvertByteArrayToBitMapImage(value as byte[]);
+                using (MemoryStream memStream = new MemoryStream((byte[])value))
+                {
+                    BitmapImage img = new BitmapImage();
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.StreamSource = memStream;
+                    img.EndInit();
+                    return img;
+                }
             }
-            return img;
 
+            return null;
         }
-
-        public BitmapImage ConvertByteArrayToBitMapImage(byte[] imageByteArray)
-        {
-            
-            using (MemoryStream memStream = new MemoryStream(imageByteArray))
-            {
-                BitmapImage img = new BitmapImage();
-                img.BeginInit();
-                img.StreamSource = memStream;
-                img.EndInit();
-                return img;
-            }
-        }
-
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -9,9 +9,14 @@
              >
     <UserControl.Resources>
         <userControls:ToImageConverter x:Key="toImageConverter" />
+        <userControls:DependenciesToImageConverter x:Key="dependenciesToImageConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <Label Content="{Binding DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>
-        <Image Source="{Binding MyImage, Converter={StaticResource toImageConverter}}"></Image>
+        <Label Content="{Binding Path=DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>
+        <!--<Image Source="{Binding MyImage, Converter={StaticResource toImageConverter}}"></Image>-->
+        <Image Stretch="None"
+            Source="{Binding Path=DataContext.DependenciesModel, 
+            RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, 
+            Converter={StaticResource dependenciesToImageConverter}}"></Image>
     </StackPanel>
 </UserControl>
