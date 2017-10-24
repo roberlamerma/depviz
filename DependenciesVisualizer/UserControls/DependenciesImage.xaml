@@ -11,12 +11,39 @@
         <userControls:ToImageConverter x:Key="toImageConverter" />
         <userControls:DependenciesToImageConverter x:Key="dependenciesToImageConverter" />
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <Label Content="{Binding Path=DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>
+    <!--<StackPanel Orientation="Vertical">-->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!--<Label Content="{Binding Path=DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>-->
         <!--<Image Source="{Binding MyImage, Converter={StaticResource toImageConverter}}"></Image>-->
-        <Image Stretch="None"
-            Source="{Binding Path=DataContext.DependenciesModel, 
-            RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, 
-            Converter={StaticResource dependenciesToImageConverter}}"></Image>
-    </StackPanel>
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <Image 
+                Stretch="None"
+                Source="{Binding Path=DataContext.DependenciesModel, 
+                RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, 
+                Converter={StaticResource dependenciesToImageConverter}}">
+                <Image.RenderTransform>
+                    <ScaleTransform ScaleX="{Binding Path=ZoomFactor}" ScaleY="{Binding Path=ZoomFactor}"/>
+                </Image.RenderTransform>
+            </Image>
+        </ScrollViewer>
+        
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <Label Content="Zoom: (-) " />
+            <Slider VerticalAlignment="Center" Width="200"
+                Maximum="1" Minimum="0" Value="{Binding Path=ZoomFactor}" SmallChange=".1"/>
+            <Label Content="(+) " />
+        </StackPanel>
+        
+    </Grid>
+    <!--</StackPanel>-->
 </UserControl>
