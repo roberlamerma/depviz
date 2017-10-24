@@ -8,10 +8,9 @@
              mc:Ignorable="d" 
              >
     <UserControl.Resources>
-        <userControls:ToImageConverter x:Key="toImageConverter" />
+        <!--<userControls:ToImageConverter x:Key="toImageConverter" />-->
         <userControls:DependenciesToImageConverter x:Key="dependenciesToImageConverter" />
     </UserControl.Resources>
-    <!--<StackPanel Orientation="Vertical">-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -45,5 +44,4 @@
         </StackPanel>
         
     </Grid>
-    <!--</StackPanel>-->
 </UserControl>

@@ -1,0 +1,35 @@
+Select a different query and refresh image
+
+Menu bar
+
+Configure States and Tags
+	-> Take this configuration and use it to generate the Graph object
+
+Action: Save as PNG
+Action: Save as SVG
+
+Add the Modal dialog?
+	-> Retrieving TFS queries
+	-> Retrieving TFS items for query
+	-> Rendering the image
+
+Make the Query TreeView a-la MVVM way (no code behind!)
+
+Installer:
+	-> Full installer (comes with GraphViz)
+	-> No GraphViz installer
+
+Make sure no DLL's are retrieved from the GAC
+
+Add the CSV Connector
+
+Add the help and info window
+
+TFS:
+	-> Refresh the query and trigger the image render again
+	-> Regresh the query tree in order to get queries again
+
+Move project to github
+	-> Create github Readme.MD
+
+Create article on CodeProject
