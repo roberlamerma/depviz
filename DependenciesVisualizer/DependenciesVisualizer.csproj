@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <HintPath>..\packages\FileHelpers.3.1.5\lib\net45\FileHelpers.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\TeamFoundation.11.11.0.50727.1\lib\Microsoft.TeamFoundation.dll</HintPath>
       <Private>True</Private>
@@ -50,8 +53,8 @@
       <HintPath>..\packages\TeamFoundation.11.11.0.50727.1\lib\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject, Version=3.3.1.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.3.1\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Shields.GraphViz, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Shields.GraphViz.1.0.2.0\lib\net45\Shields.GraphViz.dll</HintPath>
@@ -81,6 +84,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connectors\Models\CsvDependency.cs" />
     <Compile Include="Connectors\Services\CsvService.cs" />
     <Compile Include="Connectors\Services\ICsvService.cs" />
     <Compile Include="Connectors\Services\ITfsService.cs" />
@@ -102,6 +106,7 @@
       <DependentUpon>TfsConnector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Connectors\ViewModels\TfsConnectorViewModel.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

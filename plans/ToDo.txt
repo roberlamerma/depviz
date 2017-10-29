@@ -1,35 +1,19 @@
-Select a different query and refresh image
-
-Menu bar
-
-Configure States and Tags
-	-> Take this configuration and use it to generate the Graph object
-
-Action: Save as PNG
-Action: Save as SVG
-
-Add the Modal dialog?
+1)	Add the CSV Connector
+2)	Add the Modal dialog? or a different message?
 	-> Retrieving TFS queries
 	-> Retrieving TFS items for query
 	-> Rendering the image
-
-Make the Query TreeView a-la MVVM way (no code behind!)
-
-Installer:
-	-> Full installer (comes with GraphViz)
-	-> No GraphViz installer
-
-Make sure no DLL's are retrieved from the GAC
-
-Add the CSV Connector
-
-Add the help and info window
-
-TFS:
-	-> Refresh the query and trigger the image render again
-	-> Regresh the query tree in order to get queries again
-
-Move project to github
+3)	Configure States and Tags
+	-> Take this configuration and use it to generate the Graph object
+4)	Make sure no DLL's are retrieved from the GAC
+	-> https://stackoverflow.com/questions/49972/in-what-order-are-locations-searched-to-load-referenced-dlls
+	-> https://docs.microsoft.com/en-us/dotnet/framework/tools/fuslogvw-exe-assembly-binding-log-viewer
+	-> https://groups.google.com/forum/#!topic/microsoft.public.dotnet.framework.aspnet/XqyXbpGlVHo
+5)	Action: Save as PNG/SVG
+6)	Retrieve everything via Ninject (i.g. for injecting objects into Converters: https://stackoverflow.com/questions/9160450/ninject-constructor-injection-in-wpf)
+7)	Menu bar
+8)	Add the help and info window
+9)	Make the Query TreeView a-la MVVM way (no code behind!)
+10)	Move project to github
 	-> Create github Readme.MD
-
-Create article on CodeProject
+11)	Create article on CodeProject

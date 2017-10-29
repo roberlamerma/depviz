@@ -11,6 +11,8 @@ using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.ViewModels;
 using Ninject;
+using Technewlogic.WpfDialogManagement;
+using Technewlogic.WpfDialogManagement.Contracts;
 
 namespace DependenciesVisualizer.Connectors.ViewModels
 {

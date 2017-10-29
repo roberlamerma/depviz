@@ -11,6 +11,8 @@ using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.ViewModels;
 using Ninject;
 using Ninject.Activation;
+using Technewlogic.WpfDialogManagement;
+using Technewlogic.WpfDialogManagement.Contracts;
 
 namespace DependenciesVisualizer.Model
 {
@@ -22,6 +24,9 @@ namespace DependenciesVisualizer.Model
         protected override void OnStartup(StartupEventArgs e)
         {
             IKernel kernel = new StandardKernel();
+
+            //kernel.Bind<IDialogManager>().To<DialogManager>().InSingletonScope();
+
             //kernel.Bind<ITfsService, TfsService>();
             //kernel.Bind<ICsvService, CsvService>();
 

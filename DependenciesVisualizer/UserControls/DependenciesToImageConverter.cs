@@ -15,6 +15,7 @@ using DependenciesVisualizer.Model;
 using Shields.GraphViz.Components;
 using Shields.GraphViz.Models;
 using Shields.GraphViz.Services;
+using Technewlogic.WpfDialogManagement.Contracts;
 
 namespace DependenciesVisualizer.UserControls
 {

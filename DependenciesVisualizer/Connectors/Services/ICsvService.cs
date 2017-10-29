@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace DependenciesVisualizer.Connectors.Services
 {
-    interface ICsvService
+    public interface ICsvService
     {
+        void ImportDependenciesFromCsvFile(string csvFile);
     }
 }

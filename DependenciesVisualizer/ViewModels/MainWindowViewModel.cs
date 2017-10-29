@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Diagnostics.Tracing;
+using System.Linq;
 using System.Windows;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Model;
@@ -29,13 +31,28 @@ namespace DependenciesVisualizer.ViewModels
 
             this.connectorViewModels = new List<IConnectorViewModel>();
             this.ConnectorNames = new ObservableCollection<string>();
+
+            int selectedViewModelIndex = -1;
+            byte i = 0;
+
             foreach (var vm in this.Ioc.GetAll<IConnectorViewModel>())
             {
                 this.connectorViewModels.Add(vm);
                 this.ConnectorNames.Add(vm.Name);
+
+                if (selectedViewModelIndex == -1 && vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()))
+                {
+                    selectedViewModelIndex = i;
+                }
+
+                i++;
             }
 
-            this.CurrentConnectorViewModel = this.connectorViewModels[0];
+            this.SelectedVMIndex = selectedViewModelIndex;
+
+            //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
+
+            //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
         }
 
         public int SelectedVMIndex
