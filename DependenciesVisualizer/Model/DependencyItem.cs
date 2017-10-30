@@ -12,6 +12,14 @@ namespace DependenciesVisualizer.Model
             this.Tags = new List<string>();
         }
 
+        public DependencyItem(int id, string title, List<int> successors, List<string> tags)
+        {
+            this.Id = id;
+            this.Title = title;
+            this.Successors = successors;
+            this.Tags = tags;
+        }
+
         public int Id { get; }
         public string Title { get; set; }
         public List<int> Successors { get; }

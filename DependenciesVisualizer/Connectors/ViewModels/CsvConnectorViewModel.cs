@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using CsvHelper;
 using DependenciesVisualizer.Connectors.Models;
 using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Contracts;
