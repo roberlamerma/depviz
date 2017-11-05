@@ -61,7 +61,7 @@ namespace DependenciesVisualizer.ViewModels
 
             set
             {
-                if (this.selectedVMIndex == value)
+                if (this.selectedVMIndex == value && this.CurrentConnectorViewModel != null)
                 {
                     return;
                 }

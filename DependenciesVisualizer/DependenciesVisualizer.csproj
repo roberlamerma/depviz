@@ -91,6 +91,8 @@
     <Compile Include="Connectors\UserControls\CsvConnector.xaml.cs">
       <DependentUpon>CsvConnector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Connectors\ViewModels\TfsQueryItem.cs" />
+    <Compile Include="Connectors\ViewModels\TfsQueryTreeItemViewModel.cs" />
     <Compile Include="UserControls\DependenciesImage.xaml.cs">
       <DependentUpon>DependenciesImage.xaml</DependentUpon>
     </Compile>
@@ -186,6 +188,27 @@
   <ItemGroup>
     <Resource Include="Resources\green-plug.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Connect_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Refresh_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\User_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Team_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\TreeQuery_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Folder_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DirectLinksQuery_16x.png" />
+    <Resource Include="Resources\FlatList_16x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

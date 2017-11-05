@@ -37,7 +37,7 @@
         <GridSplitter HorizontalAlignment="Right" 
             VerticalAlignment="Stretch" 
             Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" ResizeBehavior="PreviousAndNext"
-            Width="5" Background="#FFBCBCBC"/>
+            Width="7" Background="#FF293955"/>
         <!-- Add a bindable property Image to DependenciesImage, and bind it to the prop below (add converter!)-->
         <!-- On MainViewViewModel add the Dict<DependencyItem> Model -->
         <!-- on the IDependencyItemImporter (CHANGE NAME!), add the Dict<DependencyItem> Model, the services changes it, and raises and event -->

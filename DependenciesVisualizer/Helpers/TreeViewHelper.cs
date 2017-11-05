@@ -6,6 +6,8 @@ using System.Windows.Media.Imaging;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model.Model.Properties;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System.Windows.Threading;
+using DependenciesVisualizer.Connectors.ViewModels;
 
 namespace DependenciesVisualizer.Helpers
 {
@@ -13,22 +15,115 @@ namespace DependenciesVisualizer.Helpers
     {
         private static Action<object, MouseButtonEventArgs> doubleClickDelegate;
 
-        public static void BuildTreeViewFromTfs(ref TreeView queryTreeView, QueryHierarchy queryHierarchy, string header, Action<object, MouseButtonEventArgs> _doubleClickDelegate)
+        public static TfsRootFolderQueryItem BuildTreeViewFromTfs2(QueryHierarchy queryHierarchy, string header, ICommand command)
         {
-            doubleClickDelegate = _doubleClickDelegate;
-
-            TreeViewItem root = new TreeViewItem();
-            root.Header = header;
+            TfsRootFolderQueryItem root = new TfsRootFolderQueryItem(null, header);
 
             foreach (var queryItem in queryHierarchy)
             {
                 if (queryItem is QueryFolder qf)
                 {
-                    DefineFolder(qf, root);
+                    DefineFolder2(qf, root, command);
                 }
             }
 
-            queryTreeView.Items.Add(root);
+            return root;
+        }
+
+        private static void DefineFolder2(QueryFolder query, TfsQueryTreeItemViewModel parent, ICommand command)
+        {
+            //TreeViewItem item = new TreeViewItem();
+            //QueryTypes type = QueryTypes.Folder;
+
+            TfsQueryTreeItemViewModel firstLevelFolder = null;
+
+            if (query.IsPersonal)
+            {
+                firstLevelFolder = new TfsPersonalFolderQueryItem(parent, query.Name);
+            }
+            else if (query.Name == "Shared Queries")
+            {
+                firstLevelFolder = new TfsSharedFolderQueryItem(parent, query.Name);
+            }
+            else
+            {
+                return;//firstLevelFolder = new TfsFolderQueryItem(parent, query.Name);
+            }
+
+            parent.Children.Add(firstLevelFolder);
+
+            foreach (QueryItem subQuery in query)
+            {
+                if (subQuery.GetType() == typeof(QueryFolder))
+                    DefineFolder3((QueryFolder)subQuery, firstLevelFolder, command);
+                else
+                    DefineQuery2((QueryDefinition)subQuery, firstLevelFolder, command);
+            }
+        }
+
+        private static void DefineFolder3(QueryFolder query, TfsQueryTreeItemViewModel parent, ICommand command)
+        {
+            //TreeViewItem item = new TreeViewItem();
+            //QueryTypes type = QueryTypes.Folder;
+
+            TfsQueryTreeItemViewModel firstLevelFolder = new TfsFolderQueryItem(parent, query.Name); ;
+
+            parent.Children.Add(firstLevelFolder);
+
+            foreach (QueryItem subQuery in query)
+            {
+                if (subQuery.GetType() == typeof(QueryFolder))
+                    DefineFolder3((QueryFolder)subQuery, firstLevelFolder, command);
+                else
+                    DefineQuery2((QueryDefinition)subQuery, firstLevelFolder, command);
+            }
+        }
+
+        private static void DefineQuery2(QueryDefinition query, TfsQueryTreeItemViewModel parent, ICommand command)
+        {
+            //TreeViewItem item = new TreeViewItem();
+            //QueryTypes type;
+
+            TfsQueryTreeItemViewModel queryTreeItem = null;
+
+            switch (query.QueryType)
+            {
+                case QueryType.List:
+                    queryTreeItem = new TfsFlatQueryItem(parent, query.Name);
+                    break;
+                case QueryType.OneHop:
+                    queryTreeItem = new TfsLinkedListQueryItem(parent, query.Name, command, query.Id);
+                    break;
+                case QueryType.Tree:
+                    queryTreeItem = new TfsTreeQueryItem(parent, query.Name);
+                    break;
+                default:
+                    return;
+            }
+
+            parent.Children.Add(queryTreeItem);
+        }
+
+        public static void BuildTreeViewFromTfs(TreeView queryTreeView, Dispatcher uiThread, QueryHierarchy queryHierarchy, string header, Action<object, MouseButtonEventArgs> _doubleClickDelegate)
+        {
+            uiThread.Invoke(() =>
+            {
+                doubleClickDelegate = _doubleClickDelegate;
+
+                TreeViewItem root = new TreeViewItem();
+                queryTreeView.Items.Clear();
+                root.Header = header;
+
+                foreach (var queryItem in queryHierarchy)
+                {
+                    if (queryItem is QueryFolder qf)
+                    {
+                        DefineFolder(qf, root);
+                    }
+                }
+
+                queryTreeView.Items.Add(root);
+            });
         }
 
         private static void DefineFolder(QueryFolder query, TreeViewItem father)

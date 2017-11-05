@@ -10,12 +10,20 @@ using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Ninject;
 
 namespace DependenciesVisualizer.Connectors.Services
 {
     public class TfsService : IDependenciesService, ITfsService
     {
         private Dictionary<int, DependencyItem> dependenciesModel;
+
+        [Inject]
+        public TfsService()
+        {
+            this.dependenciesModel = new Dictionary<int, DependencyItem>();
+        }
+
         public string ProjectName { get; private set; }
 
         //public Guid QueryId { get; set; }

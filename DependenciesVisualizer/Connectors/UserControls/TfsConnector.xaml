@@ -2,23 +2,147 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:queryViewModels="clr-namespace:DependenciesVisualizer.Connectors.ViewModels"
+    xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
-    <!--<TreeView Name="Queries" />-->
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+             d:DesignHeight="300" d:DesignWidth="300">
+    <!--<UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+    </UserControl.Resources>-->
+    <Border BorderBrush="#FF293955" BorderThickness="7,7,0,7" Background="White">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"
+                        Margin="5,0,5,0" Orientation="Horizontal">
+                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Image Source="/depviz;component/Resources/Connect_16x.png"/>
+                </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" />
+                <Button 
+                    Command="{Binding Path=ReloadTFSQueries}"
+                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Image Source="/depviz;component/Resources/Refresh_16x.png"/>
+                </Button>
+                <Label Content="{Binding ProjectName}" />
+            </StackPanel>
+
+            <!--Visibility="{Binding Path=IsLoadingQueries, Converter={StaticResource booleanToVisibilityConverter}}"-->
+            <ProgressBar Grid.Row="1" 
+                Height="4" Foreground="#FFE4A813" Background="Black"
+                Visibility="{Binding Path=IsLoading}"
+                IsIndeterminate="True"  />
+
+            <!--<TreeView Grid.Row="2" 
+                      Name="Queries" BorderThickness="0" />-->
+            <TreeView Grid.Row="2" ItemsSource="{Binding Path=Queries}">
+                <TreeView.ItemContainerStyle>
+                    <!-- This Style binds a TreeViewItem to a TfsQueryTreeItemViewModel.  -->
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                Color="#FFCCCEDB" />
+                        </Style.Resources>
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Setter Property="Margin" Value="0,2,0,0" />
+                        <!--<Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="Pink" />
+                            </Trigger>
+                        </Style.Triggers>-->
+                    </Style>
+                </TreeView.ItemContainerStyle>
+
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate 
+                        DataType="{x:Type queryViewModels:TfsFolderQueryItem}" 
+                        ItemsSource="{Binding Path=Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/Folder_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate 
+                        DataType="{x:Type queryViewModels:TfsRootFolderQueryItem}" 
+                        ItemsSource="{Binding Path=Children}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate 
+                        DataType="{x:Type queryViewModels:TfsPersonalFolderQueryItem}" 
+                        ItemsSource="{Binding Path=Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/User_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate 
+                        DataType="{x:Type queryViewModels:TfsSharedFolderQueryItem}" 
+                        ItemsSource="{Binding Path=Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/Team_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+
+                    
+
+                    <DataTemplate DataType="{x:Type queryViewModels:TfsLinkedListQueryItem}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/DirectLinksQuery_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" >
+                                <TextBlock.InputBindings>
+                                    <MouseBinding Command="{Binding Path=RenderDependenciesImageFromQuery}"
+                                                  CommandParameter="{Binding Path=QueryId}"
+                                                  MouseAction="LeftDoubleClick" />
+                                </TextBlock.InputBindings>
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Render dependencies image..." Command="{Binding Path=RenderDependenciesImageFromQuery}" CommandParameter="{Binding Path=QueryId}"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type queryViewModels:TfsTreeQueryItem}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/TreeQuery_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" Foreground="#FF808080" />
+                        </StackPanel>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type queryViewModels:TfsFlatQueryItem}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/FlatList_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}" Foreground="#FF808080" />
+                        </StackPanel>
+                    </DataTemplate>
+
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
+    </Border>
+    <!--<Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Button Grid.Row="0" Grid.Column="0">
-            <Image Source="/depviz;component/Resources/green-plug.png" Height="25" Width="25" />
-        </Button>
-        <Label Grid.Row="0" Grid.Column="1" Content="{Binding ProjectName}" />
-        <TreeView Grid.Row="1" Grid.ColumnSpan="2" Name="Queries" />
-    </Grid>
+        </Grid.RowDefinitions>-->
+    <!--</Grid>-->
+
+    <!--<ProgressBar Grid.Row="1" 
+                         Height="4"
+                         Foreground="#FFE4A813" Background="Black"
+                         Visibility="{Binding Path=IsLoading}"
+                         IsIndeterminate="True"  />-->
+    
 </UserControl>

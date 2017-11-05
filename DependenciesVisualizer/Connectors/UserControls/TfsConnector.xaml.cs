@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,11 +28,5 @@ namespace DependenciesVisualizer.Connectors.UserControls
         {
             InitializeComponent();
         }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            ((TfsConnectorViewModel)this.DataContext).BuildTreeView(ref this.Queries);
-        }
-
     }
 }

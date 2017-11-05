@@ -5,24 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <Label Grid.Row="0" Grid.Column="0"
+    <Border BorderBrush="#FF293955" BorderThickness="7,7,0,7" Background="White">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <!--<ProgressBar Height="5"
+            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                     Foreground="DarkGoldenrod" 
+                     IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" />-->
+            <!--<Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Fill="AliceBlue" />-->
+            <Label Grid.Row="1" Grid.Column="0"
             Content="Selected CSV:" FontWeight="Bold" />
-        <TextBox Grid.Row="1" Grid.Column="0"
+            <TextBox Grid.Row="2" Grid.Column="0"
                  Margin="5, 0, 5, 0"
                  Text="{Binding Path=SelectedCsvFile, TargetNullValue='[No CSV selected]'}" IsReadOnly="True" />
-        <Button Grid.Row="1" Grid.Column="1"
+            <Button Grid.Row="2" Grid.Column="1"
                 Margin="0, 0, 5, 0"
                 Content="Select CSV..." Command="{Binding Path=PickCsvFile}"
             />
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

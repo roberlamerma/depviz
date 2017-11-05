@@ -1,8 +1,9 @@
-1)	Add the CSV Connector
-2)	Add the Modal dialog? or a different message?
+1) Visuals	
+	-> Add loading / rendering image
+	-> All borders a-la VS2017
+2)	Add the Contextual error message on TFS ViewModel
 	-> Retrieving TFS queries
 	-> Retrieving TFS items for query
-	-> Rendering the image
 3)	Configure States and Tags
 	-> Take this configuration and use it to generate the Graph object
 4)	Make sure no DLL's are retrieved from the GAC
