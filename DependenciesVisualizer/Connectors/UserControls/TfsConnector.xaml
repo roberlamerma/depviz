@@ -15,31 +15,41 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0"
-                        Margin="5,0,5,0" Orientation="Horizontal">
-                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+            <Border Grid.Row="0" 
+                    Background="#FF4D6082" BorderBrush="#FF8E9BBC" BorderThickness="1,1,1,0" >
+                <Label Content="TFS connector">
+                    <Label.Foreground>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
+                    </Label.Foreground>
+                </Label>
+            </Border>
+            <StackPanel Grid.Row="1"
+                        Background="#FFCFD6E5"
+                        Orientation="Horizontal">
+                <Button Margin="2,0,0,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Image Source="/depviz;component/Resources/Connect_16x.png"/>
                 </Button>
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" />
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" Background="#FF8591A2" />
                 <Button 
                     Command="{Binding Path=ReloadTFSQueries}"
                     Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Image Source="/depviz;component/Resources/Refresh_16x.png"/>
                 </Button>
-                <Label Content="{Binding ProjectName}" />
+                <TextBox Margin="2,0,0,0" HorizontalContentAlignment="Stretch" Text="Search bla bla"></TextBox>
             </StackPanel>
 
             <!--Visibility="{Binding Path=IsLoadingQueries, Converter={StaticResource booleanToVisibilityConverter}}"-->
-            <ProgressBar Grid.Row="1" 
+            <ProgressBar Grid.Row="2" 
                 Height="4" Foreground="#FFE4A813" Background="Black"
                 Visibility="{Binding Path=IsLoading}"
                 IsIndeterminate="True"  />
 
             <!--<TreeView Grid.Row="2" 
                       Name="Queries" BorderThickness="0" />-->
-            <TreeView Grid.Row="2" ItemsSource="{Binding Path=Queries}">
+            <TreeView Grid.Row="3" ItemsSource="{Binding Path=Queries}">
                 <TreeView.ItemContainerStyle>
                     <!-- This Style binds a TreeViewItem to a TfsQueryTreeItemViewModel.  -->
                     <Style TargetType="{x:Type TreeViewItem}">
