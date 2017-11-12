@@ -36,6 +36,9 @@
             </Menu.ItemsPanel>
             <MenuItem Header="Configuration">
                 <MenuItem Header="Select Connector" ItemsSource="{Binding Path=Connectors, Mode=OneWay}">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/Select_16x.png" />
+                    </MenuItem.Icon>
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="MenuItem">
                             <Setter Property="Header" Value="{Binding Path=Name, Mode=OneWay}"></Setter>
@@ -46,20 +49,43 @@
                 </MenuItem>
                 <!--<MenuItem Header="{Binding Path=CurrentConnectorViewModel.Name, StringFormat=Configure ({0:c})}"/>-->
                 <MenuItem IsEnabled="{Binding Path=CurrentConnectorViewModel.IsConfigurable}">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/Property_16x.png" />
+                    </MenuItem.Icon>
                     <MenuItem.Header>
                         <Run Text="{Binding Path=CurrentConnectorViewModel.Name, StringFormat=Configure ({0:c}), Mode=OneWay}" />
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Configure Tags..."/>
+                <MenuItem Header="Configure Tags...">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/ConfigurationEditor_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Exit"/>
+                <MenuItem Header="Exit">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/CloseSolution_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Actions">
-                <MenuItem Header="Download as PNG..."/>
-                <MenuItem Header="Download as SVG..."/>
+                <MenuItem Header="Download as PNG...">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Download as SVG...">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Show dotString"/>
+                <MenuItem Header="Show dotString...">
+                    <MenuItem.Icon>
+                        <Image Source="/depviz;component/Resources/ResultToText_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Help" HorizontalAlignment="Right">
                 <MenuItem Header="How to use this tool..."/>

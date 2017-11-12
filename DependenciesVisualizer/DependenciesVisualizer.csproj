@@ -226,5 +226,23 @@
   <ItemGroup>
     <Resource Include="Resources\OpenFolder_16x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Select_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Property_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ConfigurationEditor_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CloseSolution_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DownloadFile_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ResultToText_16x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
