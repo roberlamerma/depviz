@@ -28,11 +28,52 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ComboBox Grid.Row="0" Grid.Column="0"
+        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <MenuItem Header="Configuration">
+                <MenuItem Header="Select Connector" ItemsSource="{Binding Path=Connectors, Mode=OneWay}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Path=Name, Mode=OneWay}"></Setter>
+                            <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.SelectConnector}"></Setter>
+                            <Setter Property="CommandParameter" Value="{Binding}"></Setter>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
+                <!--<MenuItem Header="{Binding Path=CurrentConnectorViewModel.Name, StringFormat=Configure ({0:c})}"/>-->
+                <MenuItem IsEnabled="{Binding Path=CurrentConnectorViewModel.IsConfigurable}">
+                    <MenuItem.Header>
+                        <Run Text="{Binding Path=CurrentConnectorViewModel.Name, StringFormat=Configure ({0:c}), Mode=OneWay}" />
+                    </MenuItem.Header>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Configure Tags..."/>
+                <Separator />
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Actions">
+                <MenuItem Header="Download as PNG..."/>
+                <MenuItem Header="Download as SVG..."/>
+                <Separator />
+                <MenuItem Header="Show dotString"/>
+            </MenuItem>
+            <MenuItem Header="Help" HorizontalAlignment="Right">
+                <MenuItem Header="How to use this tool..."/>
+                <Separator />
+                <MenuItem Header="About Grapviz..."/>
+                <Separator />
+                <MenuItem Header="About this tool..."/>
+            </MenuItem>
+        </Menu>
+        <!--<ComboBox Grid.Row="0" Grid.Column="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemsSource="{Binding ConnectorNames}"
-            SelectedIndex="{Binding SelectedVMIndex}" />
+            SelectedIndex="{Binding SelectedVMIndex}" />-->
         <ContentControl Grid.Column="0" Grid.Row="2" Content="{Binding Path=CurrentConnectorViewModel}" />
         <GridSplitter HorizontalAlignment="Right" 
             VerticalAlignment="Stretch" 

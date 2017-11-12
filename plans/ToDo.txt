@@ -2,7 +2,6 @@
 	-> Add loading / rendering image
 	-> All borders a-la VS2017
 2)	Add the Contextual error message on TFS ViewModel
-	-> Retrieving TFS queries
 	-> Retrieving TFS items for query
 3)	Configure States and Tags
 	-> Take this configuration and use it to generate the Graph object

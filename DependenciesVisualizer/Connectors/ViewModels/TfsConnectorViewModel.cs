@@ -147,5 +147,10 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             }
         }
         private string errorMessage;
+
+        public bool IsConfigurable
+        {
+            get { return true; }
+        }
     }
 }

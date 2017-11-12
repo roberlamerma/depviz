@@ -16,7 +16,7 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0" 
                 Background="#FF4D6082" BorderBrush="#FF8E9BBC" BorderThickness="1,1,1,0" >
-                <Label Content="TFS connector">
+                <Label Content="CSV connector">
                     <Label.Foreground>
                         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
                     </Label.Foreground>

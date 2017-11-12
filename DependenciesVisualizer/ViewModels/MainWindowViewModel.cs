@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Model;
 using Ninject;
@@ -13,7 +14,9 @@ namespace DependenciesVisualizer.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public ObservableCollection<string> ConnectorNames { get; private set; }
+        //public ObservableCollection<string> ConnectorNames { get; private set; }
+
+        public ObservableCollection<IConnectorViewModel> Connectors { get; private set; }
 
         public IKernel Ioc { get; private set; }
 
@@ -23,15 +26,26 @@ namespace DependenciesVisualizer.ViewModels
 
         private IConnectorViewModel currentConnectorViewModel;
 
-        private readonly List<IConnectorViewModel> connectorViewModels;
+        //private readonly List<IConnectorViewModel> connectorViewModels;
 
         public MainWindowViewModel(IKernel ioc)
         {
             this.Ioc = ioc;
 
-            this.connectorViewModels = new List<IConnectorViewModel>();
-            this.ConnectorNames = new ObservableCollection<string>();
+            //this.connectorViewModels = new List<IConnectorViewModel>();
+            //this.ConnectorNames = new ObservableCollection<string>();
 
+            this.Connectors = new ObservableCollection<IConnectorViewModel>(this.Ioc.GetAll<IConnectorViewModel>());
+
+            foreach (var vm in this.Connectors)
+            {
+                if (vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()))
+                {
+                    this.CurrentConnectorViewModel = vm;
+                }
+            }
+
+            /*
             int selectedViewModelIndex = -1;
             byte i = 0;
 
@@ -49,29 +63,40 @@ namespace DependenciesVisualizer.ViewModels
             }
 
             this.SelectedVMIndex = selectedViewModelIndex;
+            */
+
+            this.SelectConnector = new RelayCommand<IConnectorViewModel>(ExecuteSelectConnector, o => true );
 
             //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
 
             //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
         }
 
-        public int SelectedVMIndex
+        private void ExecuteSelectConnector(IConnectorViewModel connectorViewModel)
         {
-            get => this.selectedVMIndex;
-
-            set
-            {
-                if (this.selectedVMIndex == value && this.CurrentConnectorViewModel != null)
-                {
-                    return;
-                }
-
-                this.selectedVMIndex = value;
-                this.OnPropertyChanged("SelectedVMIndex");
-
-                this.CurrentConnectorViewModel = this.connectorViewModels[this.selectedVMIndex];
-            }
+            this.CurrentConnectorViewModel = connectorViewModel;
         }
+
+
+        //public int SelectedVMIndex
+        //{
+        //    get => this.selectedVMIndex;
+
+        //    set
+        //    {
+        //        if (this.selectedVMIndex == value && this.CurrentConnectorViewModel != null)
+        //        {
+        //            return;
+        //        }
+
+        //        this.selectedVMIndex = value;
+        //        this.OnPropertyChanged("SelectedVMIndex");
+
+        //        this.CurrentConnectorViewModel = this.connectorViewModels[this.selectedVMIndex];
+        //    }
+        //}
+
+        public ICommand SelectConnector { get; private set; }
 
         public IConnectorViewModel CurrentConnectorViewModel
         {

@@ -14,6 +14,8 @@ namespace DependenciesVisualizer.Contracts
     {
         string Name { get; }
 
+        bool IsConfigurable { get; }
+
         void Initialize();
 
         IDependenciesService DependenciesService { get; }
