@@ -27,7 +27,7 @@
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
             <Image 
                 Stretch="None"
-                Source="{Binding Path=DataContext.DependenciesModel, 
+                Source="{Binding Path=DataContext.DependenciesModel, IsAsync=True,
                 RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, 
                 Converter={StaticResource dependenciesToImageConverter}}">
                 <Image.RenderTransform>

@@ -25,6 +25,39 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
             this.csvService = csvService;
             this.PickCsvFile = new RelayCommand<object>(this.ExecutePickCsvFile, o => true);
+
+            this.ReloadCSVData = new RelayCommand<object>(this.ExecuteReloadCSVData, this.CanExecuteReloadCSVData);
+        }
+
+        private void ExecuteReloadCSVData(object o)
+        {
+            this.ImportDependenciesFromCsvFile(this.selectedCsvFile);
+        }
+
+        private bool CanExecuteReloadCSVData(object o)
+        {
+            if (!string.IsNullOrWhiteSpace(this.selectedCsvFile))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ImportDependenciesFromCsvFile(string path)
+        {
+            try
+            {
+                this.csvService.ImportDependenciesFromCsvFile(path);
+                this.ErrorMessage = string.Empty;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessage = ex.Message;
+            }
+
+            return false;
         }
 
         private void ExecutePickCsvFile(object o)
@@ -39,8 +72,10 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             if (result == true)
             {
 
-                this.csvService.ImportDependenciesFromCsvFile(openPicker.FileName);
-
+                if (this.ImportDependenciesFromCsvFile(openPicker.FileName))
+                {
+                    this.SelectedCsvFile = openPicker.FileName;
+                }
 
                 //using (var sr = new StreamReader(openPicker.FileName))
                 //{
@@ -58,9 +93,6 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                 //                    record.Status, record.Tags);
                 //    }
                 //}
-
-
-                this.SelectedCsvFile = openPicker.FileName;
             }
         }
 
@@ -94,16 +126,24 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             get => this.selectedCsvFile;
             set
             {
-                if (this.selectedCsvFile == value)
-                {
-                    return;
-                }
-
                 this.selectedCsvFile = value;
                 this.OnPropertyChanged("SelectedCsvFile");
             }
         }
 
         public ICommand PickCsvFile { get; private set; }
+
+        public ICommand ReloadCSVData { get; private set; }
+
+        public string ErrorMessage
+        {
+            get => this.errorMessage;
+            set
+            {
+                this.errorMessage = value;
+                this.OnPropertyChanged("ErrorMessage");
+            }
+        }
+        private string errorMessage;
     }
 }

@@ -2,34 +2,51 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:usercontrols="clr-namespace:DependenciesVisualizer.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Border BorderBrush="#FF293955" BorderThickness="7,7,0,7" Background="White">
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <!--<ProgressBar Height="5"
-            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                     Foreground="DarkGoldenrod" 
-                     IsIndeterminate="True" RenderTransformOrigin="0.5,0.5" />-->
-            <!--<Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Fill="AliceBlue" />-->
-            <Label Grid.Row="1" Grid.Column="0"
-            Content="Selected CSV:" FontWeight="Bold" />
-            <TextBox Grid.Row="2" Grid.Column="0"
-                 Margin="5, 0, 5, 0"
+            <Border Grid.Row="0" 
+                Background="#FF4D6082" BorderBrush="#FF8E9BBC" BorderThickness="1,1,1,0" >
+                <Label Content="TFS connector">
+                    <Label.Foreground>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
+                    </Label.Foreground>
+                </Label>
+            </Border>
+
+            <StackPanel Grid.Row="1"
+                Background="#FFCFD6E5"
+                Orientation="Horizontal">
+                <Button Margin="2,0,0,0" 
+                        ToolTip="Open CSV File..."
+                        Command="{Binding Path=PickCsvFile}"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Image Source="/depviz;component/Resources/OpenFolder_16x.png"/>
+                </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" Background="#FF8591A2" />
+                <Button 
+                    ToolTip="Reload CSV data"
+                    Command="{Binding Path=ReloadCSVData}"
+                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Image Source="/depviz;component/Resources/Refresh_16x.png"/>
+                </Button>
+            </StackPanel>
+
+            <usercontrols:ClosablePanelMessage Grid.Row="2"
+                Message="{Binding Path=ErrorMessage, Mode=OneWay}" />
+            
+            <TextBox Grid.Row="3"
+                 Margin="5, 2, 5, 0"
                  Text="{Binding Path=SelectedCsvFile, TargetNullValue='[No CSV selected]'}" IsReadOnly="True" />
-            <Button Grid.Row="2" Grid.Column="1"
-                Margin="0, 0, 5, 0"
-                Content="Select CSV..." Command="{Binding Path=PickCsvFile}"
-            />
         </Grid>
     </Border>
 </UserControl>

@@ -93,6 +93,9 @@
     </Compile>
     <Compile Include="Connectors\ViewModels\TfsQueryItem.cs" />
     <Compile Include="Connectors\ViewModels\TfsQueryTreeItemViewModel.cs" />
+    <Compile Include="UserControls\ClosablePanelMessage.xaml.cs">
+      <DependentUpon>ClosablePanelMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DependenciesImage.xaml.cs">
       <DependentUpon>DependenciesImage.xaml</DependentUpon>
     </Compile>
@@ -130,6 +133,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Connectors\UserControls\CsvConnector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ClosablePanelMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -209,6 +216,15 @@
   <ItemGroup>
     <Resource Include="Resources\DirectLinksQuery_16x.png" />
     <Resource Include="Resources\FlatList_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\StatusCriticalError_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Close_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\OpenFolder_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -30,10 +30,28 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         private TreeView treeViewQueryRef;
         private Dispatcher uiThreadRef;
 
+        [Inject]
+        public TfsConnectorViewModel(ITfsService tfsService)
+        {
+            this.tfsService = tfsService;
+            this.ProjectName = ConfigurationManager.AppSettings["tfsprojectName"];
+            this.IsLoading = Visibility.Hidden;
+            this.ReloadTFSQueries = new RelayCommand<object>(this.ExecuteReloadTFSQueries, o => true);
+
+            this.RenderDependenciesImageFromQuery = new RelayCommand<object>(this.ExecuteRenderDependenciesImageFromQuery, o => true);
+        }
+
         public void Initialize()
         {
             //this.IsLoading = Visibility.Visible;
-            this.tfsService.SetWorkItemStore(new Uri(ConfigurationManager.AppSettings["tfsUrl"]), ConfigurationManager.AppSettings["tfsprojectName"]);
+            try
+            {
+                this.tfsService.SetWorkItemStore(new Uri(ConfigurationManager.AppSettings["tfsUrl"]), ConfigurationManager.AppSettings["tfsprojectName"]);
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessage = ex.Message;
+            }
             //this.IsLoading = Visibility.Hidden;
         }
 
@@ -74,16 +92,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             }
         }
 
-        [Inject]
-        public TfsConnectorViewModel(ITfsService tfsService)
-        {
-            this.tfsService = tfsService;
-            this.ProjectName = ConfigurationManager.AppSettings["tfsprojectName"];
-            this.IsLoading = Visibility.Hidden;
-            this.ReloadTFSQueries = new RelayCommand<object>(this.ExecuteReloadTFSQueries, o => true);
-
-            this.RenderDependenciesImageFromQuery = new RelayCommand<object>(this.ExecuteRenderDependenciesImageFromQuery, o => true);
-        }
+        
 
         private async void ExecuteReloadTFSQueries(object obj)
         {
@@ -113,6 +122,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         public ICommand ReloadTFSQueries { get; private set; }
 
         ObservableCollection<TfsQueryTreeItemViewModel> queries = new ObservableCollection<TfsQueryTreeItemViewModel>();
+        
 
         public ObservableCollection<TfsQueryTreeItemViewModel> Queries
         {
@@ -121,5 +131,21 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                 return queries;
             }
         }
+
+        public string ErrorMessage
+        {
+            get => this.errorMessage;
+            set
+            {
+                if (this.errorMessage == value)
+                {
+                    return;
+                }
+
+                this.errorMessage = value;
+                this.OnPropertyChanged("ErrorMessage");
+            }
+        }
+        private string errorMessage;
     }
 }
