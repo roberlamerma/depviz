@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
+using DependenciesVisualizer.Model;
 using Shields.GraphViz.Models;
 
 namespace DependenciesVisualizer.Helpers
@@ -54,6 +57,43 @@ namespace DependenciesVisualizer.Helpers
 
             var node = new NodeStatement(new Id(nodeId), nodeStyleSettings.ToImmutableDictionary());
             statements.Add(node);
+        }
+
+        public static Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model)
+        {
+            try
+            {
+                var statements = new List<Statement>();
+
+                AddGeneralStatements(ref statements);
+
+                foreach (KeyValuePair<int, DependencyItem> entry in model)
+                {
+                    if (entry.Value.Successors.Any())
+                    {
+                        foreach (var succesor in entry.Value.Successors)
+                        {
+                            AddEdgeStatement(ref statements, entry.Value.ToString(), model[succesor].ToString());
+                        }
+                    }
+
+                    if (entry.Value.Tags.Any())
+                    {
+                        if (entry.Value.Tags.Any(str => str.Contains("External")))
+                        {
+                            ColorizeNode(ref statements, entry.Value.ToString(), Colors.Green);
+                        }
+                    }
+                }
+
+                return new Graph(GraphKinds.Directed, "Name", statements.ToImmutableList());
+            }
+            catch (Exception ex)
+            {
+                // ToDo: Add message with error
+                // ToDo: Add Logger!
+                throw;
+            }
         }
 
     }

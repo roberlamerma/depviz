@@ -7,8 +7,15 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using DependenciesVisualizer.Contracts;
+using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model;
 using Ninject;
+using Microsoft.Win32;
+using Shields.GraphViz.Services;
+using Shields.GraphViz.Components;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DependenciesVisualizer.ViewModels
 {
@@ -67,9 +74,30 @@ namespace DependenciesVisualizer.ViewModels
 
             this.SelectConnector = new RelayCommand<IConnectorViewModel>(ExecuteSelectConnector, o => true );
 
+            this.RenderAndDownloadDependenciesAsImage = new RelayCommand<string>(this.ExecuteRenderAndDownloadDependenciesAsImage, o => this.IsRenderable);
+
             //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
 
             //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
+        }
+
+        private void ExecuteRenderAndDownloadDependenciesAsImage(string fileType)
+        {
+            var graph = GraphVizHelper.CreateDependencyGraph(this.currentConnectorViewModel.DependenciesService.DependenciesModel);
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Png Image|*.png|Svg Image|*.svg";
+            saveFileDialog1.Title = "Save dependencies as... (image)";
+            bool? result = saveFileDialog1.ShowDialog();
+
+            if (result == true && !string.IsNullOrWhiteSpace(saveFileDialog1.FileName))
+            {
+                IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+                using (Stream fileStream = File.Create(saveFileDialog1.FileName))
+                {
+                    Task.Run(async () => { await renderer.RunAsync(graph, fileStream, RendererLayouts.Dot, (fileType == "png"?RendererFormats.Png: RendererFormats.Svg), CancellationToken.None); }).Wait();
+                }
+            }
         }
 
         private void ExecuteSelectConnector(IConnectorViewModel connectorViewModel)
@@ -135,11 +163,19 @@ namespace DependenciesVisualizer.ViewModels
             }
         }
 
+        public bool IsRenderable
+        {
+            get => (this.DependenciesModelCount > 0);
+        }
+
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {
             this.OnPropertyChanged("DependenciesModel");
             this.OnPropertyChanged("DependenciesModelCount");
+            this.OnPropertyChanged("IsRenderable");
         }
+
+        public ICommand RenderAndDownloadDependenciesAsImage { get; private set; }
 
     }
 }

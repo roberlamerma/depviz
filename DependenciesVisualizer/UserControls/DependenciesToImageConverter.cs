@@ -25,7 +25,7 @@ namespace DependenciesVisualizer.UserControls
         {
             if (value != null && value is Dictionary<int, DependencyItem>)
             {
-                var graph = this.CreateDependencyGraph((Dictionary<int, DependencyItem>)value);
+                var graph = GraphVizHelper.CreateDependencyGraph((Dictionary<int, DependencyItem>)value);
 
                 using (MemoryStream memStream = new MemoryStream())
                 {
@@ -50,42 +50,42 @@ namespace DependenciesVisualizer.UserControls
             throw new NotImplementedException();
         }
 
-        private Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model)
-        {
-            try
-            {
-                var statements = new List<Statement>();
+        //private Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model)
+        //{
+        //    try
+        //    {
+        //        var statements = new List<Statement>();
 
-                GraphVizHelper.AddGeneralStatements(ref statements);
+        //        GraphVizHelper.AddGeneralStatements(ref statements);
 
-                foreach (KeyValuePair<int, DependencyItem> entry in model)
-                {
-                    if (entry.Value.Successors.Any())
-                    {
-                        foreach (var succesor in entry.Value.Successors)
-                        {
-                            GraphVizHelper.AddEdgeStatement(ref statements, entry.Value.ToString(), model[succesor].ToString());
-                        }
-                    }
+        //        foreach (KeyValuePair<int, DependencyItem> entry in model)
+        //        {
+        //            if (entry.Value.Successors.Any())
+        //            {
+        //                foreach (var succesor in entry.Value.Successors)
+        //                {
+        //                    GraphVizHelper.AddEdgeStatement(ref statements, entry.Value.ToString(), model[succesor].ToString());
+        //                }
+        //            }
 
-                    if (entry.Value.Tags.Any())
-                    {
-                        if (entry.Value.Tags.Any(str => str.Contains("External")))
-                        {
-                            GraphVizHelper.ColorizeNode(ref statements, entry.Value.ToString(), Colors.Green);
-                        }
-                    }
-                }
+        //            if (entry.Value.Tags.Any())
+        //            {
+        //                if (entry.Value.Tags.Any(str => str.Contains("External")))
+        //                {
+        //                    GraphVizHelper.ColorizeNode(ref statements, entry.Value.ToString(), Colors.Green);
+        //                }
+        //            }
+        //        }
 
-                return new Graph(GraphKinds.Directed, "Name", statements.ToImmutableList());
-            }
-            catch (Exception ex)
-            {
-                // ToDo: Add message with error
-                // ToDo: Add Logger!
-                throw;
-            }
-        }
+        //        return new Graph(GraphKinds.Directed, "Name", statements.ToImmutableList());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // ToDo: Add message with error
+        //        // ToDo: Add Logger!
+        //        throw;
+        //    }
+        //}
 
         //private async Task Render(Graph graph, string queryName)
         //{
