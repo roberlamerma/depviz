@@ -24,5 +24,10 @@ namespace DependenciesVisualizer
             //    theViewModel.BuildTreeView(ref this.Queries);
             //}
         }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

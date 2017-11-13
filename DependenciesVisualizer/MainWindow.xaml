@@ -63,7 +63,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Exit">
+                <MenuItem Header="Exit" Click="MenuItem_OnClick">
                     <MenuItem.Icon>
                         <Image Source="/depviz;component/Resources/CloseSolution_16x.png" />
                     </MenuItem.Icon>
