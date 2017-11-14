@@ -102,7 +102,6 @@
     <Compile Include="Connectors\ViewModels\CsvConnectorViewModel.cs" />
     <Compile Include="UserControls\DependenciesToImageConverter.cs" />
     <Compile Include="UserControls\ToImageConverter.cs" />
-    <Compile Include="ViewModels\DependenciesImageViewModel.cs" />
     <Compile Include="Contracts\IConnectorViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Contracts\IDependenciesService.cs" />

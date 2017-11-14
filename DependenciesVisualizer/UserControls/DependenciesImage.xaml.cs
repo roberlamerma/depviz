@@ -23,7 +23,6 @@ namespace DependenciesVisualizer.UserControls
     {
         public DependenciesImage()
         {
-            this.DataContext = new DependenciesImageViewModel();
             InitializeComponent();
         }
     }

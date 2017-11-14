@@ -20,28 +20,48 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <!--<Label Content="{Binding Path=DataContext.DependenciesModelCount, RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"></Label>-->
-        <!--<Image Source="{Binding MyImage, Converter={StaticResource toImageConverter}}"></Image>-->
+
         <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-            <Image 
+           
+
+            <Image
                 Stretch="None"
-                Source="{Binding Path=DataContext.DependenciesModel, IsAsync=True,
-                RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, 
-                Converter={StaticResource dependenciesToImageConverter}}">
+                DataContext="{Binding Path=DataContext, IsAsync=True, Mode=OneWay,
+                    RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"
+                Source="{Binding Path=DependenciesModel, IsAsync=True, Mode=OneWay, Converter={StaticResource dependenciesToImageConverter}}">
                 <Image.RenderTransform>
-                    <ScaleTransform ScaleX="{Binding Path=ZoomFactor}" ScaleY="{Binding Path=ZoomFactor}"/>
+                    <ScaleTransform ScaleX="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}"/>
                 </Image.RenderTransform>
+                <Image.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Download as PNG..."
+                                  Command="{Binding Path=RenderAndDownloadDependenciesAsImage, Mode=OneWay}"
+                                  CommandParameter="png"
+                                  IsEnabled="{Binding Path=IsRenderable}">
+                            <MenuItem.Icon>
+                                <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Download as SVG..." 
+                                  Command="{Binding Path=RenderAndDownloadDependenciesAsImage, Mode=OneWay}"
+                                  CommandParameter="png"
+                                  IsEnabled="{Binding Path=IsRenderable}">
+                            <MenuItem.Icon>
+                                <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Image.ContextMenu>
             </Image>
         </ScrollViewer>
-        
+
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
             <Label Content="Zoom: (-) " />
-            <Slider VerticalAlignment="Center" Width="200"
-                Maximum="1" Minimum="0" Value="{Binding Path=ZoomFactor}" SmallChange=".1"/>
+            <Slider x:Name="zoomSlider" VerticalAlignment="Center" Width="200"
+                Maximum="1" Minimum="0.2" Value="1" SmallChange=".05"/>
             <Label Content="(+) " />
         </StackPanel>
-        
+
     </Grid>
 </UserControl>
