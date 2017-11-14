@@ -93,6 +93,7 @@ namespace DependenciesVisualizer.ViewModels
             if (result == true && !string.IsNullOrWhiteSpace(saveFileDialog1.FileName))
             {
                 IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+
                 using (Stream fileStream = File.Create(saveFileDialog1.FileName))
                 {
                     Task.Run(async () => { await renderer.RunAsync(graph, fileStream, RendererLayouts.Dot, (fileType == "png"?RendererFormats.Png: RendererFormats.Svg), CancellationToken.None); }).Wait();

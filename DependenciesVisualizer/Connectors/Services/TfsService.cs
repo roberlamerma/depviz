@@ -56,6 +56,8 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 var theModel = new Dictionary<int, DependencyItem>();
 
+                int successorsCount = 0;
+
                 // Populate the model (parent id's and successors) from the query
                 foreach (WorkItemLinkInfo workItemInfo in queryResults)
                 {
@@ -72,9 +74,18 @@ namespace DependenciesVisualizer.Connectors.Services
                         if (workItemInfo.LinkTypeId == 3) // successor
                         {
                             theModel.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
-                            if (dependencyItem != null) dependencyItem.Successors.Add(workItemInfo.TargetId);
+                            if (dependencyItem != null)
+                            {
+                                dependencyItem.Successors.Add(workItemInfo.TargetId);
+                                successorsCount++;
+                            }
                         }
                     }
+                }
+
+                if (successorsCount == 0)
+                {
+                    throw new Exception(string.Format("The query '{0}' does not return any successors", queryDef.Name));
                 }
 
                 var successorsThatAreNotParents = new List<DependencyItem>();
@@ -139,6 +150,8 @@ namespace DependenciesVisualizer.Connectors.Services
                 //        }
                 //    }
                 //}
+
+                
 
                 this.DependenciesModel = theModel;
 

@@ -57,26 +57,6 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         public IDependenciesService DependenciesService => (IDependenciesService)this.tfsService;
 
-        public void BuildTreeView(TreeView treeViewQuery, Dispatcher uiThread)
-        {
-            this.treeViewQueryRef = treeViewQuery;
-            this.uiThreadRef = uiThread;
-            this.IsLoading = Visibility.Visible;
-            TreeViewHelper.BuildTreeViewFromTfs(
-                                                treeViewQuery,
-                                                uiThread,
-                                                this.tfsService.WorkItemStore.Projects[ConfigurationManager.AppSettings["tfsprojectName"]].QueryHierarchy,
-                                                ConfigurationManager.AppSettings["tfsprojectName"],
-                                                this.QuerySelected);
-            this.IsLoading = Visibility.Hidden;
-            
-        }
-
-        private void QuerySelected(object sender, MouseButtonEventArgs mouseEvtArgs)
-        {
-            this.tfsService.ImportDependenciesFromTfs((Guid)((TreeViewItem)sender).Tag);
-        }
-
         public Visibility IsLoading
         {
             get => this.isLoading;
@@ -114,7 +94,14 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         private void ExecuteRenderDependenciesImageFromQuery(object obj)
         {
-            this.tfsService.ImportDependenciesFromTfs((Guid) obj);
+            try
+            {
+                this.tfsService.ImportDependenciesFromTfs((Guid)obj);
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessage = ex.Message;
+            }
         }
 
         public string ProjectName { get; private set; }
