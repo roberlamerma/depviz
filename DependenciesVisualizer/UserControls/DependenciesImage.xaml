@@ -58,7 +58,8 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
             <Label Content="Zoom: (-) " />
-            <Slider x:Name="zoomSlider" VerticalAlignment="Center" Width="200"
+            <Slider x:Name="zoomSlider" VerticalAlignment="Center" Width="200" 
+                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
                 Maximum="1" Minimum="0.2" Value="1" SmallChange=".05"/>
             <Label Content="(+) " />
         </StackPanel>
