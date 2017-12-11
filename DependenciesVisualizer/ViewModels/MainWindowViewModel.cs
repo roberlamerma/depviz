@@ -16,6 +16,7 @@ using Shields.GraphViz.Components;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using DependenciesVisualizer.Connectors.UserControls;
 
 namespace DependenciesVisualizer.ViewModels
 {
@@ -76,6 +77,8 @@ namespace DependenciesVisualizer.ViewModels
 
             this.RenderAndDownloadDependenciesAsImage = new RelayCommand<string>(this.ExecuteRenderAndDownloadDependenciesAsImage, o => this.IsRenderable);
 
+            this.ConfigureConnector = new RelayCommand<string>(this.ExecuteConfigureConnector, o => true);
+
             //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
 
             //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
@@ -126,6 +129,29 @@ namespace DependenciesVisualizer.ViewModels
         //}
 
         public ICommand SelectConnector { get; private set; }
+
+        private void ExecuteConfigureConnector(string connectorName)
+        {
+            connectorName = connectorName.ToLower();
+            switch (connectorName)
+            {
+                case "tfs":
+                    Window window = new Window
+                    {
+                        Title = "Set TFS server and Project name",
+                        Content = new TfsUriAndProjectSelector(),
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        ResizeMode = ResizeMode.NoResize
+                    };
+
+                    window.ShowDialog();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public ICommand ConfigureConnector { get; private set; }
 
         public IConnectorViewModel CurrentConnectorViewModel
         {

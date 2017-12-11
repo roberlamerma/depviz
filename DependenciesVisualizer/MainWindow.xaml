@@ -48,7 +48,10 @@
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
                 <!--<MenuItem Header="{Binding Path=CurrentConnectorViewModel.Name, StringFormat=Configure ({0:c})}"/>-->
-                <MenuItem IsEnabled="{Binding Path=CurrentConnectorViewModel.IsConfigurable}">
+                <MenuItem 
+                    IsEnabled="{Binding Path=CurrentConnectorViewModel.IsConfigurable}"
+                    Command="{Binding Path=ConfigureConnector}" 
+                    CommandParameter="{Binding Path=CurrentConnectorViewModel.Name}">
                     <MenuItem.Icon>
                         <Image Source="/depviz;component/Resources/Property_16x.png" />
                     </MenuItem.Icon>

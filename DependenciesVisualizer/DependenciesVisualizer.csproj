@@ -91,8 +91,12 @@
     <Compile Include="Connectors\UserControls\CsvConnector.xaml.cs">
       <DependentUpon>CsvConnector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Connectors\UserControls\TfsUriAndProjectSelector.xaml.cs">
+      <DependentUpon>TfsUriAndProjectSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Connectors\ViewModels\TfsQueryItem.cs" />
     <Compile Include="Connectors\ViewModels\TfsQueryTreeItemViewModel.cs" />
+    <Compile Include="Connectors\ViewModels\TfsUriAndProjectSelectorViewModel.cs" />
     <Compile Include="UserControls\ClosablePanelMessage.xaml.cs">
       <DependentUpon>ClosablePanelMessage.xaml</DependentUpon>
     </Compile>
@@ -112,6 +116,10 @@
     <Compile Include="Connectors\ViewModels\TfsConnectorViewModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Page Include="Connectors\UserControls\TfsUriAndProjectSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
