@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DependenciesVisualizer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="selectedConnector" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tfs</Value>
+    </Setting>
+    <Setting Name="tfsUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://tfsprod:8080/tfs/defaultcollection</Value>
+    </Setting>
+    <Setting Name="tfsprojectName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Roche.DP.PocPCR</Value>
+    </Setting>
+    <Setting Name="graphvizPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Program Files (x86)\Graphviz2.38\bin</Value>
+    </Setting>
+    <Setting Name="csvFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Temp\SomeFile.csv</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

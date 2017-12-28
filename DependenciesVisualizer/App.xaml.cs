@@ -50,6 +50,7 @@ namespace DependenciesVisualizer.Model
             base.OnStartup(e);
         }
 
+        /* This was to dinamically load one connector or another, depending on what was stored on ConfigurationManager.AppSettings["selectedConnector"]
         private bool ChooseTfsImporter(IRequest request)
         {
             return this.ChooseImporter("tfs");
@@ -64,5 +65,6 @@ namespace DependenciesVisualizer.Model
         {
             return ConfigurationManager.AppSettings["selectedConnector"].ToLower().Equals(target);
         }
+        */
     }
 }

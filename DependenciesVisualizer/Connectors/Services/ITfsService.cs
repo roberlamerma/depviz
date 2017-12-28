@@ -22,6 +22,8 @@ namespace DependenciesVisualizer.Connectors.Services
 
         void SetWorkItemStore(Uri tfsUri, string project);
 
-        void ImportDependenciesFromTfs(Guid queryGuid);
+        void SetWorkItemStore(WorkItemStore store);
+
+        void ImportDependenciesFromTfs(string projectName, Guid queryGuid);
     }
 }

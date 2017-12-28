@@ -100,7 +100,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         public void Initialize()
         {
-            var csvFile = ConfigurationManager.AppSettings["csvFile"];
+            var csvFile = Properties.Settings.Default.csvFile;
 
             if (!string.IsNullOrWhiteSpace(csvFile))
             {
@@ -110,7 +110,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                 }
                 else
                 {
-                    ConfigurationManager.AppSettings["csvFile"] = string.Empty;
+                    Properties.Settings.Default.csvFile = string.Empty;
                 }
             }
             else

@@ -1,48 +1,92 @@
-﻿using DependenciesVisualizer.ViewModels;
+﻿using DependenciesVisualizer.Helpers;
+using DependenciesVisualizer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace DependenciesVisualizer.Connectors.ViewModels
 {
     public class TfsUriAndProjectSelectorViewModel : ViewModelBase
     {
+
+        private string tempTfsUrlString;
+        private Uri tempTfsUrlUri;
+        private string tempProjectName;
+
+        public TfsUriAndProjectSelectorViewModel()
+        {
+            this.HaveSettingsChanged = false;
+
+            this.tempTfsUrlString = Properties.Settings.Default.tfsUrl;
+            this.tempProjectName = Properties.Settings.Default.tfsprojectName;
+            this.tempTfsUrlUri = new Uri(this.tempTfsUrlString);
+
+            this.Connect = new RelayCommand<object>(this.ExecuteConnect, o => true);
+            this.Cancel = new RelayCommand<object>(this.ExecuteCancel, o => true);
+        }
+
         public string TfsUri
         {
             get
             {
-                return ConfigurationManager.AppSettings["tfsUrl"];
+                return this.tempTfsUrlString;
             }
             set
             {
-                Uri uriResult;
-                if (!string.IsNullOrWhiteSpace(value) && IsTfsUrlValid(value, out uriResult))
+                if (!string.IsNullOrWhiteSpace(value) && IsTfsUrlValid(value, out tempTfsUrlUri))
                 {
-                    ConfigurationManager.AppSettings["tfsUrl"] = value;
+                    //Properties.Settings.Default.tfsUrl = value;
+                    this.tempTfsUrlString = value;
                 }
             }
         }
+
+        public ICommand Connect { get; private set; }
+
+        public ICommand Cancel { get; private set; }
+
+        public WorkItemStore Store { get; private set; }
+
+        public bool HaveSettingsChanged { get; private set; }
 
         public string ProjectName
         {
             get
             {
-                return ConfigurationManager.AppSettings["tfsprojectName"];
+                return tempProjectName;
             }
             set
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    ConfigurationManager.AppSettings["tfsprojectName"] = value;
-
-                    // https://stackoverflow.com/questions/5274829/configurationmanager-appsettings-how-to-modify-and-save
-                    // https://stackoverflow.com/questions/4216809/configurationmanager-doesnt-save-settings
+                    //Properties.Settings.Default.tfsprojectName = value;
+                    this.tempProjectName = value;
                 }
             }
         }
+
+        public string ErrorMessage
+        {
+            get => this.errorMessage;
+            set
+            {
+                if (this.errorMessage == value)
+                {
+                    return;
+                }
+
+                this.errorMessage = value;
+                this.OnPropertyChanged("ErrorMessage");
+            }
+        }
+        private string errorMessage;
 
         private bool IsTfsUrlValid(string tfsUrl, out Uri uriResult)
         {
@@ -50,6 +94,39 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                           && uriResult.Scheme == Uri.UriSchemeHttp;
 
             return result;
+        }
+
+        private void ExecuteCancel(object obj)
+        {
+            var uControl = obj as UserControl;
+            ((Window)uControl.Parent).Close();
+        }
+
+        private void ExecuteConnect(object obj)
+        {
+            try
+            {
+                // If any of the settings has changed, we need to verify against TFS
+                if (Properties.Settings.Default.tfsUrl != this.tempTfsUrlString || Properties.Settings.Default.tfsprojectName != this.tempProjectName)
+                {
+                    this.HaveSettingsChanged = true;
+
+                    var store = TfsHelper.GetWorkItemStore(this.tempTfsUrlUri);
+                    var project = store.Projects[this.tempProjectName];
+
+                    // If no exceptions are captured, the values are saved
+                    Properties.Settings.Default.tfsUrl = this.tempTfsUrlString;
+                    Properties.Settings.Default.tfsprojectName = this.tempProjectName;
+
+                    this.Store = store;
+                }
+
+                this.ExecuteCancel(obj);
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessage = ex.Message;
+            }
         }
     }
 }

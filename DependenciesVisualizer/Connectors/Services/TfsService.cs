@@ -24,17 +24,17 @@ namespace DependenciesVisualizer.Connectors.Services
             this.dependenciesModel = new Dictionary<int, DependencyItem>();
         }
 
-        public string ProjectName { get; private set; }
+        //public string ProjectName { get; private set; }
 
         //public Guid QueryId { get; set; }
 
         //public Uri Uri { get; set; }
 
-        public void ImportDependenciesFromTfs(Guid queryGuid)
+        public void ImportDependenciesFromTfs(string projectName, Guid queryGuid)
         {
             var queryDef = this.WorkItemStore.GetQueryDefinition(queryGuid);
 
-            var queryTextWithProject = queryDef.QueryText.Replace("@project", string.Format("'{0}'", this.ProjectName));
+            var queryTextWithProject = queryDef.QueryText.Replace("@project", string.Format("'{0}'", projectName));
 
             var query = new Query(this.WorkItemStore, queryTextWithProject);
 
@@ -164,8 +164,6 @@ namespace DependenciesVisualizer.Connectors.Services
         {
             var tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(tfsUri);
             this.WorkItemStore = tfs.GetService<WorkItemStore>();
-
-            this.ProjectName = project;
         }
 
         //private bool IsTfsUrlValid(string tfsUrl, string project, out Uri uriResult)
@@ -195,6 +193,11 @@ namespace DependenciesVisualizer.Connectors.Services
         public void RaiseDependenciesModelChanged()
         {
             this.DependenciesModelChanged(this, EventArgs.Empty);
+        }
+
+        public void SetWorkItemStore(WorkItemStore store)
+        {
+            this.WorkItemStore = store;
         }
     }
 }

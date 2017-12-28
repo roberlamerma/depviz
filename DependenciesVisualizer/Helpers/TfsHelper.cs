@@ -13,14 +13,6 @@ namespace DependenciesVisualizer.Helpers
             return tfs.GetService<WorkItemStore>();
         }
 
-        public static bool IsTfsUrlValid(string tfsUrl, string project, out Uri uriResult)
-        {
-            bool result = Uri.TryCreate(tfsUrl, UriKind.Absolute, out uriResult)
-                && uriResult.Scheme == Uri.UriSchemeHttp;
-
-            return result;
-        }
-
         public static IEnumerable<int> GetLinksOfType(WorkItem workItem, string type)
         {
             foreach (var link in workItem.Links)

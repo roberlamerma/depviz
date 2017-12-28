@@ -4,9 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DependenciesVisualizer.Connectors.UserControls"
+             xmlns:usercontrols="clr-namespace:DependenciesVisualizer.UserControls"
+             x:Name="TfsUriAndProjectSelectorUserControl"
              mc:Ignorable="d" >
     <Grid Width="300">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -16,19 +19,25 @@
         <Label Grid.Row="0" 
                HorizontalAlignment="Center"
                Content="Connect to a Server/Project" />
-        <TextBox Grid.Row="1" 
+        <usercontrols:ClosablePanelMessage Grid.Row="1"
+            Message="{Binding Path=ErrorMessage}" />
+        <TextBox Grid.Row="2" 
             Margin="5, 2, 5, 0"
-            Text="{Binding Path=TfsUri, TargetNullValue='[TfsUri]'}" />
-        <TextBox Grid.Row="2"
+            Text="{Binding Path=TfsUri, Mode=TwoWay, TargetNullValue='[TfsUri]'}" />
+        <TextBox Grid.Row="3"
             Margin="5, 2, 5, 0"
-            Text="{Binding Path=ProjectName, TargetNullValue='[Project]'}" />
-        <StackPanel Grid.Row="3"
+            Text="{Binding Path=ProjectName, Mode=TwoWay, TargetNullValue='[Project]'}" />
+        <StackPanel Grid.Row="4"
                     Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button 
                 Margin="5, 5, 5, 0"
+                Command="{Binding Path=Cancel}"
+                CommandParameter="{Binding ElementName=TfsUriAndProjectSelectorUserControl}"
                 Content="Cancel" Width="80" />
             <Button 
                 Margin="0, 5, 5, 0"
+                Command="{Binding Path=Connect}"
+                CommandParameter="{Binding ElementName=TfsUriAndProjectSelectorUserControl}"
                 Content="Connect" Width="80" />
         </StackPanel>
     </Grid>

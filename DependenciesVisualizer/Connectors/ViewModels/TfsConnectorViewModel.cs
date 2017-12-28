@@ -17,6 +17,7 @@ using Technewlogic.WpfDialogManagement.Contracts;
 using System.Threading;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
+using DependenciesVisualizer.Connectors.UserControls;
 
 namespace DependenciesVisualizer.Connectors.ViewModels
 {
@@ -34,9 +35,11 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         public TfsConnectorViewModel(ITfsService tfsService)
         {
             this.tfsService = tfsService;
-            this.ProjectName = ConfigurationManager.AppSettings["tfsprojectName"];
+            this.ProjectName = Properties.Settings.Default.tfsprojectName;
             this.IsLoading = Visibility.Hidden;
             this.ReloadTFSQueries = new RelayCommand<object>(this.ExecuteReloadTFSQueries, o => true);
+
+            this.ConfigureTfsUriAndProject = new RelayCommand<object>(this.ExecuteConfigureTfsUriAndProject, o => true);
 
             this.RenderDependenciesImageFromQuery = new RelayCommand<object>(this.ExecuteRenderDependenciesImageFromQuery, o => true);
         }
@@ -46,7 +49,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             //this.IsLoading = Visibility.Visible;
             try
             {
-                this.tfsService.SetWorkItemStore(new Uri(ConfigurationManager.AppSettings["tfsUrl"]), ConfigurationManager.AppSettings["tfsprojectName"]);
+                this.tfsService.SetWorkItemStore(new Uri(Properties.Settings.Default.tfsUrl), Properties.Settings.Default.tfsprojectName);
             }
             catch (Exception ex)
             {
@@ -72,7 +75,32 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             }
         }
 
-        
+        private void ExecuteConfigureTfsUriAndProject(object obj)
+        {
+            var tfsUriAndProjectSelectorUserControl = new TfsUriAndProjectSelector();
+            Window window = new Window
+            {
+                Title = "Set TFS server and Project name",
+                Content = tfsUriAndProjectSelectorUserControl,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            window.ShowDialog();
+
+            // Todo: Raise an event "TFS and Project changed". Listen to it here, and reload the queries. Maybe tfsUriAndProjectSelectorViewModel.HaveSettingsChanged 
+            // won't be needed anymore. All the following code will be gone then.
+            var tfsUriAndProjectSelectorViewModel = (TfsUriAndProjectSelectorViewModel)tfsUriAndProjectSelectorUserControl.DataContext;
+
+            // If settings have changed, then reload queries
+            if (tfsUriAndProjectSelectorViewModel.HaveSettingsChanged)
+            {
+                this.tfsService.SetWorkItemStore(tfsUriAndProjectSelectorViewModel.Store);
+                this.ProjectName = Properties.Settings.Default.tfsprojectName;
+
+                this.ExecuteReloadTFSQueries(null);
+            }
+        }
 
         private async void ExecuteReloadTFSQueries(object obj)
         {
@@ -80,8 +108,8 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             await Task.Run(
                            () =>
                            {
-                               var root = TreeViewHelper.BuildTreeViewFromTfs2(this.tfsService.WorkItemStore.Projects[ConfigurationManager.AppSettings["tfsprojectName"]].QueryHierarchy,
-                                                                               ConfigurationManager.AppSettings["tfsprojectName"],
+                               var root = TreeViewHelper.BuildTreeViewFromTfs(this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy,
+                                                                               Properties.Settings.Default.tfsprojectName,
                                                                                this.RenderDependenciesImageFromQuery);
                                queries = new ObservableCollection<TfsQueryTreeItemViewModel>() { root };
 
@@ -96,7 +124,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
             try
             {
-                this.tfsService.ImportDependenciesFromTfs((Guid)obj);
+                this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
             }
             catch (Exception ex)
             {
@@ -104,9 +132,11 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             }
         }
 
-        public string ProjectName { get; private set; }
+        public string ProjectName { get; set; }
 
         public ICommand ReloadTFSQueries { get; private set; }
+
+        public ICommand ConfigureTfsUriAndProject { get; private set; }
 
         ObservableCollection<TfsQueryTreeItemViewModel> queries = new ObservableCollection<TfsQueryTreeItemViewModel>();
         

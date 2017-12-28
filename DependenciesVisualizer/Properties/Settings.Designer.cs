@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DependenciesVisualizer.Model.Model.Properties {
+namespace DependenciesVisualizer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,6 +20,63 @@ namespace DependenciesVisualizer.Model.Model.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tfs")]
+        public string selectedConnector {
+            get {
+                return ((string)(this["selectedConnector"]));
+            }
+            set {
+                this["selectedConnector"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://tfsprod:8080/tfs/defaultcollection")]
+        public string tfsUrl {
+            get {
+                return ((string)(this["tfsUrl"]));
+            }
+            set {
+                this["tfsUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Roche.DP.PocPCR")]
+        public string tfsprojectName {
+            get {
+                return ((string)(this["tfsprojectName"]));
+            }
+            set {
+                this["tfsprojectName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Graphviz2.38\\bin")]
+        public string graphvizPath {
+            get {
+                return ((string)(this["graphvizPath"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\SomeFile.csv")]
+        public string csvFile {
+            get {
+                return ((string)(this["csvFile"]));
+            }
+            set {
+                this["csvFile"] = value;
             }
         }
     }

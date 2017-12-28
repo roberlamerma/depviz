@@ -16,7 +16,9 @@ using Shields.GraphViz.Components;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Connectors.UserControls;
+using DependenciesVisualizer.Connectors.ViewModels;
 
 namespace DependenciesVisualizer.ViewModels
 {
@@ -47,7 +49,7 @@ namespace DependenciesVisualizer.ViewModels
 
             foreach (var vm in this.Connectors)
             {
-                if (vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()))
+                if (vm.Name.ToLower().Equals(Properties.Settings.Default.selectedConnector.ToLower()))
                 {
                     this.CurrentConnectorViewModel = vm;
                 }
@@ -136,15 +138,36 @@ namespace DependenciesVisualizer.ViewModels
             switch (connectorName)
             {
                 case "tfs":
+                    var tfsUriAndProjectSelectorUserControl = new TfsUriAndProjectSelector();
+
                     Window window = new Window
                     {
                         Title = "Set TFS server and Project name",
-                        Content = new TfsUriAndProjectSelector(),
+                        Content = tfsUriAndProjectSelectorUserControl,
                         SizeToContent = SizeToContent.WidthAndHeight,
                         ResizeMode = ResizeMode.NoResize
                     };
 
                     window.ShowDialog();
+
+
+                    // Todo: Raise an event!!!
+
+                    //var tfsUriAndProjectSelectorViewModel = (TfsUriAndProjectSelectorViewModel)tfsUriAndProjectSelectorUserControl.DataContext;
+
+                    //// If settings have changed, then reload queries
+                    //if (tfsUriAndProjectSelectorViewModel.HaveSettingsChanged)
+                    //{
+                    //    var tfsService = this.Ioc.Get<ITfsService>();
+                    //    tfsService.SetWorkItemStore(tfsUriAndProjectSelectorViewModel.Store);
+
+                    //    var connectorViewModel = this.Ioc.Get<IConnectorViewModel>();
+                    //    if (connectorViewModel is TfsConnectorViewModel)
+                    //    {
+                    //        ((TfsConnectorViewModel)connectorViewModel).ProjectName = Properties.Settings.Default.tfsprojectName;
+                    //        ((TfsConnectorViewModel)connectorViewModel).ReloadTFSQueries(null);
+                    //    }
+                    //}
                     break;
                 default:
                     break;

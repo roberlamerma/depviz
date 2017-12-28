@@ -33,6 +33,7 @@
                         Orientation="Horizontal">
                 <Button Margin="2,0,0,0" 
                         ToolTip="Configure TFS"
+                        Command="{Binding Path=ConfigureTfsUriAndProject}"
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Image Source="/depviz;component/Resources/Connect_16x.png"/>
                 </Button>
