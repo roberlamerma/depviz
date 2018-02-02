@@ -126,6 +126,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             catch (Exception ex)
             {
                 this.ErrorMessage = ex.Message;
+                this.HaveSettingsChanged = false;
             }
         }
     }
