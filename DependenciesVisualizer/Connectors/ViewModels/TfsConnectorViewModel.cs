@@ -50,6 +50,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             try
             {
                 this.tfsService.SetWorkItemStore(new Uri(Properties.Settings.Default.tfsUrl), Properties.Settings.Default.tfsprojectName);
+                this.ExecuteReloadTFSQueries(null);
             }
             catch (Exception ex)
             {
@@ -108,12 +109,19 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             await Task.Run(
                            () =>
                            {
-                               var root = TreeViewHelper.BuildTreeViewFromTfs(this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy,
-                                                                               Properties.Settings.Default.tfsprojectName,
-                                                                               this.RenderDependenciesImageFromQuery);
-                               queries = new ObservableCollection<TfsQueryTreeItemViewModel>() { root };
+                               try
+                               {
+                                   var root = TreeViewHelper.BuildTreeViewFromTfs(this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy,
+                                                                                                         Properties.Settings.Default.tfsprojectName,
+                                                                                                         this.RenderDependenciesImageFromQuery);
+                                   queries = new ObservableCollection<TfsQueryTreeItemViewModel>() { root };
 
-                               this.OnPropertyChanged("Queries");
+                                   this.OnPropertyChanged("Queries");
+                               }
+                               catch (Exception ex)
+                               {
+                                   this.ErrorMessage = ex.Message;
+                               }
                            });
             this.IsLoading = Visibility.Hidden;
         }
