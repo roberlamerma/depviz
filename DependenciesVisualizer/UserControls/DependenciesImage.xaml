@@ -45,7 +45,7 @@
                         </MenuItem>
                         <MenuItem Header="Download as SVG..." 
                                   Command="{Binding Path=RenderAndDownloadDependenciesAsImage, Mode=OneWay}"
-                                  CommandParameter="png"
+                                  CommandParameter="svg"
                                   IsEnabled="{Binding Path=IsRenderable}">
                             <MenuItem.Icon>
                                 <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />

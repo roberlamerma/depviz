@@ -118,6 +118,9 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                     Properties.Settings.Default.tfsUrl = this.tempTfsUrlString;
                     Properties.Settings.Default.tfsprojectName = this.tempProjectName;
 
+                    // Save the settings
+                    Properties.Settings.Default.Save();
+
                     this.Store = store;
                 }
 

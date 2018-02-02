@@ -89,8 +89,8 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
             window.ShowDialog();
 
-            // Todo: Raise an event "TFS and Project changed". Listen to it here, and reload the queries. Maybe tfsUriAndProjectSelectorViewModel.HaveSettingsChanged 
-            // won't be needed anymore. All the following code will be gone then.
+            // Todo: Evaluate raising an event "TFS and Project changed" from tfsUriAndProjectSelectorViewModel. Listen to it here, and reload the queries. 
+            // Maybe tfsUriAndProjectSelectorViewModel.HaveSettingsChanged won't be needed anymore. All the following code will be gone or heavily modified
             var tfsUriAndProjectSelectorViewModel = (TfsUriAndProjectSelectorViewModel)tfsUriAndProjectSelectorUserControl.DataContext;
 
             // If settings have changed, then reload queries

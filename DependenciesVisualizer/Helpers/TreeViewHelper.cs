@@ -4,7 +4,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DependenciesVisualizer.Helpers;
-using DependenciesVisualizer.Model.Model.Properties;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Windows.Threading;
 using DependenciesVisualizer.Connectors.ViewModels;

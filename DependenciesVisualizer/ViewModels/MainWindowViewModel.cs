@@ -91,7 +91,8 @@ namespace DependenciesVisualizer.ViewModels
             var graph = GraphVizHelper.CreateDependencyGraph(this.currentConnectorViewModel.DependenciesService.DependenciesModel);
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Png Image|*.png|Svg Image|*.svg";
+            //saveFileDialog1.Filter = "Png Image|*.png|Svg Image|*.svg";
+            saveFileDialog1.Filter = (fileType == "png" ? "Png Image|*.png" : "Svg Image|*.svg");
             saveFileDialog1.Title = "Save dependencies as... (image)";
             bool? result = saveFileDialog1.ShowDialog();
 
@@ -101,7 +102,14 @@ namespace DependenciesVisualizer.ViewModels
 
                 using (Stream fileStream = File.Create(saveFileDialog1.FileName))
                 {
-                    Task.Run(async () => { await renderer.RunAsync(graph, fileStream, RendererLayouts.Dot, (fileType == "png"?RendererFormats.Png: RendererFormats.Svg), CancellationToken.None); }).Wait();
+                    Task.Run(async () =>
+                    {
+                        await renderer.RunAsync(graph, 
+                            fileStream, 
+                            RendererLayouts.Dot, 
+                            (fileType == "png" ? RendererFormats.Png : RendererFormats.Svg),
+                            CancellationToken.None);
+                    }).Wait();
                 }
             }
         }
