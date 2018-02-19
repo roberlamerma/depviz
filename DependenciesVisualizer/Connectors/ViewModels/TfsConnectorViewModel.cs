@@ -132,7 +132,9 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
             try
             {
-                this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
+                Task.Run(() => {
+                    this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
+                });
             }
             catch (Exception ex)
             {

@@ -40,6 +40,8 @@ namespace DependenciesVisualizer.ViewModels
 
         public MainWindowViewModel(IKernel ioc)
         {
+            this.IsLoading = false;
+
             this.Ioc = ioc;
 
             //this.connectorViewModels = new List<IConnectorViewModel>();
@@ -197,12 +199,14 @@ namespace DependenciesVisualizer.ViewModels
                 if (this.currentConnectorViewModel != null)
                 {
                     WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
+                    WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelAboutToChange", this.DependenciesModelAboutToChangeHandler);
                 }
 
                 this.currentConnectorViewModel = value;
                 this.currentConnectorViewModel.Initialize();
 
                 WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelAboutToChange", this.DependenciesModelAboutToChangeHandler);
 
                 this.OnPropertyChanged("CurrentConnectorViewModel");
             }
@@ -226,11 +230,44 @@ namespace DependenciesVisualizer.ViewModels
             get => (this.DependenciesModelCount > 0);
         }
 
+        public bool IsLoading
+        {
+            get { return this.isLoading; }
+            set
+            {
+                // ToDo (05/02/2018): binding is not working...
+                if (value != this.isLoading)
+                {
+                    this.isLoading = value;
+                    this.OnPropertyChanged("IsLoading");
+                }
+            }
+        }
+        private bool isLoading;
+
+        // ToDo: AKI the binding is not working because something (retrieving the elements from TFS is blocking the UI thread)
+        //public string IsLoading
+        //{
+        //    get { return this.isLoading; }
+        //    set
+        //    {
+        //        this.isLoading = value;
+        //        this.OnPropertyChanged("IsLoading");
+        //    }
+        //}
+        //private string isLoading;
+
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {
             this.OnPropertyChanged("DependenciesModel");
             this.OnPropertyChanged("DependenciesModelCount");
             this.OnPropertyChanged("IsRenderable");
+            this.IsLoading = false;
+        }
+
+        private void DependenciesModelAboutToChangeHandler(object sender, EventArgs e)
+        {
+            this.IsLoading = true;
         }
 
         public ICommand RenderAndDownloadDependenciesAsImage { get; private set; }

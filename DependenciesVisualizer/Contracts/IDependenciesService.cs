@@ -11,6 +11,8 @@ namespace DependenciesVisualizer.Contracts
 
         event EventHandler<EventArgs> DependenciesModelChanged;
 
+        event EventHandler<EventArgs> DependenciesModelAboutToChange;
+
         void RaiseDependenciesModelChanged();
     }
 }

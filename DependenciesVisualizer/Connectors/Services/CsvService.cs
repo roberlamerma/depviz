@@ -15,6 +15,8 @@ namespace DependenciesVisualizer.Connectors.Services
 
         public event EventHandler<EventArgs> DependenciesModelChanged = delegate { };
 
+        public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
+
         public void RaiseDependenciesModelChanged()
         {
             this.DependenciesModelChanged(this, EventArgs.Empty);

@@ -25,5 +25,15 @@ namespace DependenciesVisualizer.UserControls
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //this.LoadingPanel.Visibility = Visibility.Visible;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            //this.LoadingPanel.Visibility = Visibility.Collapsed;
+        }
     }
 }

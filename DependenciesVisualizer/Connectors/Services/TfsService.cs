@@ -16,6 +16,16 @@ namespace DependenciesVisualizer.Connectors.Services
 {
     public class TfsService : IDependenciesService, ITfsService
     {
+        /// <summary>
+        /// Event arised when the DependenciesModel changed
+        /// </summary>
+        public event EventHandler<EventArgs> DependenciesModelChanged = delegate { };
+
+        /// <summary>
+        /// Event arised when the DependenciesModel is about to change
+        /// </summary>
+        public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
+
         private Dictionary<int, DependencyItem> dependenciesModel;
 
         [Inject]
@@ -57,6 +67,8 @@ namespace DependenciesVisualizer.Connectors.Services
                 var theModel = new Dictionary<int, DependencyItem>();
 
                 int successorsCount = 0;
+
+                this.RaiseDependenciesModelAboutToChange();
 
                 // Populate the model (parent id's and successors) from the query
                 foreach (WorkItemLinkInfo workItemInfo in queryResults)
@@ -188,11 +200,14 @@ namespace DependenciesVisualizer.Connectors.Services
             }
         }
 
-        public event EventHandler<EventArgs> DependenciesModelChanged = delegate { };
-
         public void RaiseDependenciesModelChanged()
         {
             this.DependenciesModelChanged(this, EventArgs.Empty);
+        }
+
+        public void RaiseDependenciesModelAboutToChange()
+        {
+            this.DependenciesModelAboutToChange(this, EventArgs.Empty);
         }
 
         public void SetWorkItemStore(WorkItemStore store)

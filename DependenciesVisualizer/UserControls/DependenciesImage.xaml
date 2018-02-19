@@ -5,11 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dependenciesVisualizer="clr-namespace:DependenciesVisualizer"
              xmlns:userControls="clr-namespace:DependenciesVisualizer.UserControls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              >
     <UserControl.Resources>
         <!--<userControls:ToImageConverter x:Key="toImageConverter" />-->
         <userControls:DependenciesToImageConverter x:Key="dependenciesToImageConverter" />
+        <BooleanToVisibilityConverter x:Key="boolToVisConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,17 +21,44 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-           
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" 
+              Panel.ZIndex="1000" 
+              Visibility="{Binding Path=IsLoading, Converter={StaticResource boolToVisConverter}}"
+              >
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity=".2"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <fa:ImageAwesome Grid.Row="1" Height="48" Width="48"
+            Icon="CircleOutlineNotch" Spin="True" />
 
-            <Image
+            <Label Grid.Row="2" Content="Retrieving the PBI's from TFS..." HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+
+        </Grid>
+
+
+        <!--
+        This was how I was setting the Binding before learning that is inherited from parent UserControl (MainWindowViewModel)
+            <Image 
                 Stretch="None"
                 DataContext="{Binding Path=DataContext, IsAsync=True, Mode=OneWay,
                     RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}}"
+                Source="{Binding Path=DependenciesModel, IsAsync=True, Mode=OneWay, Converter={StaticResource dependenciesToImageConverter}}">-->
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            
+            <Image
+                Stretch="None"
                 Source="{Binding Path=DependenciesModel, IsAsync=True, Mode=OneWay, Converter={StaticResource dependenciesToImageConverter}}">
+                
                 <Image.RenderTransform>
                     <ScaleTransform ScaleX="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}"/>
                 </Image.RenderTransform>
