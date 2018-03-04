@@ -97,6 +97,7 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 if (successorsCount == 0)
                 {
+                    this.RaiseDependenciesModelChanged();
                     throw new Exception(string.Format("The query '{0}' does not return any successors", queryDef.Name));
                 }
 
