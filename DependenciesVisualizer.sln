@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenciesVisualizer", "DependenciesVisualizer\DependenciesVisualizer.csproj", "{700AE368-05F9-471A-A2D2-EC2132A9FCE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDialogManagement", "WpfDialogManagement\WpfDialogManagement.csproj", "{104D608C-81EF-4110-B0FA-6E78166F93D0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plans", "Plans", "{3F9881FA-05D3-4AE6-B9D8-275242946EA8}"
 	ProjectSection(SolutionItems) = preProject
 		plans\ToDo.txt = plans\ToDo.txt
@@ -22,10 +20,6 @@ Global
 		{700AE368-05F9-471A-A2D2-EC2132A9FCE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{700AE368-05F9-471A-A2D2-EC2132A9FCE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{700AE368-05F9-471A-A2D2-EC2132A9FCE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

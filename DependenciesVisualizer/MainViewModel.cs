@@ -14,8 +14,6 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Shields.GraphViz.Components;
 using Shields.GraphViz.Models;
 using Shields.GraphViz.Services;
-using Technewlogic.WpfDialogManagement;
-using Technewlogic.WpfDialogManagement.Contracts;
 
 namespace DependenciesVisualizer.Model
 {

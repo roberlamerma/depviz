@@ -12,8 +12,6 @@ using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.ViewModels;
 using Ninject;
-using Technewlogic.WpfDialogManagement;
-using Technewlogic.WpfDialogManagement.Contracts;
 using System.Threading;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
