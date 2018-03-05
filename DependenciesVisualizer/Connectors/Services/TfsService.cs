@@ -1,10 +1,5 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model;

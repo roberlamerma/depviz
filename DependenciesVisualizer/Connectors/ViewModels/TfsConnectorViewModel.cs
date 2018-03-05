@@ -128,21 +128,31 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         private void ExecuteRenderDependenciesImageFromQuery(object obj)
         {
-            var task1 = Task.Run(() => {
-                this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
-            });
-            try
+            Task.Run(() =>
             {
-                task1.Wait();
-            }
-            //catch (Exception ex)
-            catch (AggregateException ae)
-            {
-                foreach (var ex in ae.InnerExceptions)
+                try
                 {
-                    this.ErrorMessage = ex.Message + Environment.NewLine;
+                    this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
                 }
-            }
+                catch (Exception exx)
+                {
+
+                    this.ErrorMessage = exx.Message + Environment.NewLine;
+                }
+            });
+                //this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
+            //try
+            //{
+            //    task1.Wait();
+            //}
+            ////catch (Exception ex)
+            //catch (AggregateException ae)
+            //{
+            //    foreach (var ex in ae.InnerExceptions)
+            //    {
+            //        this.ErrorMessage = ex.Message + Environment.NewLine;
+            //    }
+            //}
         }
 
         public string ProjectName { get; set; }
