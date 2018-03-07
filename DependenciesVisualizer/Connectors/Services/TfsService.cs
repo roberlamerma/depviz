@@ -105,6 +105,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     {
                         var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
                         entry.Value.Title = workItem.Title;
+                        entry.Value.State = workItem.State;
 
                         entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
                     }
@@ -115,7 +116,7 @@ namespace DependenciesVisualizer.Connectors.Services
                         if (!theModel.ContainsKey(successor))
                         {
                             var workItem = this.WorkItemStore.GetWorkItem(successor);
-                            var dependencyItem = new DependencyItem(successor) { Title = workItem.Title };
+                            var dependencyItem = new DependencyItem(successor) { Title = workItem.Title, State = workItem.State };
                             dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
 
                             successorsThatAreNotParents.Add(dependencyItem);

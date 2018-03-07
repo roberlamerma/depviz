@@ -22,12 +22,31 @@ namespace DependenciesVisualizer.Model
 
         public int Id { get; }
         public string Title { get; set; }
+
+        public string State { get; set; }
+
+        public string ReducedTitle {
+            get
+            {
+                var titleLength = this.Title.Length;
+                if (titleLength < 50)
+                {
+                    return this.Title;
+                } else
+                {
+                    var firstLine = this.Title.Substring(0, 49);
+                    var secondLine = this.Title.Substring(49, titleLength - 50 + 1);
+                    return string.Format(@"{0}{1}{2}", firstLine, @"&#92;", secondLine);
+                }
+            }
+        }
         public List<int> Successors { get; }
         public List<string> Tags { get; }
 
         public override string ToString()
         {
-            var longTitle = string.Format(@"<{0}> {1}", this.Id, this.Title);
+            //var longTitle = string.Format(@"<{0}> {1}", this.Id, this.Title);
+            var longTitle = this.Title;
             try
             {
                 var longTitleLenght = longTitle.Length;
@@ -39,13 +58,13 @@ namespace DependenciesVisualizer.Model
                 {
                     var firstLine = longTitle.Substring(0, 49);
                     var secondLine = longTitle.Substring(49, 49);
-                    return string.Format(@"{0}{1}{2}...\l", firstLine, Environment.NewLine, secondLine);
+                    return string.Format(@"{0}{1}{2}...\l", firstLine, @"&#92;", secondLine);
                 }
                 else
                 {
                     var firstLine = longTitle.Substring(0, 49);
                     var secondLine = longTitle.Substring(49, longTitleLenght - 50 + 1);
-                    return string.Format(@"{0}{1}{2}\l", firstLine, Environment.NewLine, secondLine);
+                    return string.Format(@"{0}{1}{2}\l", firstLine, @"&#92;", secondLine);
                 }
             } catch (Exception)
             {
