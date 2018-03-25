@@ -5,6 +5,7 @@ using DependenciesVisualizer.Connectors.Models;
 using DependenciesVisualizer.Model;
 using DependenciesVisualizer.Contracts;
 using FileHelpers;
+using log4net;
 
 namespace DependenciesVisualizer.Connectors.Services
 {
@@ -16,6 +17,13 @@ namespace DependenciesVisualizer.Connectors.Services
         public event EventHandler<EventArgs> DependenciesModelChanged = delegate { };
 
         public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
+
+        public ILog Logger { get; private set; }
+
+        public CsvService(ILog logger)
+        {
+            this.Logger = logger;
+        }
 
         public void RaiseDependenciesModelChanged()
         {
@@ -34,14 +42,18 @@ namespace DependenciesVisualizer.Connectors.Services
             }
 
             var theModel = new Dictionary<int, DependencyItem>();
+            DependencyItem tempItem;
 
             foreach (var csvDependency in records)
             {
-                theModel.Add(csvDependency.Id, new DependencyItem(
+                tempItem = new DependencyItem(
                     csvDependency.Id,
                     csvDependency.Title,
                     csvDependency.SuccessorIds ?? new List<int>(),
-                    csvDependency.Tags ?? new List<string>()));
+                    csvDependency.Tags ?? new List<string>());
+
+                theModel.Add(csvDependency.Id, tempItem);
+                this.Logger.Debug(string.Format(@"Got from CSV: {0}", tempItem.ToString()));
             }
 
             this.DependenciesModel = theModel;

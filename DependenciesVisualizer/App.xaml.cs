@@ -9,6 +9,7 @@ using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Connectors.ViewModels;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.ViewModels;
+using log4net;
 using Ninject;
 using Ninject.Activation;
 
@@ -31,6 +32,10 @@ namespace DependenciesVisualizer.Model
             //kernel.Bind(typeof(ITfsService)).To(typeof(TfsService)).InSingletonScope();
             //kernel.Bind(typeof(ICsvService)).To(typeof(CsvService)).InSingletonScope();
 
+            //kernel.Bind<ILog>().ToMethod(context => LogManager.GetLogger(context.Request.Target.Member.ReflectedType));
+            kernel.Bind<ILog>().ToMethod(context => LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType));
+
+            
             kernel.Bind<ITfsService>().To<TfsService>().InSingletonScope();
             kernel.Bind<ICsvService>().To<CsvService>().InSingletonScope();
 

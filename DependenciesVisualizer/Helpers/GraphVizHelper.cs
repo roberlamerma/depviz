@@ -123,27 +123,31 @@ namespace DependenciesVisualizer.Helpers
             // In Progress Tomato
             // New lightskyblue
 
-            Color ret;
-            state = state.ToUpper().Trim();
+            Color ret = Color.Lightgray;
 
-            switch (state)
+            if (!string.IsNullOrWhiteSpace(state))
             {
-                case "NEW":
-                case "APPROVED":
-                    ret = Color.Lightskyblue;
-                    break;
-                case "COMMITTED":
-                    ret = Color.Gold;
-                    break;
-                case "IN PROGRESS":
-                    ret = Color.Tomato;
-                    break;
-                case "DONE":
-                    ret = Color.Yellowgreen;
-                    break;
-                default:
-                    ret = Color.Lightgray;
-                    break;
+                state = state.ToUpper().Trim();
+
+                switch (state)
+                {
+                    case "NEW":
+                    case "APPROVED":
+                        ret = Color.Lightskyblue;
+                        break;
+                    case "COMMITTED":
+                        ret = Color.Gold;
+                        break;
+                    case "IN PROGRESS":
+                        ret = Color.Tomato;
+                        break;
+                    case "DONE":
+                        ret = Color.Yellowgreen;
+                        break;
+                    default:
+                        ret = Color.Lightgray;
+                        break;
+                }
             }
 
             return ret;

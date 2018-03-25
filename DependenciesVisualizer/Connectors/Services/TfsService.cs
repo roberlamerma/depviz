@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model;
+using log4net;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Ninject;
@@ -21,12 +22,14 @@ namespace DependenciesVisualizer.Connectors.Services
         /// </summary>
         public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
 
+        public ILog Logger {get; private set;}
+
         private Dictionary<int, DependencyItem> dependenciesModel;
 
         [Inject]
-        public TfsService()
+        public TfsService(ILog logger)
         {
-            this.dependenciesModel = new Dictionary<int, DependencyItem>();
+            this.Logger = logger;
         }
 
         //public string ProjectName { get; private set; }
@@ -65,6 +68,8 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 this.RaiseDependenciesModelAboutToChange();
 
+                DependencyItem tempItem;
+
                 // Populate the model (parent id's and successors) from the query
                 foreach (WorkItemLinkInfo workItemInfo in queryResults)
                 {
@@ -72,7 +77,9 @@ namespace DependenciesVisualizer.Connectors.Services
                     {
                         if (!theModel.ContainsKey(workItemInfo.TargetId))
                         {
-                            theModel.Add(workItemInfo.TargetId, new DependencyItem(workItemInfo.TargetId));
+                            tempItem = new DependencyItem(workItemInfo.TargetId);
+                            theModel.Add(workItemInfo.TargetId, tempItem);
+                            this.Logger.Debug(string.Format(@"Got PARENT from TFS: {0}", tempItem.ToString()));
                         }
                     }
                     else // child
@@ -130,6 +137,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     if (!theModel.ContainsKey(successor.Id))
                     {
                         theModel.Add(successor.Id, successor);
+                        this.Logger.Debug(string.Format(@"Got SUCCESSOR from TFS: {0}", successor.ToString()));
                     }
                 }
 
