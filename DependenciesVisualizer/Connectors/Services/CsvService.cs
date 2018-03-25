@@ -38,7 +38,9 @@ namespace DependenciesVisualizer.Connectors.Services
 
             if (engine.GetFileHeader() != engine.HeaderText.Trim())
             {
-                throw new Exception(string.Format("Read CSV column headers: '{0}' from file '{1}' do not match the expected ones: '{2}'", engine.HeaderText.Trim(), csvFile, engine.GetFileHeader()));
+                string error = string.Format("[CSV] Column headers: '{0}' from file '{1}' do not match the expected ones: '{2}'", engine.HeaderText.Trim(), csvFile, engine.GetFileHeader());
+                this.Logger.Error(error);
+                throw new Exception(error);
             }
 
             var theModel = new Dictionary<int, DependencyItem>();
@@ -53,7 +55,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     csvDependency.Tags ?? new List<string>());
 
                 theModel.Add(csvDependency.Id, tempItem);
-                this.Logger.Debug(string.Format(@"Got from CSV: {0}", tempItem.ToString()));
+                this.Logger.Debug(string.Format(@"[CSV] Got: {0}", tempItem.ToString()));
             }
 
             this.DependenciesModel = theModel;

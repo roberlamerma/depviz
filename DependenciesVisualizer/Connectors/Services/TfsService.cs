@@ -51,7 +51,9 @@ namespace DependenciesVisualizer.Connectors.Services
                 //this.dialogManager
                 //    .CreateMessageDialog(string.Format(@"The query '{0}' is not a 'Direct Link' query.", queryDef.Name), "ERROR", DialogMode.Ok)
                 //    .Show();
-                throw new Exception(string.Format(@"The query '{0}' is not a 'Direct Link' query.", queryDef.Name));
+                string error = string.Format(@"[TFS] The query '{0}' is not a 'Direct Link' query.", queryDef.Name);
+                this.Logger.Error(error);
+                throw new Exception(error);
             }
             else
             {
@@ -79,7 +81,7 @@ namespace DependenciesVisualizer.Connectors.Services
                         {
                             tempItem = new DependencyItem(workItemInfo.TargetId);
                             theModel.Add(workItemInfo.TargetId, tempItem);
-                            this.Logger.Debug(string.Format(@"Got PARENT from TFS: {0}", tempItem.ToString()));
+                            this.Logger.Debug(string.Format(@"[TFS] Got PARENT: {0}", tempItem.ToString()));
                         }
                     }
                     else // child
@@ -87,11 +89,15 @@ namespace DependenciesVisualizer.Connectors.Services
                         // ToDo: Make this also work with Predecessors queries
                         if (workItemInfo.LinkTypeId == 3) // successor
                         {
+                            // Get the parent
                             theModel.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
                             if (dependencyItem != null)
                             {
                                 dependencyItem.Successors.Add(workItemInfo.TargetId);
                                 successorsCount++;
+                            } else
+                            {
+                                this.Logger.Debug(string.Format(@"[TFS] Could not get PARENT: {0} for SUCCESSOR: {1}", workItemInfo.SourceId, workItemInfo.TargetId));
                             }
                         }
                     }
@@ -100,7 +106,9 @@ namespace DependenciesVisualizer.Connectors.Services
                 if (successorsCount == 0)
                 {
                     this.RaiseDependenciesModelChanged();
-                    throw new Exception(string.Format("The query '{0}' does not return any successors", queryDef.Name));
+                    string error = string.Format("[TFS] The query '{0}' does not return any successors", queryDef.Name);
+                    this.Logger.Error(error);
+                    throw new Exception(error);
                 }
 
                 var successorsThatAreNotParents = new List<DependencyItem>();
@@ -137,7 +145,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     if (!theModel.ContainsKey(successor.Id))
                     {
                         theModel.Add(successor.Id, successor);
-                        this.Logger.Debug(string.Format(@"Got SUCCESSOR from TFS: {0}", successor.ToString()));
+                        this.Logger.Debug(string.Format(@"[TFS] Got SUCCESSOR: {0}", successor.ToString()));
                     }
                 }
 
