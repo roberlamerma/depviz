@@ -34,7 +34,7 @@
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
-            <MenuItem Header="Configuration">
+            <MenuItem Header="File">
                 <MenuItem Header="Select Connector" ItemsSource="{Binding Path=Connectors, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Source="/depviz;component/Resources/Select_16x.png" />
