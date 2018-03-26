@@ -119,6 +119,8 @@ namespace DependenciesVisualizer.ViewModels
         private void ExecuteSelectConnector(IConnectorViewModel connectorViewModel)
         {
             this.CurrentConnectorViewModel = connectorViewModel;
+            Properties.Settings.Default.selectedConnector = connectorViewModel.Name.ToLower();
+            Properties.Settings.Default.Save();
         }
 
 
