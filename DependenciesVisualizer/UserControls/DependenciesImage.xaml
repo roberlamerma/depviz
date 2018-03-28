@@ -87,14 +87,46 @@
                 </Image>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <!--<StackPanel Background="#FFCFD6E5" Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                 <Label Content="Zoom: (-) " />
                 <Slider x:Name="zoomSlider" VerticalAlignment="Center" Width="200" 
                     IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
                 Maximum="1" Minimum="0.2" Value="1" SmallChange=".05"/>
                 <Label Content="(+) " />
-            </StackPanel>
+            </StackPanel>-->
 
+            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="#FFCFD6E5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <!--<Label Content="Zoom: (-) " />-->
+                        <Button Margin="0,0,0,0" 
+                                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
+                                ToolTip="Zoom out"
+                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Image Source="/depviz;component/Resources/ZoomOut_16x.png"/>
+                        </Button>
+                        <Slider x:Name="zoomSlider" VerticalAlignment="Center" Width="200" 
+                    IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
+                Maximum="1" Minimum="0.2" Value="1" SmallChange=".05"/>
+                        <Button Margin="0,0,0,0" 
+                                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
+                                ToolTip="Zoom in"
+                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Image Source="/depviz;component/Resources/ZoomIn_16x.png"/>
+                        </Button>
+                        <!--<Label Content="(+) " />-->
+                </StackPanel>
+            </Grid>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

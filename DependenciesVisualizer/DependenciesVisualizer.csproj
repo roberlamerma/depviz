@@ -256,5 +256,9 @@
   <ItemGroup>
     <Resource Include="Logo.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ZoomIn_16x.png" />
+    <Resource Include="Resources\ZoomOut_16x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
