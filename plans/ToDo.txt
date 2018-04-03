@@ -11,3 +11,4 @@
 7)	Move project to github
 	-> Create github Readme.MD
 8)	Create article on CodeProject
+9)	When TFS does not respond, the message is shown on the TFSContainer, but the "loading" image remains there
