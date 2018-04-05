@@ -134,10 +134,9 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                 {
                     this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);
                 }
-                catch (Exception exx)
+                catch (Exception ex)
                 {
-
-                    this.ErrorMessage = exx.Message + Environment.NewLine;
+                    this.ErrorMessage = ex.Message + Environment.NewLine;
                 }
             });
                 //this.tfsService.ImportDependenciesFromTfs(this.ProjectName, (Guid)obj);

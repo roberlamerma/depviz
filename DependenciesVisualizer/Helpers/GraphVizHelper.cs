@@ -20,6 +20,8 @@ namespace DependenciesVisualizer.Helpers
 
     public static class GraphVizHelper
     {
+        private static char[] badChars = new char[] { '"', '<', '>', '{', '}'}; //simple example
+
         private static ImmutableDictionary<Id, Id> emptyDictionary = new Dictionary<Id, Id>().ToImmutableDictionary();
 
         public static void AddGeneralStatements(ref List<Statement> statements)
@@ -110,6 +112,9 @@ namespace DependenciesVisualizer.Helpers
             }
 
             nodeLabelSettings = new Dictionary<Id, Id>();
+
+            
+            title = string.Concat(title.Split(badChars, StringSplitOptions.RemoveEmptyEntries));
             nodeStyleSettings.Add(new Id("label"), new Id("{ " + Convert.ToString(nodeId) + " | " + title + "}"));
 
             var node = new NodeStatement(new Id(Convert.ToString(nodeId)), nodeStyleSettings.ToImmutableDictionary());

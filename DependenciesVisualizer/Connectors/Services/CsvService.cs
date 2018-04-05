@@ -14,9 +14,20 @@ namespace DependenciesVisualizer.Connectors.Services
         //public Dictionary<int, DependencyItem> DependenciesModel { get; }
         private Dictionary<int, DependencyItem> dependenciesModel;
 
+        /// <summary>
+        /// Event arised when the DependenciesModel changed
+        /// </summary>
         public event EventHandler<EventArgs> DependenciesModelChanged = delegate { };
 
+        /// <summary>
+        /// Event arised when the DependenciesModel is about to change
+        /// </summary>
         public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
+
+        /// <summary>
+        /// Event arised when the DependenciesModel could not be changed (error, exception...)
+        /// </summary>
+        public event EventHandler<EventArgs> DependenciesModelCouldNotBeChanged = delegate { };
 
         public ILog Logger { get; private set; }
 

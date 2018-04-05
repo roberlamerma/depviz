@@ -22,7 +22,12 @@ namespace DependenciesVisualizer.Connectors.Services
         /// </summary>
         public event EventHandler<EventArgs> DependenciesModelAboutToChange = delegate { };
 
-        public ILog Logger {get; private set;}
+        /// <summary>
+        /// Event arised when the DependenciesModel could not be changed (error, exception...)
+        /// </summary>
+        public event EventHandler<EventArgs> DependenciesModelCouldNotBeChanged = delegate { };
+
+        public ILog Logger { get; private set; }
 
         private Dictionary<int, DependencyItem> dependenciesModel;
 
@@ -68,117 +73,127 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 int successorsCount = 0;
 
-                this.RaiseDependenciesModelAboutToChange();
-
-                DependencyItem tempItem;
-
-                // Populate the model (parent id's and successors) from the query
-                foreach (WorkItemLinkInfo workItemInfo in queryResults)
+                try
                 {
-                    if (workItemInfo.SourceId == 0) // parent
+                    this.RaiseDependenciesModelAboutToChange();
+
+                    DependencyItem tempItem;
+
+                    // Populate the model (parent id's and successors) from the query
+                    foreach (WorkItemLinkInfo workItemInfo in queryResults)
                     {
-                        if (!theModel.ContainsKey(workItemInfo.TargetId))
+                        if (workItemInfo.SourceId == 0) // parent
                         {
-                            tempItem = new DependencyItem(workItemInfo.TargetId);
-                            theModel.Add(workItemInfo.TargetId, tempItem);
-                            this.Logger.Debug(string.Format(@"[TFS] Got PARENT: {0}", tempItem.ToString()));
+                            if (!theModel.ContainsKey(workItemInfo.TargetId))
+                            {
+                                tempItem = new DependencyItem(workItemInfo.TargetId);
+                                theModel.Add(workItemInfo.TargetId, tempItem);
+                                this.Logger.Debug(string.Format(@"[TFS] Got PARENT: {0}", tempItem.ToString()));
+                            }
                         }
-                    }
-                    else // child
-                    {
-                        // ToDo: Make this also work with Predecessors queries
-                        if (workItemInfo.LinkTypeId == 3) // successor
+                        else // child
                         {
-                            // Get the parent
-                            theModel.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
-                            if (dependencyItem != null)
+                            // ToDo: Make this also work with Predecessors queries
+                            if (workItemInfo.LinkTypeId == 3) // successor
                             {
-                                dependencyItem.Successors.Add(workItemInfo.TargetId);
-                                successorsCount++;
-                            } else
-                            {
-                                this.Logger.Debug(string.Format(@"[TFS] Could not get PARENT: {0} for SUCCESSOR: {1}", workItemInfo.SourceId, workItemInfo.TargetId));
+                                // Get the parent
+                                theModel.TryGetValue(workItemInfo.SourceId, out var dependencyItem);
+                                if (dependencyItem != null)
+                                {
+                                    dependencyItem.Successors.Add(workItemInfo.TargetId);
+                                    successorsCount++;
+                                }
+                                else
+                                {
+                                    this.Logger.Debug(string.Format(@"[TFS] Could not get PARENT: {0} for SUCCESSOR: {1}", workItemInfo.SourceId, workItemInfo.TargetId));
+                                }
                             }
                         }
                     }
-                }
 
-                if (successorsCount == 0)
-                {
-                    this.RaiseDependenciesModelChanged();
-                    string error = string.Format("[TFS] The query '{0}' does not return any successors", queryDef.Name);
-                    this.Logger.Error(error);
-                    throw new Exception(error);
-                }
-
-                var successorsThatAreNotParents = new List<DependencyItem>();
-
-                // Add Title and Tags to items in the DependenciesModel
-                foreach (KeyValuePair<int, DependencyItem> entry in theModel)
-                {
-                    if (entry.Value.Title == null)
+                    if (successorsCount == 0)
                     {
-                        var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
-                        entry.Value.Title = workItem.Title;
-                        entry.Value.State = workItem.State;
-
-                        entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
+                        this.RaiseDependenciesModelCouldNotBeChanged();
+                        string error = string.Format("[TFS] The query '{0}' does not return any successors", queryDef.Name);
+                        this.Logger.Error(error);
+                        throw new Exception(error);
                     }
 
-                    foreach (var successor in entry.Value.Successors)
-                    {
-                        // If successors are not parents, retrieve them from TFS and add them
-                        if (!theModel.ContainsKey(successor))
-                        {
-                            var workItem = this.WorkItemStore.GetWorkItem(successor);
-                            var dependencyItem = new DependencyItem(successor) { Title = workItem.Title, State = workItem.State };
-                            dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+                    var successorsThatAreNotParents = new List<DependencyItem>();
 
-                            successorsThatAreNotParents.Add(dependencyItem);
+                    // Add Title and Tags to items in the DependenciesModel
+                    foreach (KeyValuePair<int, DependencyItem> entry in theModel)
+                    {
+                        if (entry.Value.Title == null)
+                        {
+                            var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
+                            entry.Value.Title = workItem.Title;
+                            entry.Value.State = workItem.State;
+
+                            entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
+                        }
+
+                        foreach (var successor in entry.Value.Successors)
+                        {
+                            // If successors are not parents, retrieve them from TFS and add them
+                            if (!theModel.ContainsKey(successor))
+                            {
+                                var workItem = this.WorkItemStore.GetWorkItem(successor);
+                                var dependencyItem = new DependencyItem(successor) { Title = workItem.Title, State = workItem.State };
+                                dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+
+                                successorsThatAreNotParents.Add(dependencyItem);
+                            }
                         }
                     }
-                }
 
-                // Adde successors That Are Not Parents to the DependenciesModel
-                foreach (var successor in successorsThatAreNotParents)
-                {
-                    if (!theModel.ContainsKey(successor.Id))
+                    // Adde successors That Are Not Parents to the DependenciesModel
+                    foreach (var successor in successorsThatAreNotParents)
                     {
-                        theModel.Add(successor.Id, successor);
-                        this.Logger.Debug(string.Format(@"[TFS] Got SUCCESSOR: {0}", successor.ToString()));
+                        if (!theModel.ContainsKey(successor.Id))
+                        {
+                            theModel.Add(successor.Id, successor);
+                            this.Logger.Debug(string.Format(@"[TFS] Got SUCCESSOR: {0}", successor.ToString()));
+                        }
                     }
+
+                    //foreach (WorkItemLinkInfo workItemInfo in queryResults)
+                    //{
+                    //    if (!this.DependenciesModel.ContainsKey(workItemInfo.TargetId))
+                    //    {
+                    //        var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId, true);
+
+                    //        this.DependenciesModel.Add(workItemInfo.TargetId, dependencyListItem);
+                    //    }
+                    //}
+
+                    //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
+                    //foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
+                    //{
+                    //    if (entry.Value.Successors.Any())
+                    //    {
+                    //        foreach (var succesor in entry.Value.Successors)
+                    //        {
+                    //            if (!this.DependenciesModel.ContainsKey(succesor))
+                    //            {
+                    //                var dependencyListItem = this.GetDependencyListItemFromWorkItem(succesor, false);
+
+                    //                this.DependenciesModel.Add(succesor, dependencyListItem);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+
+
+
+                    this.DependenciesModel = theModel;
                 }
-
-                //foreach (WorkItemLinkInfo workItemInfo in queryResults)
-                //{
-                //    if (!this.DependenciesModel.ContainsKey(workItemInfo.TargetId))
-                //    {
-                //        var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId, true);
-
-                //        this.DependenciesModel.Add(workItemInfo.TargetId, dependencyListItem);
-                //    }
-                //}
-
-                //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
-                //foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
-                //{
-                //    if (entry.Value.Successors.Any())
-                //    {
-                //        foreach (var succesor in entry.Value.Successors)
-                //        {
-                //            if (!this.DependenciesModel.ContainsKey(succesor))
-                //            {
-                //                var dependencyListItem = this.GetDependencyListItemFromWorkItem(succesor, false);
-
-                //                this.DependenciesModel.Add(succesor, dependencyListItem);
-                //            }
-                //        }
-                //    }
-                //}
-
-                
-
-                this.DependenciesModel = theModel;
+                catch (Exception ex)
+                {
+                    this.Logger.Error(string.Format(@"{0}{1}{2}",ex.Message, Environment.NewLine, ex.StackTrace));
+                    this.RaiseDependenciesModelCouldNotBeChanged();
+                    throw;
+                }
 
             }
         }
@@ -221,6 +236,11 @@ namespace DependenciesVisualizer.Connectors.Services
         public void RaiseDependenciesModelAboutToChange()
         {
             this.DependenciesModelAboutToChange(this, EventArgs.Empty);
+        }
+
+        public void RaiseDependenciesModelCouldNotBeChanged()
+        {
+            this.DependenciesModelCouldNotBeChanged(this, EventArgs.Empty);
         }
 
         public void SetWorkItemStore(WorkItemStore store)

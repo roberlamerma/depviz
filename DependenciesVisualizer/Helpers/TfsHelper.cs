@@ -34,7 +34,7 @@ namespace DependenciesVisualizer.Helpers
 
                     if (nonSpacesString.Contains(";"))
                     {
-                        foreach (var tag in (IEnumerable<string>)nonSpacesString.Split(';').GetEnumerator()) yield return tag;
+                        foreach (var tag in nonSpacesString.Split(';')) yield return tag;
                     }
                     else
                     {

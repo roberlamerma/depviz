@@ -202,6 +202,7 @@ namespace DependenciesVisualizer.ViewModels
                 {
                     WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
                     WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelAboutToChange", this.DependenciesModelAboutToChangeHandler);
+                    WeakEventManager<IDependenciesService, EventArgs>.RemoveHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelCouldNotBeChanged", this.DependenciesModelCouldNotBeChanged);
                 }
 
                 this.currentConnectorViewModel = value;
@@ -209,6 +210,7 @@ namespace DependenciesVisualizer.ViewModels
 
                 WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
                 WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelAboutToChange", this.DependenciesModelAboutToChangeHandler);
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.currentConnectorViewModel.DependenciesService, "DependenciesModelCouldNotBeChanged", this.DependenciesModelCouldNotBeChanged);
 
                 this.OnPropertyChanged("CurrentConnectorViewModel");
             }
@@ -270,6 +272,12 @@ namespace DependenciesVisualizer.ViewModels
         private void DependenciesModelAboutToChangeHandler(object sender, EventArgs e)
         {
             this.IsLoading = true;
+        }
+
+        private void DependenciesModelCouldNotBeChanged(object sender, EventArgs e)
+        {
+            this.OnPropertyChanged("IsRenderable");
+            this.IsLoading = false;
         }
 
         public ICommand RenderAndDownloadDependenciesAsImage { get; private set; }
