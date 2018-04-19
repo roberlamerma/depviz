@@ -111,6 +111,8 @@
                         <Button Margin="0,0,0,0" 
                                 IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
                                 ToolTip="Zoom out"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.ZoomOutCommand}"
+                                CommandParameter="{Binding ElementName=zoomSlider}"
                                 Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                             <Image Source="/depviz;component/Resources/ZoomOut_16x.png"/>
                         </Button>
@@ -120,6 +122,8 @@
                         <Button Margin="0,0,0,0" 
                                 IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.IsRenderable, Mode=OneWay}"
                                 ToolTip="Zoom in"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=dependenciesVisualizer:MainWindow}, Path=DataContext.ZoomInCommand}"
+                                CommandParameter="{Binding ElementName=zoomSlider}"
                                 Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                             <Image Source="/depviz;component/Resources/ZoomIn_16x.png"/>
                         </Button>

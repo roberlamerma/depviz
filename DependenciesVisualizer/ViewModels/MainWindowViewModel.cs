@@ -30,6 +30,9 @@ namespace DependenciesVisualizer.ViewModels
 
         public IKernel Ioc { get; private set; }
 
+        public ICommand ZoomInCommand { get; private set; }
+        public ICommand ZoomOutCommand { get; private set; }
+
         private Dictionary<int, DependencyItem> Model { get; set; }
 
         private int selectedVMIndex;
@@ -83,9 +86,22 @@ namespace DependenciesVisualizer.ViewModels
 
             this.ConfigureConnector = new RelayCommand<string>(this.ExecuteConfigureConnector, o => true);
 
+            this.ZoomInCommand = new RelayCommand<object>(this.ExecuteZoomInCommand, o => true);
+            this.ZoomOutCommand = new RelayCommand<object>(this.ExecuteZoomOutCommand, o => true);
+
             //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
 
             //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
+        }
+
+        private void ExecuteZoomOutCommand(object obj)
+        {
+            ((System.Windows.Controls.Primitives.RangeBase)obj).Value -= 0.05;
+        }
+
+        private void ExecuteZoomInCommand(object obj)
+        {
+            ((System.Windows.Controls.Primitives.RangeBase)obj).Value += 0.05;
         }
 
         private void ExecuteRenderAndDownloadDependenciesAsImage(string fileType)
