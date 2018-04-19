@@ -28,24 +28,43 @@
                     </Label.Foreground>
                 </Label>
             </Border>
-            <StackPanel Grid.Row="1"
+            <!--<StackPanel Grid.Row="1"
                         Background="#FFCFD6E5"
-                        Orientation="Horizontal">
-                <Button Margin="2,0,0,0" 
-                        ToolTip="Configure TFS"
-                        Command="{Binding Path=ConfigureTfsUriAndProject}"
+                        Orientation="Horizontal">-->
+            <Grid Grid.Row="1"
+                        Background="#FFCFD6E5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Margin="2,3,0,3" Grid.Column="0" Orientation="Horizontal">
+                    <Button  
+                            ToolTip="Configure TFS"
+                            Command="{Binding Path=ConfigureTfsUriAndProject}"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                        <Image Source="/depviz;component/Resources/Connect_16x.png"/>
+                    </Button>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" Background="#FF8591A2" />
+                    <Button 
+                        ToolTip="Refresh TFS queries"
+                        Command="{Binding Path=ReloadTFSQueries}"
                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <Image Source="/depviz;component/Resources/Connect_16x.png"/>
-                </Button>
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Foreground="#FF8591A2" Background="#FF8591A2" />
-                <Button 
-                    ToolTip="Refresh TFS queries"
-                    Command="{Binding Path=ReloadTFSQueries}"
-                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <Image Source="/depviz;component/Resources/Refresh_16x.png"/>
-                </Button>
+                        <Image Source="/depviz;component/Resources/Refresh_16x.png"/>
+                    </Button>
+                </StackPanel>
+                <StackPanel Margin="0,3,2,3"  Grid.Column="2" Orientation="Horizontal">
+                    <TextBox Width="75"
+                         Style="{StaticResource {x:Static ToolBar.TextBoxStyleKey}}" />
+                    <Button 
+                            ToolTip="Search TFS PBI by ID"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                        <Image Source="/depviz;component/Resources/Search_16x.png"/>
+                    </Button>
+                </StackPanel>
                 <!--<TextBox Margin="2,0,0,0" HorizontalContentAlignment="Stretch" Text="Search bla bla"></TextBox>-->
-            </StackPanel>
+            <!--</StackPanel>-->
+            </Grid>
 
             <!--Visibility="{Binding Path=IsLoadingQueries, Converter={StaticResource booleanToVisibilityConverter}}"-->
             <ProgressBar Grid.Row="2" 
