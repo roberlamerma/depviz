@@ -65,6 +65,8 @@ namespace DependenciesVisualizer.Connectors.Services
                     csvDependency.SuccessorIds ?? new List<int>(),
                     csvDependency.Tags ?? new List<string>());
 
+                tempItem.State = csvDependency.Status;
+
                 theModel.Add(csvDependency.Id, tempItem);
                 this.Logger.Debug(string.Format(@"[CSV] Got: {0}", tempItem.ToString()));
             }
