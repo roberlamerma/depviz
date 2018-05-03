@@ -198,6 +198,55 @@ namespace DependenciesVisualizer.Connectors.Services
             }
         }
 
+        public void ImportDependenciesFromTfs(string projectName, int pbiId)
+        {
+            try
+            {
+                this.RaiseDependenciesModelAboutToChange();
+
+                var workItem = this.WorkItemStore.GetWorkItem(pbiId);
+
+                var theModel = new Dictionary<int, DependencyItem>();
+
+                //int successorsCount = 0;
+                //int predecessorsCount = 0;
+
+                DependencyItem mainDependencyItem = new DependencyItem(pbiId) { Title = workItem.Title, State = workItem.State };
+                mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+                theModel.Add(pbiId, mainDependencyItem);
+
+                DependencyItem innerDependencyItem;
+
+                foreach (var link in workItem.Links)
+                {
+
+                    if (link is RelatedLink)
+                    {
+                        var relatedLink = (RelatedLink)link;
+                        if (relatedLink.LinkTypeEnd.Id == 3)
+                        {
+                            workItem = this.WorkItemStore.GetWorkItem(relatedLink.RelatedWorkItemId);
+
+                            innerDependencyItem = new DependencyItem(relatedLink.RelatedWorkItemId) { Title = workItem.Title, State = workItem.State };
+                            innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+
+                            mainDependencyItem.Successors.Add(relatedLink.RelatedWorkItemId);
+
+                            theModel.Add(relatedLink.RelatedWorkItemId, innerDependencyItem);
+                        }
+                    }
+                }
+
+                this.DependenciesModel = theModel;
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(string.Format(@"{0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                this.RaiseDependenciesModelCouldNotBeChanged();
+                throw;
+            }
+        }
+
         public WorkItemStore WorkItemStore { get; private set; }
 
         public void SetWorkItemStore(Uri tfsUri, string project)

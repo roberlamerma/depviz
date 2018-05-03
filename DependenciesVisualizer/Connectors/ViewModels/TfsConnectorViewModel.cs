@@ -40,6 +40,8 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             this.ConfigureTfsUriAndProject = new RelayCommand<object>(this.ExecuteConfigureTfsUriAndProject, o => true);
 
             this.RenderDependenciesImageFromQuery = new RelayCommand<object>(this.ExecuteRenderDependenciesImageFromQuery, o => true);
+
+            this.SearchPbiById = new RelayCommand<object>(this.ExecuteSearchPbiById, o => true);
         }
 
         public void Initialize()
@@ -154,11 +156,28 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             //}
         }
 
+        private void ExecuteSearchPbiById(object obj)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    this.tfsService.ImportDependenciesFromTfs(this.ProjectName, Convert.ToInt32(obj));
+                }
+                catch (Exception ex)
+                {
+                    this.ErrorMessage = ex.Message + Environment.NewLine;
+                }
+            });
+        }
+
         public string ProjectName { get; set; }
 
         public ICommand ReloadTFSQueries { get; private set; }
 
         public ICommand ConfigureTfsUriAndProject { get; private set; }
+
+        public ICommand SearchPbiById { get; private set; }
 
         ObservableCollection<TfsQueryTreeItemViewModel> queries = new ObservableCollection<TfsQueryTreeItemViewModel>();
         

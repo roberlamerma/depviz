@@ -54,10 +54,12 @@
                     </Button>
                 </StackPanel>
                 <StackPanel Margin="0,3,2,3"  Grid.Column="2" Orientation="Horizontal">
-                    <TextBox Width="75"
+                    <TextBox Width="75" x:Name="PbiIdText"
                          Style="{StaticResource {x:Static ToolBar.TextBoxStyleKey}}" />
                     <Button 
                             ToolTip="Search TFS PBI by ID"
+                            Command="{Binding Path=SearchPbiById}"
+                            CommandParameter="{Binding ElementName=PbiIdText, Path=Text}"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                         <Image Source="/depviz;component/Resources/Search_16x.png"/>
                     </Button>
