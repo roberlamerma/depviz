@@ -202,40 +202,33 @@ namespace DependenciesVisualizer.Connectors.Services
         {
             try
             {
+                byte depth = 3;
+
                 this.RaiseDependenciesModelAboutToChange();
 
                 var workItem = this.WorkItemStore.GetWorkItem(pbiId);
 
                 var theModel = new Dictionary<int, DependencyItem>();
 
-                //int successorsCount = 0;
-                //int predecessorsCount = 0;
-
                 DependencyItem mainDependencyItem = new DependencyItem(pbiId) { Title = workItem.Title, State = workItem.State };
                 mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
                 theModel.Add(pbiId, mainDependencyItem);
+                
 
-                DependencyItem innerDependencyItem;
+                this.PopulateSuccesors(theModel, workItem, depth);
 
-                foreach (var link in workItem.Links)
-                {
+                // Approach 2
+                // DependencyItem innerDependencyItem;
+                //foreach (var succesor in this.GetSuccessorsFromTfs(workItem))
+                //{
+                //    innerDependencyItem = new DependencyItem(succesor.Id) { Title = succesor.Title, State = succesor.State };
+                //    innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
 
-                    if (link is RelatedLink)
-                    {
-                        var relatedLink = (RelatedLink)link;
-                        if (relatedLink.LinkTypeEnd.Id == 3)
-                        {
-                            workItem = this.WorkItemStore.GetWorkItem(relatedLink.RelatedWorkItemId);
+                //    mainDependencyItem.Successors.Add(succesor.Id);
 
-                            innerDependencyItem = new DependencyItem(relatedLink.RelatedWorkItemId) { Title = workItem.Title, State = workItem.State };
-                            innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
+                //    theModel.Add(succesor.Id, innerDependencyItem);
+                //}
 
-                            mainDependencyItem.Successors.Add(relatedLink.RelatedWorkItemId);
-
-                            theModel.Add(relatedLink.RelatedWorkItemId, innerDependencyItem);
-                        }
-                    }
-                }
 
                 this.DependenciesModel = theModel;
             }
@@ -244,6 +237,53 @@ namespace DependenciesVisualizer.Connectors.Services
                 this.Logger.Error(string.Format(@"{0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
                 this.RaiseDependenciesModelCouldNotBeChanged();
                 throw;
+            }
+        }
+
+        private void PopulateSuccesors(Dictionary<int, DependencyItem> model, WorkItem parent, byte level)
+        {
+            if (level == 0)
+            {
+                return;
+            }
+            level--;
+
+            DependencyItem innerDependencyItem;
+
+            var successors = GetSuccessorsFromTfs(parent);
+            foreach (var successor in successors)
+            {
+                innerDependencyItem = new DependencyItem(successor.Id) { Title = successor.Title, State = successor.State };
+                innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(successor));
+
+                if (!model[parent.Id].Successors.Contains(successor.Id))
+                {
+                    model[parent.Id].Successors.Add(successor.Id);
+                }
+
+                if (!model.ContainsKey(successor.Id))
+                {
+                    model.Add(successor.Id, innerDependencyItem);
+                }
+                
+                this.PopulateSuccesors(model, successor, level);
+            }
+
+        }
+
+        private IEnumerable<WorkItem> GetSuccessorsFromTfs(WorkItem workItem)
+        {
+            foreach (var link in workItem.Links)
+            {
+                if (link is RelatedLink)
+                {
+                    var relatedLink = (RelatedLink)link;
+                    if (relatedLink.LinkTypeEnd.Id == 3)
+                    {
+                        workItem = this.WorkItemStore.GetWorkItem(relatedLink.RelatedWorkItemId);
+                        yield return workItem;
+                    }
+                }
             }
         }
 
