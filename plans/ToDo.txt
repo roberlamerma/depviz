@@ -1,4 +1,6 @@
 1) Add "search by ID" function
+    -> Recursive successors: DONE
+	-> Recursive predecessors: PENDING
 2)	Configure States and Tags
 	-> Take this configuration and use it to generate the Graph object
 3)	Make sure no DLL's are retrieved from the GAC

@@ -41,7 +41,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
             this.RenderDependenciesImageFromQuery = new RelayCommand<object>(this.ExecuteRenderDependenciesImageFromQuery, o => true);
 
-            this.SearchPbiById = new RelayCommand<object>(this.ExecuteSearchPbiById, o => true);
+            this.SearchPbiById = new RelayCommand<object>(this.ExecuteSearchPbiById, this.CanExecuteSearchPbiById);
         }
 
         public void Initialize()
@@ -169,6 +169,11 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                     this.ErrorMessage = ex.Message + Environment.NewLine;
                 }
             });
+        }
+
+        private bool CanExecuteSearchPbiById(object obj)
+        {
+            return uint.TryParse(obj.ToString(), out uint n);
         }
 
         public string ProjectName { get; set; }
