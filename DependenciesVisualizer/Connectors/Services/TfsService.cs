@@ -10,6 +10,12 @@ using Ninject;
 
 namespace DependenciesVisualizer.Connectors.Services
 {
+    public enum LinkType
+    {
+        Predecessors = -3,
+        Successors = 3
+    }
+
     public class TfsService : IDependenciesService, ITfsService
     {
         /// <summary>
@@ -202,7 +208,8 @@ namespace DependenciesVisualizer.Connectors.Services
         {
             try
             {
-                byte depth = 3;
+                byte successorsDepth = 3;
+                byte predecessorsDepth = 3;
 
                 this.RaiseDependenciesModelAboutToChange();
 
@@ -213,22 +220,9 @@ namespace DependenciesVisualizer.Connectors.Services
                 DependencyItem mainDependencyItem = new DependencyItem(pbiId) { Title = workItem.Title, State = workItem.State };
                 mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
                 theModel.Add(pbiId, mainDependencyItem);
-                
 
-                this.PopulateSuccesors(theModel, workItem, depth);
-
-                // Approach 2
-                // DependencyItem innerDependencyItem;
-                //foreach (var succesor in this.GetSuccessorsFromTfs(workItem))
-                //{
-                //    innerDependencyItem = new DependencyItem(succesor.Id) { Title = succesor.Title, State = succesor.State };
-                //    innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
-
-                //    mainDependencyItem.Successors.Add(succesor.Id);
-
-                //    theModel.Add(succesor.Id, innerDependencyItem);
-                //}
-
+                this.PopulatePredecesorsRec(theModel, workItem, predecessorsDepth);
+                this.PopulateSuccesorsRec(theModel, workItem, successorsDepth);
 
                 this.DependenciesModel = theModel;
             }
@@ -240,7 +234,7 @@ namespace DependenciesVisualizer.Connectors.Services
             }
         }
 
-        private void PopulateSuccesors(Dictionary<int, DependencyItem> model, WorkItem parent, byte level)
+        private void PopulatePredecesorsRec(Dictionary<int, DependencyItem> model, WorkItem parent, byte level)
         {
             if (level == 0)
             {
@@ -250,7 +244,38 @@ namespace DependenciesVisualizer.Connectors.Services
 
             DependencyItem innerDependencyItem;
 
-            var successors = GetSuccessorsFromTfs(parent);
+            var predecessors = this.GetPredecessorsFromTfs(parent);
+
+            foreach (var predecessor in predecessors)
+            {
+                innerDependencyItem = new DependencyItem(predecessor.Id) { Title = predecessor.Title, State = predecessor.State };
+                innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(predecessor));
+
+                if (!model.ContainsKey(predecessor.Id))
+                {
+                    model.Add(predecessor.Id, innerDependencyItem);
+                }
+
+                if (!model[predecessor.Id].Successors.Contains(parent.Id))
+                {
+                    model[predecessor.Id].Successors.Add(parent.Id);
+                }
+
+                this.PopulatePredecesorsRec(model, predecessor, level);
+            }
+        }
+
+        private void PopulateSuccesorsRec(Dictionary<int, DependencyItem> model, WorkItem parent, byte level)
+        {
+            if (level == 0)
+            {
+                return;
+            }
+            level--;
+
+            DependencyItem innerDependencyItem;
+
+            var successors = this.GetSuccessorsFromTfs(parent);
             foreach (var successor in successors)
             {
                 innerDependencyItem = new DependencyItem(successor.Id) { Title = successor.Title, State = successor.State };
@@ -266,19 +291,29 @@ namespace DependenciesVisualizer.Connectors.Services
                     model.Add(successor.Id, innerDependencyItem);
                 }
                 
-                this.PopulateSuccesors(model, successor, level);
+                this.PopulateSuccesorsRec(model, successor, level);
             }
 
         }
 
         private IEnumerable<WorkItem> GetSuccessorsFromTfs(WorkItem workItem)
         {
+            return this.GetLinkTypeFromTfs(workItem, LinkType.Successors);
+        }
+
+        private IEnumerable<WorkItem> GetPredecessorsFromTfs(WorkItem workItem)
+        {
+            return this.GetLinkTypeFromTfs(workItem, LinkType.Predecessors);
+        }
+
+        private IEnumerable<WorkItem> GetLinkTypeFromTfs(WorkItem workItem, LinkType linkType)
+        {
             foreach (var link in workItem.Links)
             {
                 if (link is RelatedLink)
                 {
                     var relatedLink = (RelatedLink)link;
-                    if (relatedLink.LinkTypeEnd.Id == 3)
+                    if ((LinkType)relatedLink.LinkTypeEnd.Id == linkType)
                     {
                         workItem = this.WorkItemStore.GetWorkItem(relatedLink.RelatedWorkItemId);
                         yield return workItem;
