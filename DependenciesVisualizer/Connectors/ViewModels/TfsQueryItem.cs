@@ -13,9 +13,15 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
     public class TfsFlatQueryItem : TfsQueryTreeItemViewModel
     {
-        public TfsFlatQueryItem(TfsQueryTreeItemViewModel parent, string name) : base(parent, name)
+        public TfsFlatQueryItem(TfsQueryTreeItemViewModel parent, string name, ICommand command, Guid guid) : base(parent, name)
         {
+            this.RenderDependenciesImageFromQuery = command;
+            this.QueryId = guid;
         }
+
+        public ICommand RenderDependenciesImageFromQuery { get; private set; }
+
+        public Guid QueryId { get; private set; }
     }
 
     public class TfsLinkedListQueryItem : TfsQueryTreeItemViewModel
@@ -24,8 +30,6 @@ namespace DependenciesVisualizer.Connectors.ViewModels
         {
             this.RenderDependenciesImageFromQuery = command;
             this.QueryId = guid;
-            //this.RenderDependenciesImageFromQuery = new RelayCommand<object>(o => { MessageBox.Show("Yeah"); }, o => true);
-            //this.QueryId = new Guid();
         }
 
         public ICommand RenderDependenciesImageFromQuery { get; private set; }

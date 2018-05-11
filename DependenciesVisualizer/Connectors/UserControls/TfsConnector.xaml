@@ -161,10 +161,27 @@
                         </StackPanel>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type queryViewModels:TfsFlatQueryItem}">
+                    <!--<DataTemplate DataType="{x:Type queryViewModels:TfsFlatQueryItem}">
                         <StackPanel Orientation="Horizontal">
                             <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/FlatList_16x.png" />
                             <TextBlock Text="{Binding Path=Name}" Foreground="#FF808080" />
+                        </StackPanel>
+                    </DataTemplate>-->
+                    <DataTemplate DataType="{x:Type queryViewModels:TfsFlatQueryItem}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="16" Height="16" Margin="3,0" Source="/depviz;component/Resources/FlatList_16x.png" />
+                            <TextBlock Text="{Binding Path=Name}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding Command="{Binding Path=RenderDependenciesImageFromQuery}"
+                                                  CommandParameter="{Binding Path=QueryId}"
+                                                  MouseAction="LeftDoubleClick" />
+                                </TextBlock.InputBindings>
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Render dependencies image..." Command="{Binding Path=RenderDependenciesImageFromQuery}" CommandParameter="{Binding Path=QueryId}"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
 

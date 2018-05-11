@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Configuration;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using DependenciesVisualizer.ViewModels;
@@ -18,6 +21,17 @@ namespace DependenciesVisualizer
         {
             this.Logger = ioc.Get<ILog>();
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
+            if (!Directory.Exists(ConfigurationManager.AppSettings["graphvizPath"]))
+            {
+                var error = string.Format("Could not find the given GraphViz directory: '{0}'", ConfigurationManager.AppSettings["graphvizPath"]);
+                this.Logger.Fatal(error);
+
+                var messageError = string.Format("{0}.{1}{2} Check the path on this config file: '{3}.conf'", error, Environment.NewLine, Environment.NewLine, Assembly.GetEntryAssembly().Location);
+                MessageBox.Show(messageError, "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
             this.DataContext = new MainWindowViewModel(ioc);
             this.InitializeComponent();
             

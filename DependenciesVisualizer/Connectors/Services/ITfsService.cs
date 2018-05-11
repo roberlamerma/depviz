@@ -26,6 +26,6 @@ namespace DependenciesVisualizer.Connectors.Services
 
         void ImportDependenciesFromTfs(string projectName, Guid queryGuid);
 
-        void ImportDependenciesFromTfs(string projectName, int pbiId);
+        void ImportDependenciesFromTfs(int pbiId);
     }
 }

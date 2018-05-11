@@ -79,7 +79,7 @@ namespace DependenciesVisualizer.Helpers
             switch (query.QueryType)
             {
                 case QueryType.List:
-                    queryTreeItem = new TfsFlatQueryItem(parent, query.Name);
+                    queryTreeItem = new TfsFlatQueryItem(parent, query.Name, command, query.Id);
                     break;
                 case QueryType.OneHop:
                     queryTreeItem = new TfsLinkedListQueryItem(parent, query.Name, command, query.Id);

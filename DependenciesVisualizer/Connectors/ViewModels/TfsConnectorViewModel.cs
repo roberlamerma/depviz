@@ -162,7 +162,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             {
                 try
                 {
-                    this.tfsService.ImportDependenciesFromTfs(this.ProjectName, Convert.ToInt32(obj));
+                    this.tfsService.ImportDependenciesFromTfs(Convert.ToInt32(obj));
                 }
                 catch (Exception ex)
                 {
