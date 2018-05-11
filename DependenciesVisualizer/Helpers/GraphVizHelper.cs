@@ -123,11 +123,6 @@ namespace DependenciesVisualizer.Helpers
 
         public static Color GetColorByState(string state)
         {
-            // Done yellowgreen
-            // Committed Gold
-            // In Progress Tomato
-            // New lightskyblue
-
             Color ret = Color.Lightgray;
 
             if (!string.IsNullOrWhiteSpace(state))

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DependenciesVisualizer.Connectors.Models;
 using DependenciesVisualizer.Model;
 using DependenciesVisualizer.Contracts;

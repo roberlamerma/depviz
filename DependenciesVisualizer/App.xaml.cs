@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Connectors.ViewModels;
 using DependenciesVisualizer.Contracts;
-using DependenciesVisualizer.ViewModels;
 using log4net;
 using Ninject;
-using Ninject.Activation;
 
 namespace DependenciesVisualizer.Model
 {
@@ -52,22 +44,5 @@ namespace DependenciesVisualizer.Model
 
             base.OnStartup(e);
         }
-
-        /* This was to dinamically load one connector or another, depending on what was stored on ConfigurationManager.AppSettings["selectedConnector"]
-        private bool ChooseTfsImporter(IRequest request)
-        {
-            return this.ChooseImporter("tfs");
-        }
-
-        private bool ChooseCsvImporter(IRequest request)
-        {
-            return this.ChooseImporter("csv");
-        }
-
-        private bool ChooseImporter(string target)
-        {
-            return ConfigurationManager.AppSettings["selectedConnector"].ToLower().Equals(target);
-        }
-        */
     }
 }

@@ -137,7 +137,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\DependencyItem.cs" />
-    <Compile Include="Helpers\DisplayImage.cs" />
     <Compile Include="Helpers\GraphVizHelper.cs" />
     <Compile Include="Helpers\QueryTypesEnum.cs" />
     <Compile Include="Helpers\TfsHelper.cs" />

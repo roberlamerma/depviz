@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Diagnostics.Tracing;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using DependenciesVisualizer.Contracts;
@@ -16,9 +14,7 @@ using Shields.GraphViz.Components;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using DependenciesVisualizer.Connectors.Services;
 using DependenciesVisualizer.Connectors.UserControls;
-using DependenciesVisualizer.Connectors.ViewModels;
 
 namespace DependenciesVisualizer.ViewModels
 {
@@ -35,20 +31,13 @@ namespace DependenciesVisualizer.ViewModels
 
         private Dictionary<int, DependencyItem> Model { get; set; }
 
-        private int selectedVMIndex;
-
         private IConnectorViewModel currentConnectorViewModel;
-
-        //private readonly List<IConnectorViewModel> connectorViewModels;
 
         public MainWindowViewModel(IKernel ioc)
         {
             this.IsLoading = false;
 
             this.Ioc = ioc;
-
-            //this.connectorViewModels = new List<IConnectorViewModel>();
-            //this.ConnectorNames = new ObservableCollection<string>();
 
             this.Connectors = new ObservableCollection<IConnectorViewModel>(this.Ioc.GetAll<IConnectorViewModel>());
 
@@ -60,26 +49,6 @@ namespace DependenciesVisualizer.ViewModels
                 }
             }
 
-            /*
-            int selectedViewModelIndex = -1;
-            byte i = 0;
-
-            foreach (var vm in this.Ioc.GetAll<IConnectorViewModel>())
-            {
-                this.connectorViewModels.Add(vm);
-                this.ConnectorNames.Add(vm.Name);
-
-                if (selectedViewModelIndex == -1 && vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()))
-                {
-                    selectedViewModelIndex = i;
-                }
-
-                i++;
-            }
-
-            this.SelectedVMIndex = selectedViewModelIndex;
-            */
-
             this.SelectConnector = new RelayCommand<IConnectorViewModel>(ExecuteSelectConnector, o => true );
 
             this.RenderAndDownloadDependenciesAsImage = new RelayCommand<string>(this.ExecuteRenderAndDownloadDependenciesAsImage, o => this.IsRenderable);
@@ -88,10 +57,6 @@ namespace DependenciesVisualizer.ViewModels
 
             this.ZoomInCommand = new RelayCommand<object>(this.ExecuteZoomInCommand, o => true);
             this.ZoomOutCommand = new RelayCommand<object>(this.ExecuteZoomOutCommand, o => true);
-
-            //var configuredViewModel = this.connectorViewModels.SingleOrDefault(vm => vm.Name.ToLower().Equals(ConfigurationManager.AppSettings["selectedConnector"].ToLower()));
-
-            //this.CurrentConnectorViewModel = configuredViewModel ?? this.connectorViewModels[0];
         }
 
         private void ExecuteZoomOutCommand(object obj)
@@ -255,7 +220,6 @@ namespace DependenciesVisualizer.ViewModels
             get { return this.isLoading; }
             set
             {
-                // ToDo (05/02/2018): binding is not working...
                 if (value != this.isLoading)
                 {
                     this.isLoading = value;
@@ -264,18 +228,6 @@ namespace DependenciesVisualizer.ViewModels
             }
         }
         private bool isLoading;
-
-        // ToDo: AKI the binding is not working because something (retrieving the elements from TFS is blocking the UI thread)
-        //public string IsLoading
-        //{
-        //    get { return this.isLoading; }
-        //    set
-        //    {
-        //        this.isLoading = value;
-        //        this.OnPropertyChanged("IsLoading");
-        //    }
-        //}
-        //private string isLoading;
 
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {

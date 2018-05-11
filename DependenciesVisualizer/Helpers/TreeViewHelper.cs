@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using DependenciesVisualizer.Helpers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using System.Windows.Threading;
 using DependenciesVisualizer.Connectors.ViewModels;
 
 namespace DependenciesVisualizer.Helpers
 {
     static class TreeViewHelper
     {
-        private static Action<object, MouseButtonEventArgs> doubleClickDelegate;
-
         public static TfsRootFolderQueryItem BuildTreeViewFromTfs(QueryHierarchy queryHierarchy, string header, ICommand command)
         {
             TfsRootFolderQueryItem root = new TfsRootFolderQueryItem(null, header);
