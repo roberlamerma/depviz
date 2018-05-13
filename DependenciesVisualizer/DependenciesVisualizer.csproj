@@ -93,6 +93,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CannotConnectException.cs" />
     <Compile Include="Connectors\Models\CsvDependency.cs" />
     <Compile Include="Connectors\Services\CsvService.cs" />
     <Compile Include="Connectors\Services\ICsvService.cs" />

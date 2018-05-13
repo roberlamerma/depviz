@@ -112,6 +112,12 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                     this.HaveSettingsChanged = true;
 
                     var store = TfsHelper.GetWorkItemStore(this.tempTfsUrlUri);
+
+                    if (store == null)
+                    {
+                        throw new CannotConnectException(string.Format(@"Cannot connect to TFS uri: {0}", this.tempTfsUrlUri.ToString()));
+                    }
+
                     var project = store.Projects[this.tempProjectName];
 
                     // If no exceptions are captured, the values are saved

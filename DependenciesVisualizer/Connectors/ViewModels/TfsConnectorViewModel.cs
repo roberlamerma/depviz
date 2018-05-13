@@ -111,6 +111,11 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                            {
                                try
                                {
+                                   if (this.tfsService.WorkItemStore == null)
+                                   {
+                                       throw new CannotConnectException(string.Format(@"Cannot connect to TFS uri: {0}", Properties.Settings.Default.tfsUrl));
+                                   }
+
                                    var root = TreeViewHelper.BuildTreeViewFromTfs(this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy,
                                                                                                          Properties.Settings.Default.tfsprojectName,
                                                                                                          this.RenderDependenciesImageFromQuery);
