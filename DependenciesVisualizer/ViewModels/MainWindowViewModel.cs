@@ -28,6 +28,9 @@ namespace DependenciesVisualizer.ViewModels
 
         public ICommand ZoomInCommand { get; private set; }
         public ICommand ZoomOutCommand { get; private set; }
+        public ICommand GoToDepvizWikiHowto { get; private set; }
+        public ICommand GoToGraphvizHome { get; private set; }
+        public ICommand GoToDepvizHome { get; private set; }
 
         private Dictionary<int, DependencyItem> Model { get; set; }
 
@@ -57,6 +60,25 @@ namespace DependenciesVisualizer.ViewModels
 
             this.ZoomInCommand = new RelayCommand<object>(this.ExecuteZoomInCommand, o => true);
             this.ZoomOutCommand = new RelayCommand<object>(this.ExecuteZoomOutCommand, o => true);
+
+            this.GoToDepvizWikiHowto = new RelayCommand<IConnectorViewModel>(ExecuteGoToDepvizWikiHowto, o => true);
+            this.GoToGraphvizHome = new RelayCommand<IConnectorViewModel>(ExecuteGoToGraphvizHome, o => true);
+            this.GoToDepvizHome = new RelayCommand<IConnectorViewModel>(ExecuteGoToDepvizHome, o => true);
+        }
+
+        private void ExecuteGoToDepvizHome(IConnectorViewModel obj)
+        {
+            System.Diagnostics.Process.Start("https://github.com/roberlamerma/depviz");
+        }
+
+        private void ExecuteGoToGraphvizHome(IConnectorViewModel obj)
+        {
+            System.Diagnostics.Process.Start("https://www.graphviz.org/");
+        }
+
+        private void ExecuteGoToDepvizWikiHowto(IConnectorViewModel obj)
+        {
+            System.Diagnostics.Process.Start("https://github.com/roberlamerma/depviz/wiki/How-to-use-depviz");
         }
 
         private void ExecuteZoomOutCommand(object obj)

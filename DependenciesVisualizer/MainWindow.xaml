@@ -97,11 +97,11 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Help" HorizontalAlignment="Right">
-                <MenuItem Header="How to use this tool..."/>
+                <MenuItem Header="How to use this tool..." Command="{Binding Path=GoToDepvizWikiHowto}" />
                 <Separator />
-                <MenuItem Header="About Grapviz..."/>
+                <MenuItem Header="About Grapviz..." Command="{Binding Path=GoToGraphvizHome}" />
                 <Separator />
-                <MenuItem Header="About this tool..."/>
+                <MenuItem Header="About this tool..." Command="{Binding Path=GoToDepvizHome}" />
             </MenuItem>
         </Menu>
         <!--<ComboBox Grid.Row="0" Grid.Column="0"
