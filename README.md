@@ -32,7 +32,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 1. Enter the GraphViz path you annotated above on the **appSettings.graphvizPath** tag, on the **depviz.exe.config** file.
 1. Depending on the repository/connector you will use (TFS, CSV, ...), follow the instructions below:
 
-## TFS
+### TFS
 1. Open the tool
 1. File -> Select Connector... -> TFS
 1. Configure TFS: ![Configure TFS](images/tfs_config.png)
@@ -41,7 +41,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 
 :information_source: You can also achieve this by editing the **userSettings.tfsUrl** tag, on the **depviz.exe.config** file, before opening **depviz.exe**
 
-## CSV
+### CSV
 1. Open the tool
 1. File -> Select Connector... -> CSV
 1. Select CSV file: ![Select CSV file](images/csv_config.png)
