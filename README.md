@@ -25,7 +25,8 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 ## Installation
 :construction: _At some point I will create an installer_
 
-Download the binaries (or build the tool yourself)
+1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/0.1.0/Depviz_v0.1.0.zip)
+1. Or build the tool yourself
 
 ## Configuration
 1. Enter the GraphViz path you annotated above on the **appSettings.graphvizPath** tag, on the **depviz.exe.config** file.
