@@ -15,5 +15,9 @@ namespace DependenciesVisualizer.Contracts
         event EventHandler<EventArgs> DependenciesModelCouldNotBeChanged;
 
         void RaiseDependenciesModelChanged();
+
+        void RaiseDependenciesModelAboutToChange();
+
+        void RaiseDependenciesModelCouldNotBeChanged();
     }
 }

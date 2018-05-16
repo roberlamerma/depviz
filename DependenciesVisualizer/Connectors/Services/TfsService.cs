@@ -197,7 +197,7 @@ namespace DependenciesVisualizer.Connectors.Services
                 }
             }
 
-            // Adde successors That Are Not Parents to the DependenciesModel
+            // Add successors That Are Not Parents to the DependenciesModel
             foreach (var successor in successorsThatAreNotParents)
             {
                 if (!dependenciesModel.ContainsKey(successor.Id))
@@ -206,35 +206,6 @@ namespace DependenciesVisualizer.Connectors.Services
                     this.Logger.Debug(string.Format(@"[TFS] Got SUCCESSOR: {0}", successor.ToString()));
                 }
             }
-
-            //foreach (WorkItemLinkInfo workItemInfo in queryResults)
-            //{
-            //    if (!this.DependenciesModel.ContainsKey(workItemInfo.TargetId))
-            //    {
-            //        var dependencyListItem = this.GetDependencyListItemFromWorkItem(workItemInfo.TargetId, true);
-
-            //        this.DependenciesModel.Add(workItemInfo.TargetId, dependencyListItem);
-            //    }
-            //}
-
-            //// As a PBI might just appears on the query as a child, we make sure it is also added to the model
-            //foreach (KeyValuePair<int, DependencyItem> entry in this.DependenciesModel)
-            //{
-            //    if (entry.Value.Successors.Any())
-            //    {
-            //        foreach (var succesor in entry.Value.Successors)
-            //        {
-            //            if (!this.DependenciesModel.ContainsKey(succesor))
-            //            {
-            //                var dependencyListItem = this.GetDependencyListItemFromWorkItem(succesor, false);
-
-            //                this.DependenciesModel.Add(succesor, dependencyListItem);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //this.DependenciesModel = theModel;
         }
 
         private void PopulateDependenciesWithFlatQuery(Dictionary<int, DependencyItem> dependenciesModel, Query query, QueryDefinition queryDef)
@@ -395,7 +366,6 @@ namespace DependenciesVisualizer.Connectors.Services
                 }
 
                 this.dependenciesModel = value;
-                //this.RaiseDependenciesModelChanged();
             }
         }
 

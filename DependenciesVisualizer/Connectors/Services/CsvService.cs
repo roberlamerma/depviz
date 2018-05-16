@@ -40,38 +40,57 @@ namespace DependenciesVisualizer.Connectors.Services
             this.DependenciesModelChanged(this, EventArgs.Empty);
         }
 
+        public void RaiseDependenciesModelAboutToChange()
+        {
+            this.DependenciesModelAboutToChange(this, EventArgs.Empty);
+        }
+
+        public void RaiseDependenciesModelCouldNotBeChanged()
+        {
+            this.DependenciesModelCouldNotBeChanged(this, EventArgs.Empty);
+        }
+
         public void ImportDependenciesFromCsvFile(string csvFile)
         {
-            var engine = new FileHelperEngine<CsvDependency>();
-
-            var records = engine.ReadFile(csvFile);
-
-            if (engine.GetFileHeader() != engine.HeaderText.Trim())
+            try
             {
-                string error = string.Format("[CSV] Column headers: '{0}' from file '{1}' do not match the expected ones: '{2}'", engine.HeaderText.Trim(), csvFile, engine.GetFileHeader());
-                this.Logger.Error(error);
-                throw new Exception(error);
+                this.RaiseDependenciesModelAboutToChange();
+
+                var engine = new FileHelperEngine<CsvDependency>();
+
+                var records = engine.ReadFile(csvFile);
+
+                if (engine.GetFileHeader() != engine.HeaderText.Trim())
+                {
+                    throw new Exception(string.Format("[CSV] Column headers: '{0}' from file '{1}' do not match the expected ones: '{2}'", engine.HeaderText.Trim(), csvFile, engine.GetFileHeader()));
+                }
+
+                var theModel = new Dictionary<int, DependencyItem>();
+                DependencyItem tempItem;
+
+                foreach (var csvDependency in records)
+                {
+                    tempItem = new DependencyItem(
+                        csvDependency.Id,
+                        csvDependency.Title,
+                        csvDependency.SuccessorIds ?? new List<int>(),
+                        csvDependency.Tags ?? new List<string>());
+
+                    tempItem.State = csvDependency.Status;
+
+                    theModel.Add(csvDependency.Id, tempItem);
+                    this.Logger.Debug(string.Format(@"[CSV] Got: {0}", tempItem.ToString()));
+                }
+
+                this.DependenciesModel = theModel;
+                this.RaiseDependenciesModelChanged();
             }
-
-            var theModel = new Dictionary<int, DependencyItem>();
-            DependencyItem tempItem;
-
-            foreach (var csvDependency in records)
+            catch (Exception ex)
             {
-                tempItem = new DependencyItem(
-                    csvDependency.Id,
-                    csvDependency.Title,
-                    csvDependency.SuccessorIds ?? new List<int>(),
-                    csvDependency.Tags ?? new List<string>());
-
-                tempItem.State = csvDependency.Status;
-
-                theModel.Add(csvDependency.Id, tempItem);
-                this.Logger.Debug(string.Format(@"[CSV] Got: {0}", tempItem.ToString()));
+                this.Logger.Error(string.Format(@"{0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                this.RaiseDependenciesModelCouldNotBeChanged();
+                throw;
             }
-
-            this.DependenciesModel = theModel;
-            // ToDo: finish importing dependencies
         }
 
         public Dictionary<int, DependencyItem> DependenciesModel
@@ -85,7 +104,6 @@ namespace DependenciesVisualizer.Connectors.Services
                 }
 
                 this.dependenciesModel = value;
-                this.RaiseDependenciesModelChanged();
             }
         }
     }
