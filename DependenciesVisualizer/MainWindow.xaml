@@ -89,12 +89,6 @@
                         <Image Source="/depviz;component/Resources/DownloadFile_16x.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator />
-                <MenuItem Header="Show dotString...">
-                    <MenuItem.Icon>
-                        <Image Source="/depviz;component/Resources/ResultToText_16x.png" />
-                    </MenuItem.Icon>
-                </MenuItem>
             </MenuItem>
             <MenuItem Header="Help" HorizontalAlignment="Right">
                 <MenuItem Header="How to use this tool..." Command="{Binding Path=GoToDepvizWikiHowto}" />

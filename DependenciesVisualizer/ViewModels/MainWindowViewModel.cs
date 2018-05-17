@@ -33,7 +33,6 @@ namespace DependenciesVisualizer.ViewModels
         public ICommand GoToDepvizHome { get; private set; }
 
         private Dictionary<int, DependencyItem> Model { get; set; }
-
         private IConnectorViewModel currentConnectorViewModel;
 
         public MainWindowViewModel(IKernel ioc)
@@ -66,17 +65,17 @@ namespace DependenciesVisualizer.ViewModels
             this.GoToDepvizHome = new RelayCommand<IConnectorViewModel>(ExecuteGoToDepvizHome, o => true);
         }
 
-        private void ExecuteGoToDepvizHome(IConnectorViewModel obj)
+        private void ExecuteGoToDepvizHome(object obj)
         {
             System.Diagnostics.Process.Start("https://github.com/roberlamerma/depviz");
         }
 
-        private void ExecuteGoToGraphvizHome(IConnectorViewModel obj)
+        private void ExecuteGoToGraphvizHome(object obj)
         {
             System.Diagnostics.Process.Start("https://www.graphviz.org/");
         }
 
-        private void ExecuteGoToDepvizWikiHowto(IConnectorViewModel obj)
+        private void ExecuteGoToDepvizWikiHowto(object obj)
         {
             System.Diagnostics.Process.Start("https://github.com/roberlamerma/depviz/wiki/How-to-use-depviz");
         }
