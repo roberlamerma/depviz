@@ -70,5 +70,17 @@ namespace DependenciesVisualizer.Properties {
                 this["csvFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string graphvizPath {
+            get {
+                return ((string)(this["graphvizPath"]));
+            }
+            set {
+                this["graphvizPath"] = value;
+            }
+        }
     }
 }

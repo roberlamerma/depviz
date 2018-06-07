@@ -24,7 +24,7 @@ namespace DependenciesVisualizer.UserControls
 
                 using (MemoryStream memStream = new MemoryStream())
                 {
-                    IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+                    IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
 
                     // We wait synchronously for the memStream to be filled up
                     Task.Run(async () => { await renderer.RunAsync(graph, memStream, RendererLayouts.Dot, RendererFormats.Png, CancellationToken.None); }).Wait();

@@ -54,7 +54,9 @@
                     </Button>
                 </StackPanel>
                 <StackPanel Margin="0,3,2,3"  Grid.Column="2" Orientation="Horizontal">
+                    <!-- AKI: use bindings, add: TargetNullValue='[PBI ID]'-->
                     <TextBox Width="75" x:Name="PbiIdText"
+                             
                          Style="{StaticResource {x:Static ToolBar.TextBoxStyleKey}}" />
                     <Button 
                             ToolTip="Search TFS PBI by ID"

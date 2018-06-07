@@ -102,7 +102,7 @@ namespace DependenciesVisualizer.ViewModels
 
             if (result == true && !string.IsNullOrWhiteSpace(saveFileDialog1.FileName))
             {
-                IRenderer renderer = new Renderer(ConfigurationManager.AppSettings["graphvizPath"]);
+                IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
 
                 using (Stream fileStream = File.Create(saveFileDialog1.FileName))
                 {
