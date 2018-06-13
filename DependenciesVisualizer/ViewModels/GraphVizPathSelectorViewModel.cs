@@ -1,12 +1,6 @@
-﻿using Shields.GraphViz.Components;
-using Shields.GraphViz.Models;
-using Shields.GraphViz.Services;
+﻿using DependenciesVisualizer.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -31,26 +25,21 @@ namespace DependenciesVisualizer.ViewModels
             this.CloseApplication = false;
 
             this.Close = new RelayCommand<object>(this.ExecuteClose, o => true);
-            //this.SetPath = new RelayCommand<object>(this.ExecuteSetPath, this.CanExecuteSetPath);
             this.SetPath = new RelayCommand<object>(this.ExecuteSetPath, o => true);
-        }
-
-        private bool CanExecuteSetPath(object obj)
-        {
-            return (!string.IsNullOrWhiteSpace(this.graphVizPath));
         }
 
         private void ExecuteSetPath(object obj)
         {
             using (var fbd = new FolderBrowserDialog())
             {
+                fbd.ShowNewFolderButton = false;
                 DialogResult result = fbd.ShowDialog();
 
                 if (result == DialogResult.OK && Directory.Exists(fbd.SelectedPath))
                 {
                     try
                     {
-                        this.TryGraphvizPath(fbd.SelectedPath);
+                        GraphVizHelper.TryGraphvizPath(fbd.SelectedPath);
 
                         this.GraphVizPath = fbd.SelectedPath;
 
@@ -64,31 +53,10 @@ namespace DependenciesVisualizer.ViewModels
             }
         }
 
-        private void TryGraphvizPath(string path)
-        {
-            IRenderer renderer = new Renderer(path);
-
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                var statements = new List<Statement>();
-                var graph = new Graph(GraphKinds.Directed, "Test", statements.ToImmutableList());
-
-                Task.Run(async () =>
-                {
-                    await renderer.RunAsync(graph,
-                        memStream,
-                        RendererLayouts.Dot,
-                        RendererFormats.Png,
-                        CancellationToken.None);
-                }).Wait();
-            }
-        }
-
         private void ExecuteClose(object obj)
         {
             this.CloseApplication = true;
             ((Window)obj).Close();
-            //((FrameworkElement)obj).content
         }
 
         public string GraphVizPath

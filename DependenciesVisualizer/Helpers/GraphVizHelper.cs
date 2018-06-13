@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using DependenciesVisualizer.Model;
+using Shields.GraphViz.Components;
 using Shields.GraphViz.Models;
+using Shields.GraphViz.Services;
 
 namespace DependenciesVisualizer.Helpers
 {
@@ -198,6 +203,26 @@ namespace DependenciesVisualizer.Helpers
                 // ToDo: Add message with error
                 // ToDo: Add Logger!
                 throw;
+            }
+        }
+
+        public static void TryGraphvizPath(string path)
+        {
+            IRenderer renderer = new Renderer(path);
+
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                var statements = new List<Statement>();
+                var graph = new Graph(GraphKinds.Directed, "Test", statements.ToImmutableList());
+
+                Task.Run(async () =>
+                {
+                    await renderer.RunAsync(graph,
+                        memStream,
+                        RendererLayouts.Dot,
+                        RendererFormats.Png,
+                        CancellationToken.None);
+                }).Wait();
             }
         }
 

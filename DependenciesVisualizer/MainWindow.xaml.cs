@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using DependenciesVisualizer.Connectors.UserControls;
+using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.ViewModels;
 using log4net;
 using Ninject;
@@ -17,6 +18,8 @@ namespace DependenciesVisualizer
     public partial class MainWindow : Window
     {
         public ILog Logger { get; private set; }
+
+        private GraphVizPathSelector graphVizPathSelectorUserControl = null;
 
         public MainWindow(IKernel ioc)
         {
@@ -33,38 +36,43 @@ namespace DependenciesVisualizer
             //    Application.Current.Shutdown();
             //}
 
-            GraphVizPathSelector graphVizPathSelector = null;
+            GraphVizPathSelector graphVizPathSelectorUserControl = null;
 
-            if (!Directory.Exists(Properties.Settings.Default.graphvizPath))
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.graphvizPath) || !Directory.Exists(Properties.Settings.Default.graphvizPath))
             {
-                graphVizPathSelector = new GraphVizPathSelector();
-                Window window = new Window
+                this.ShowGraphVizPathSelector();
+            } else
+            {
+                try
                 {
-                    Title = "Select the Graphviz path",
-                    Content = graphVizPathSelector,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    ResizeMode =  ResizeMode.NoResize
-                };
-
-                window.ShowDialog();
+                    GraphVizHelper.TryGraphvizPath(Properties.Settings.Default.graphvizPath);
+                } catch (Exception)
+                {
+                    this.ShowGraphVizPathSelector();
+                }
             }
 
-            if (graphVizPathSelector != null && ((GraphVizPathSelectorViewModel)graphVizPathSelector.DataContext).CloseApplication)
+            if (graphVizPathSelectorUserControl != null && ((GraphVizPathSelectorViewModel)graphVizPathSelectorUserControl.DataContext).CloseApplication)
             {
                 Application.Current.Shutdown();
             }
 
             this.DataContext = new MainWindowViewModel(ioc);
             this.InitializeComponent();
+        }
 
-            //var theViewModel = new MainViewModel(new DialogManager(this, this.Dispatcher));
+        private void ShowGraphVizPathSelector()
+        {
+            graphVizPathSelectorUserControl = new GraphVizPathSelector();
+            Window window = new Window
+            {
+                Title = "Select the Graphviz path",
+                Content = graphVizPathSelectorUserControl,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                ResizeMode = ResizeMode.NoResize
+            };
 
-            //if (theViewModel.IsAppValidAndReady)
-            //{
-            //    this.DataContext = theViewModel;
-
-            //    theViewModel.BuildTreeView(ref this.Queries);
-            //}
+            window.ShowDialog();
         }
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -76,7 +84,5 @@ namespace DependenciesVisualizer
         {
             Application.Current.Shutdown();
         }
-
-
     }
 }
