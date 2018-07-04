@@ -17,5 +17,8 @@
     <Setting Name="graphvizPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="maxLineLength" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">35</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

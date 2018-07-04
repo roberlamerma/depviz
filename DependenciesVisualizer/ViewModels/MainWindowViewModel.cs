@@ -92,7 +92,7 @@ namespace DependenciesVisualizer.ViewModels
 
         private void ExecuteRenderAndDownloadDependenciesAsImage(string fileType)
         {
-            var graph = GraphVizHelper.CreateDependencyGraph(this.currentConnectorViewModel.DependenciesService.DependenciesModel);
+            var graph = GraphVizHelper.CreateDependencyGraph(this.currentConnectorViewModel.DependenciesService.DependenciesModel, Properties.Settings.Default.maxLineLength);
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             //saveFileDialog1.Filter = "Png Image|*.png|Svg Image|*.svg";

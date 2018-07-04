@@ -24,25 +24,25 @@ namespace DependenciesVisualizer.Model
 
         public string State { get; set; }
 
-        public string ReducedTitle {
-            get
-            {
-                if (this.Title != null) {
-                    var titleLength = this.Title.Length;
-                    if (titleLength < 50)
-                    {
-                        return this.Title;
-                    } else
-                    {
-                        var firstLine = this.Title.Substring(0, 49);
-                        var secondLine = this.Title.Substring(49, titleLength - 50 + 1);
-                        return string.Format(@"{0}{1}{2}", firstLine, @"&#92;", secondLine);
-                    }
-                }
+        //public string ReducedTitle {
+        //    get
+        //    {
+        //        if (this.Title != null) {
+        //            var titleLength = this.Title.Length;
+        //            if (titleLength < 50)
+        //            {
+        //                return this.Title;
+        //            } else
+        //            {
+        //                var firstLine = this.Title.Substring(0, 49);
+        //                var secondLine = this.Title.Substring(49, titleLength - 50 + 1);
+        //                return string.Format(@"{0}{1}{2}", firstLine, @"&#92;", secondLine);
+        //            }
+        //        }
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
         public List<int> Successors { get; }
         public List<string> Tags { get; }
 

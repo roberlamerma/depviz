@@ -82,5 +82,17 @@ namespace DependenciesVisualizer.Properties {
                 this["graphvizPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("35")]
+        public ushort maxLineLength {
+            get {
+                return ((ushort)(this["maxLineLength"]));
+            }
+            set {
+                this["maxLineLength"] = value;
+            }
+        }
     }
 }

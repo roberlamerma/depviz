@@ -39,10 +39,10 @@ namespace DependenciesVisualizer.Helpers
 
             // We draw filled rectangles
             var generalNodeStyleSettings = new Dictionary<Id, Id>();
-            generalNodeStyleSettings.Add(new Id("shape"), new Id("Mrecord"));
+            generalNodeStyleSettings.Add(new Id("shape"), new Id("record"));
             generalNodeStyleSettings.Add(new Id("style"), new Id("filled"));
             generalNodeStyleSettings.Add(new Id("fontsize"), new Id("11"));
-            generalNodeStyleSettings.Add(new Id("color"), new Id("black"));
+            generalNodeStyleSettings.Add(new Id("color"), new Id("gray25"));
             //generalNodeStyleSettings.Add(new Id("fontname"), new Id("Monospace"));
             var generalNodeStyleAttributes = new AttributeStatement(AttributeKinds.Node, generalNodeStyleSettings.ToImmutableDictionary());
 
@@ -79,8 +79,36 @@ namespace DependenciesVisualizer.Helpers
             https://graphviz.gitlab.io/_pages/doc/info/colors.html
             https://graphviz.gitlab.io/_pages/doc/info/attrs.html#k:color
          */
+        private static string SplitInLines(string title, ushort maxLineLength)
+        {
+            if (title != null)
+            {
+                var graphVizNewline = @"\n";
+                var titleLength = title.Length;
 
-        public static void DefineNode(ref List<Statement> statements, int nodeId, string title, Color color, bool outerBold)
+                switch (Math.Ceiling((double)titleLength / maxLineLength))
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        title = title.Insert(maxLineLength, graphVizNewline);
+                        break;
+                    default:
+                        title = title.Insert(maxLineLength, graphVizNewline).Insert((maxLineLength * 2) + 1, graphVizNewline);
+                        if (title.Length > (maxLineLength * 3) + 2)
+                        {
+                            title = title.Substring(0, (maxLineLength * 3) - 2) + @"...";
+                        }
+                        break;
+
+                }
+                return title;
+            }
+
+            return null;
+        }
+
+        private static void DefineNode(ref List<Statement> statements, int nodeId, string title, Color color, bool outerBold, ushort maxLineLength)
         {
             Dictionary<Id, Id> nodeStyleSettings = null;
             Dictionary<Id, Id> nodeLabelSettings = null;
@@ -118,9 +146,18 @@ namespace DependenciesVisualizer.Helpers
 
             nodeLabelSettings = new Dictionary<Id, Id>();
 
-            
+
             title = string.Concat(title.Split(badChars, StringSplitOptions.RemoveEmptyEntries));
-            nodeStyleSettings.Add(new Id("label"), new Id("{ " + Convert.ToString(nodeId) + " | " + title + "}"));
+            nodeStyleSettings.Add(new Id("label"), new Id("{ " + Convert.ToString(nodeId) + " | " + GraphVizHelper.SplitInLines(title, maxLineLength) + "}"));
+            // nodeStyleSettings.Add(new Id("label"), new Id(@"two\nlines\nMore long lines\ncheck how this looks like")); FUNCIONA...
+            //nodeStyleSettings.Add(new Id("label"), new Id("{<<TABLE>< TR >< TD > AAAA </ TD ></ TR >< TR >< TD > caption </ TD ></ TR ></ TABLE >>}")); NO FUNCIONA
+
+            /*
+             <<TABLE>
+    <TR><TD>AAAA</TD></TR>
+    <TR><TD>caption</TD></TR>
+    </TABLE>>
+             */
 
             var node = new NodeStatement(new Id(Convert.ToString(nodeId)), nodeStyleSettings.ToImmutableDictionary());
             statements.Add(node);
@@ -158,7 +195,7 @@ namespace DependenciesVisualizer.Helpers
             return ret;
         }
 
-        public static Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model)
+        public static Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model, ushort maxLineLength)
         {
             try
             {
@@ -188,7 +225,7 @@ namespace DependenciesVisualizer.Helpers
                         } 
                     }
 
-                    DefineNode(ref statements, entry.Value.Id, entry.Value.ReducedTitle, color, outerBold);
+                    DefineNode(ref statements, entry.Value.Id, entry.Value.Title, color, outerBold, maxLineLength);
 
                     //else
                     //{

@@ -20,7 +20,7 @@ namespace DependenciesVisualizer.UserControls
         {
             if (value != null && value is Dictionary<int, DependencyItem>)
             {
-                var graph = GraphVizHelper.CreateDependencyGraph((Dictionary<int, DependencyItem>)value);
+                var graph = GraphVizHelper.CreateDependencyGraph((Dictionary<int, DependencyItem>)value, Properties.Settings.Default.maxLineLength);
 
                 using (MemoryStream memStream = new MemoryStream())
                 {
