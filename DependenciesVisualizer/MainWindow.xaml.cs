@@ -19,7 +19,7 @@ namespace DependenciesVisualizer
     {
         public ILog Logger { get; private set; }
 
-        private GraphVizPathSelector graphVizPathSelectorUserControl = null;
+        private GraphVizPathSelector GraphVizPathSelectorUserControl { get; set; }
 
         public MainWindow(IKernel ioc)
         {
@@ -36,7 +36,7 @@ namespace DependenciesVisualizer
             //    Application.Current.Shutdown();
             //}
 
-            GraphVizPathSelector graphVizPathSelectorUserControl = null;
+            //GraphVizPathSelector graphVizPathSelectorUserControl = null;
 
             if (string.IsNullOrWhiteSpace(Properties.Settings.Default.graphvizPath) || !Directory.Exists(Properties.Settings.Default.graphvizPath))
             {
@@ -52,7 +52,7 @@ namespace DependenciesVisualizer
                 }
             }
 
-            if (graphVizPathSelectorUserControl != null && ((GraphVizPathSelectorViewModel)graphVizPathSelectorUserControl.DataContext).CloseApplication)
+            if (this.GraphVizPathSelectorUserControl != null && ((GraphVizPathSelectorViewModel)this.GraphVizPathSelectorUserControl.DataContext).CloseApplication)
             {
                 Application.Current.Shutdown();
             }
@@ -63,11 +63,11 @@ namespace DependenciesVisualizer
 
         private void ShowGraphVizPathSelector()
         {
-            graphVizPathSelectorUserControl = new GraphVizPathSelector();
+            this.GraphVizPathSelectorUserControl = new GraphVizPathSelector();
             Window window = new Window
             {
                 Title = "Select the Graphviz path",
-                Content = graphVizPathSelectorUserControl,
+                Content = this.GraphVizPathSelectorUserControl,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 ResizeMode = ResizeMode.NoResize
             };
