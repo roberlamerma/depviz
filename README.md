@@ -23,13 +23,11 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
    * Annotate the binaries installation path (i.g. C:\Program Files (x86)\Graphviz2.38\bin)
 
 ## Installation
-:construction: _At some point I will create an installer_
-
-1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/0.1.0/Depviz_v0.1.0.zip)
+1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.2.0/Depviz_v0.2.0.zip)
 1. Or build the tool yourself
 
 ## Configuration
-1. Enter the GraphViz path you annotated above on the **appSettings.graphvizPath** tag, on the **depviz.exe.config** file.
+1. Start the tool. You will be prompted for the Graphviz path (select the path 'bin', which is where the binaries that the tool uses are located)
 1. Depending on the repository/connector you will use (TFS, CSV, ...), follow the instructions below:
 
 ### TFS
@@ -39,12 +37,10 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
    1. _(You could also go to: File -> Configure (TFS))_
    1. Add your TFS **uri** (i.g. http://yourtfs:8080/tfs/defaultcollection) and the **project name** you want to connect to.
 
-:information_source: You can also achieve this by editing the **userSettings.tfsUrl** tag, on the **depviz.exe.config** file, before opening **depviz.exe**
-
 ### CSV
 1. Open the tool
 1. File -> Select Connector... -> CSV
 1. Select CSV file: ![Select CSV file](images/csv_config.png)
 
 # Add support for other repositories
-:construction: _You could write your own "connector" (and connect the tool with [Jira](https://www.atlassian.com/software/jira), for example). There will be a wiki soon explaining this._
+:construction: _You could write your own "connector" (and connect the tool with [Jira](https://www.atlassian.com/software/jira), for example). Contact me if you have doubts how to do this.
