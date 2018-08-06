@@ -17,5 +17,11 @@ namespace DependenciesVisualizer
 
         [Option('q', "query", Required = true, HelpText = @"Full query path.")]
         public string Query { get; set; }
+
+        [Option('o', "output", Required = true, HelpText = @"Output filename (i.g. MyDependencyImage.png)")]
+        public string Output { get; set; }
+
+        [Option('q', "queryLocation", Required = false, Default = "Shared Queries", HelpText = @"Where is the query stored ('My Queries', 'Shared Queries'")]
+        public string QueryLocation { get; set; }
     }
 }

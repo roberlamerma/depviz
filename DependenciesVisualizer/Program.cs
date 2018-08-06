@@ -1,6 +1,8 @@
 ﻿using CommandLine;
 using DependenciesVisualizer.Connectors.Services;
+using DependenciesVisualizer.Helpers;
 using log4net;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -20,7 +22,7 @@ namespace DependenciesVisualizer
         {
             if (args.Length > 0)
             {
-                Console(args);
+                new ConsoleApp(args);
             }
             else
             {
@@ -28,26 +30,6 @@ namespace DependenciesVisualizer
                 ShowWindow(GetConsoleWindow(), 0 /*SW_HIDE*/);
                 App.Main();
             }
-        }
-
-        private static void Console(string[] args)
-        {
-            Parser.Default.ParseArguments<ConsoleOptions>(args)
-                .WithParsed<ConsoleOptions>(opts => RunOptionsAndReturnExitCode(opts))
-                .WithNotParsed<ConsoleOptions>((errs) => HandleParseError(errs));
-
-        }
-
-        private static void HandleParseError(IEnumerable<Error> errs)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void RunOptionsAndReturnExitCode(ConsoleOptions opts)
-        {
-            //var logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            //var tfsService = new TfsService(logger);
-            
         }
     }
 }

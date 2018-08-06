@@ -114,6 +114,7 @@
     <Compile Include="Connectors\ViewModels\TfsQueryItem.cs" />
     <Compile Include="Connectors\ViewModels\TfsQueryTreeItemViewModel.cs" />
     <Compile Include="Connectors\ViewModels\TfsUriAndProjectSelectorViewModel.cs" />
+    <Compile Include="ConsoleApp.cs" />
     <Compile Include="ConsoleOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="UserControls\ClosablePanelMessage.xaml.cs">
