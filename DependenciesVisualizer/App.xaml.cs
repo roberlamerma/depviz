@@ -5,7 +5,7 @@ using DependenciesVisualizer.Contracts;
 using log4net;
 using Ninject;
 
-namespace DependenciesVisualizer.Model
+namespace DependenciesVisualizer
 {
     /// <summary>
     /// Interaction logic for App.xaml

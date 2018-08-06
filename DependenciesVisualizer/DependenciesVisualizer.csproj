@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{700AE368-05F9-471A-A2D2-EC2132A9FCE9}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>DependenciesVisualizer</RootNamespace>
     <AssemblyName>depviz</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -36,7 +36,13 @@
   <PropertyGroup>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>DependenciesVisualizer.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=2.2.1.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.2.1\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="FileHelpers, Version=3.2.7.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
       <HintPath>..\packages\FileHelpers.3.2.7\lib\net45\FileHelpers.dll</HintPath>
     </Reference>
@@ -108,6 +114,8 @@
     <Compile Include="Connectors\ViewModels\TfsQueryItem.cs" />
     <Compile Include="Connectors\ViewModels\TfsQueryTreeItemViewModel.cs" />
     <Compile Include="Connectors\ViewModels\TfsUriAndProjectSelectorViewModel.cs" />
+    <Compile Include="ConsoleOptions.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="UserControls\ClosablePanelMessage.xaml.cs">
       <DependentUpon>ClosablePanelMessage.xaml</DependentUpon>
     </Compile>
