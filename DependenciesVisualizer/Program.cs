@@ -22,7 +22,7 @@ namespace DependenciesVisualizer
         {
             if (args.Length > 0)
             {
-                new ConsoleApp(args);
+                new ConsoleApp(args).Run();
             }
             else
             {

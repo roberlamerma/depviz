@@ -22,13 +22,23 @@ namespace DependenciesVisualizer
     {
         //Dictionary<int, DependencyItem> DependenciesModel { get; set; }
 
-        IDependenciesService DependenciesService { get; set; }
+        private ILog Logger { get; set; }
 
-        string ImagePath { get; set; }
+        private string[] Args { get; set; }
+
+        private IDependenciesService DependenciesService { get; set; }
+
+        private string ImagePath { get; set; }
 
         public ConsoleApp(string[] args)
         {
-            Parser.Default.ParseArguments<ConsoleOptions>(args)
+            this.Args = args;
+            this.Logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        }
+
+        public void Run()
+        {
+            Parser.Default.ParseArguments<ConsoleOptions>(this.Args)
                 .WithParsed<ConsoleOptions>(opts => RunOptionsAndReturnExitCode(opts))
                 .WithNotParsed<ConsoleOptions>((errs) => HandleParseError(errs));
         }
@@ -40,42 +50,65 @@ namespace DependenciesVisualizer
 
         private void RunOptionsAndReturnExitCode(ConsoleOptions opts)
         {
-            if (Path.IsPathRooted(opts.Output)) {
-                this.ImagePath = opts.Output;
-            } else
+            try
             {
-                this.ImagePath = Path.Combine(Directory.GetCurrentDirectory(), opts.Output);
-            }
-
-            var logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            this.DependenciesService = new TfsService(logger);
-            WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
-
-            ((TfsService)this.DependenciesService).SetWorkItemStore(new Uri(opts.TfsUrl), opts.Project);
-            //var queryHierarchy = tfsService.WorkItemStore.Projects[opts.Project].QueryHierarchy;
-
-            var queries = new List<QueryDefinition>();
-            foreach (QueryItem queryItem in ((TfsService)this.DependenciesService).WorkItemStore.Projects[opts.Project].QueryHierarchy)
-            {
-                var folder = (QueryFolder)queryItem;
-                if (folder != null)
+                if (Path.IsPathRooted(opts.Output))
                 {
-                    GetQueryDefinitions(folder, queries);
+                    this.ImagePath = opts.Output;
                 }
-            }
-
-            Guid queryGuid = Guid.Empty;
-            // ToDo: there might be much better ways to search for the Query Guid
-            foreach (var query in queries)
-            {
-                if (query.Path.Contains(opts.Query))
+                else
                 {
-                    queryGuid = query.Id;
-                    break;
+                    this.ImagePath = Path.Combine(Directory.GetCurrentDirectory(), opts.Output);
                 }
-            }
 
-            ((TfsService)this.DependenciesService).ImportDependenciesFromTfs(opts.Project, queryGuid);
+
+                this.DependenciesService = new TfsService(this.Logger);
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.DependenciesService, "DependenciesModelChanged", this.DependenciesModelChangedHandler);
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.DependenciesService, "DependenciesModelAboutToChange", this.DependenciesModelAboutToChangeHandler);
+                WeakEventManager<IDependenciesService, EventArgs>.AddHandler(this.DependenciesService, "DependenciesModelCouldNotBeChanged", this.DependenciesModelCouldNotBeChanged);
+
+                ((TfsService)this.DependenciesService).SetWorkItemStore(new Uri(opts.TfsUrl), opts.Project);
+                //var queryHierarchy = tfsService.WorkItemStore.Projects[opts.Project].QueryHierarchy;
+
+                var queries = new List<QueryDefinition>();
+                foreach (QueryItem queryItem in ((TfsService)this.DependenciesService).WorkItemStore.Projects[opts.Project].QueryHierarchy)
+                {
+                    var folder = (QueryFolder)queryItem;
+                    if (folder != null)
+                    {
+                        GetQueryDefinitions(folder, queries);
+                    }
+                }
+
+                Guid queryGuid = Guid.Empty;
+                // ToDo: there might be much better ways to search for the Query Guid
+                foreach (var query in queries)
+                {
+                    if (query.Path.Contains(opts.Query))
+                    {
+                        queryGuid = query.Id;
+                        break;
+                    }
+                }
+
+                this.Logger.Debug(string.Format(@"Executing query '{0}'", opts.Query));
+                ((TfsService)this.DependenciesService).ImportDependenciesFromTfs(opts.Project, queryGuid);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(string.Format(@"Got this error while running the query '{0}': {1}", opts.Query, ex.Message));
+                this.Logger.Debug(ex.StackTrace);
+            }
+        }
+
+        private void DependenciesModelCouldNotBeChanged(object sender, EventArgs e)
+        {
+            this.Logger.Error(@"Could not create dependency image");
+        }
+
+        private void DependenciesModelAboutToChangeHandler(object sender, EventArgs e)
+        {
+            this.Logger.Debug(@"Starting creation of dependency image");
         }
 
         private void GetQueryDefinitions(IEnumerable<QueryItem> queryFolder, ICollection<QueryDefinition> list)
@@ -99,20 +132,28 @@ namespace DependenciesVisualizer
 
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {
-            var graph = GraphVizHelper.CreateDependencyGraph(this.DependenciesService.DependenciesModel, Properties.Settings.Default.maxLineLength);
-
-            IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
-
-            using (Stream fileStream = File.Create(this.ImagePath))
+            try
             {
-                Task.Run(async () =>
+                var graph = GraphVizHelper.CreateDependencyGraph(this.DependenciesService.DependenciesModel, Properties.Settings.Default.maxLineLength);
+
+                IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
+
+                using (Stream fileStream = File.Create(this.ImagePath))
                 {
-                    await renderer.RunAsync(graph,
-                        fileStream,
-                        RendererLayouts.Dot,
-                        RendererFormats.Png,
-                        CancellationToken.None);
-                }).Wait();
+                    Task.Run(async () =>
+                    {
+                        await renderer.RunAsync(graph,
+                            fileStream,
+                            RendererLayouts.Dot,
+                            RendererFormats.Png,
+                            CancellationToken.None);
+                    }).Wait();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(string.Format(@"Got an error while trying to generate the image '{0}'", this.ImagePath));
+                this.Logger.Debug(ex.StackTrace);
             }
         }
     }
