@@ -172,7 +172,7 @@ namespace DependenciesVisualizer.Helpers
                         break;
                     case "COMMITTED":
                     case "IN PROGRESS":
-                        nodeColor = Color.Tomato;
+                        nodeColor = Color.Goldenrod1;
                         break;
                     case "DONE":
                         nodeColor = Color.Seagreen;
