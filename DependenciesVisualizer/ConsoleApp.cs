@@ -30,6 +30,10 @@ namespace DependenciesVisualizer
 
         private string ImagePath { get; set; }
 
+        /// <summary>
+        /// Example: --tfsUrl http://tfsprod:8080/tfs/defaultcollection --project Roche.DP.PocPCR --query "Software/cobas Liat 3.3/WBS/PO Cockpit/Linux - Liatmanet/Liatmanet Dependencies to other units (Epics)" --output MyDependencyImage.png
+        /// </summary>
+        /// <param name="args"></param>
         public ConsoleApp(string[] args)
         {
             this.Args = args;

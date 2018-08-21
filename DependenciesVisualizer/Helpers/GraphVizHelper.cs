@@ -20,7 +20,14 @@ namespace DependenciesVisualizer.Helpers
         Tomato,
         Lightskyblue,
         Gold,
-        Yellowgreen
+        Yellowgreen,
+        Dodgerblue3,
+        Skyblue3,
+        Goldenrod1,
+        Seagreen,
+        Black,
+        White,
+        Gray75
     }
 
     public static class GraphVizHelper
@@ -42,7 +49,7 @@ namespace DependenciesVisualizer.Helpers
             generalNodeStyleSettings.Add(new Id("shape"), new Id("record"));
             generalNodeStyleSettings.Add(new Id("style"), new Id("filled"));
             generalNodeStyleSettings.Add(new Id("fontsize"), new Id("11"));
-            generalNodeStyleSettings.Add(new Id("color"), new Id("gray25"));
+            generalNodeStyleSettings.Add(new Id("color"), new Id("gray75"));
             //generalNodeStyleSettings.Add(new Id("fontname"), new Id("Monospace"));
             var generalNodeStyleAttributes = new AttributeStatement(AttributeKinds.Node, generalNodeStyleSettings.ToImmutableDictionary());
 
@@ -108,7 +115,7 @@ namespace DependenciesVisualizer.Helpers
             return null;
         }
 
-        private static void DefineNode(ref List<Statement> statements, int nodeId, string title, Color color, bool outerBold, ushort maxLineLength)
+        private static void DefineNode(ref List<Statement> statements, int nodeId, string title, Color nodeColor, Color textColor, bool outerBold, ushort maxLineLength)
         {
             Dictionary<Id, Id> nodeStyleSettings = null;
             Dictionary<Id, Id> nodeLabelSettings = null;
@@ -116,27 +123,9 @@ namespace DependenciesVisualizer.Helpers
             nodeStyleSettings = new Dictionary<Id, Id>();
             //nodeStyleSettings.Add(new Id("color"), new Id("black"));
 
-            switch (color)
-            {
-                case Color.Lightskyblue:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("lightskyblue"));
-                    break;
-                case Color.Papaya:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("papayawhip"));
-                    break;
-                case Color.Lightgray:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("lightgrey"));
-                    break;
-                case Color.Tomato:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("tomato"));
-                    break;
-                case Color.Gold:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("gold"));
-                    break;
-                case Color.Yellowgreen:
-                    nodeStyleSettings.Add(new Id("fillcolor"), new Id("yellowgreen"));
-                    break;
-            }
+            nodeStyleSettings.Add(new Id("fillcolor"), new Id(Enum.GetName(typeof(Color), nodeColor)));
+
+            nodeStyleSettings.Add(new Id("fontcolor"), new Id(Enum.GetName(typeof(Color), textColor)));
 
             if (outerBold)
             {
@@ -163,9 +152,10 @@ namespace DependenciesVisualizer.Helpers
             statements.Add(node);
         }
 
-        public static Color GetColorByState(string state)
+        public static void SetNodeAndTextColors(string state, out Color nodeColor, out Color textColor)
         {
-            Color ret = Color.Lightgray;
+            nodeColor = Color.Lightgray;
+            textColor = Color.Black;
 
             if (!string.IsNullOrWhiteSpace(state))
             {
@@ -174,25 +164,25 @@ namespace DependenciesVisualizer.Helpers
                 switch (state)
                 {
                     case "NEW":
+                        nodeColor = Color.Dodgerblue3;
+                        textColor = Color.White;
+                        break;
                     case "APPROVED":
-                        ret = Color.Lightskyblue;
+                        nodeColor = Color.Skyblue3;
                         break;
                     case "COMMITTED":
-                        ret = Color.Gold;
-                        break;
                     case "IN PROGRESS":
-                        ret = Color.Tomato;
+                        nodeColor = Color.Tomato;
                         break;
                     case "DONE":
-                        ret = Color.Yellowgreen;
+                        nodeColor = Color.Seagreen;
+                        textColor = Color.White;
                         break;
                     default:
-                        ret = Color.Lightgray;
+                        nodeColor = Color.Lightgray;
                         break;
                 }
             }
-
-            return ret;
         }
 
         public static Graph CreateDependencyGraph(Dictionary<int, DependencyItem> model, ushort maxLineLength)
@@ -214,7 +204,8 @@ namespace DependenciesVisualizer.Helpers
                         }
                     }
 
-                    Color color = GetColorByState(entry.Value.State);
+                    Color nodeColor, textColor;
+                    SetNodeAndTextColors(entry.Value.State, out nodeColor, out textColor);
 
                     var outerBold = false;
                     if (entry.Value.Tags.Any())
@@ -225,7 +216,7 @@ namespace DependenciesVisualizer.Helpers
                         } 
                     }
 
-                    DefineNode(ref statements, entry.Value.Id, entry.Value.Title, color, outerBold, maxLineLength);
+                    DefineNode(ref statements, entry.Value.Id, entry.Value.Title, nodeColor, textColor, outerBold, maxLineLength);
 
                     //else
                     //{
