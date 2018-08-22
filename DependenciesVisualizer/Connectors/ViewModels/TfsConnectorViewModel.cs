@@ -25,15 +25,14 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         private readonly ITfsService tfsService;
         private Visibility isLoading;
-
-        private TreeView treeViewQueryRef;
-        private Dispatcher uiThreadRef;
+        private bool queriesAlreadyLoaded;
 
         [Inject]
         public TfsConnectorViewModel(ITfsService tfsService)
         {
             this.tfsService = tfsService;
             this.ProjectName = Properties.Settings.Default.tfsprojectName;
+            this.queriesAlreadyLoaded = false;
             this.IsLoading = Visibility.Hidden;
             this.ReloadTFSQueries = new RelayCommand<object>(this.ExecuteReloadTFSQueries, o => true);
 
@@ -116,10 +115,22 @@ namespace DependenciesVisualizer.Connectors.ViewModels
                                        throw new CannotConnectException(string.Format(@"Cannot connect to TFS uri: {0}", Properties.Settings.Default.tfsUrl));
                                    }
 
+                                   // In order to show potentially newly created queries, we reload them (just when they were already loaded before)
+                                   if (this.queriesAlreadyLoaded)
+                                   {
+                                       this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy.Refresh();
+                                   }
+
                                    var root = TreeViewHelper.BuildTreeViewFromTfs(this.tfsService.WorkItemStore.Projects[Properties.Settings.Default.tfsprojectName].QueryHierarchy,
                                                                                                          Properties.Settings.Default.tfsprojectName,
                                                                                                          this.RenderDependenciesImageFromQuery);
+
                                    queries = new ObservableCollection<TfsQueryTreeItemViewModel>() { root };
+
+                                   if (root.Children.Count() > 0)
+                                   {
+                                       this.queriesAlreadyLoaded = true;
+                                   }
 
                                    this.OnPropertyChanged("Queries");
                                }
