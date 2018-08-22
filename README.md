@@ -21,6 +21,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 * Windows 7 or 10
 * Install [Graphviz](https://graphviz.gitlab.io/download/)
    * Annotate the binaries installation path (i.g. C:\Program Files (x86)\Graphviz2.38\bin)
+* Install the [Team Foundation Server 2012 Update 4 Object Model](https://marketplace.visualstudio.com/items?itemName=ErinDormierMSFT.TeamFoundationServer2012Update4ObjectModelInstalle)
 
 ## Installation
 1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.2.0/Depviz_v0.2.0.zip)
@@ -43,4 +44,4 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 1. Select CSV file: ![Select CSV file](images/csv_config.png)
 
 # Add support for other repositories
-:construction: _You could write your own "connector" (and connect the tool with [Jira](https://www.atlassian.com/software/jira), for example). Contact me if you have doubts how to do this.
+You could write your own "connector" (and connect the tool with [Jira](https://www.atlassian.com/software/jira), for example). Contact me if you have doubts on how to do this.
