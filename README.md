@@ -24,7 +24,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 * Install the [Team Foundation Server 2012 Update 4 Object Model](https://marketplace.visualstudio.com/items?itemName=ErinDormierMSFT.TeamFoundationServer2012Update4ObjectModelInstalle)
 
 ## Installation
-1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.2.0/Depviz_v0.2.0.zip)
+1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.3.1/Depviz_v0.3.1.zip)
 1. Or build the tool yourself
 
 ## Configuration
