@@ -15,6 +15,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using DependenciesVisualizer.Connectors.UserControls;
+using System.Windows.Media.Imaging;
+using log4net;
+using System.Windows.Media;
 
 namespace DependenciesVisualizer.ViewModels
 {
@@ -32,14 +35,17 @@ namespace DependenciesVisualizer.ViewModels
         public ICommand GoToGraphvizHome { get; private set; }
         public ICommand GoToDepvizHome { get; private set; }
 
-        private Dictionary<int, DependencyItem> Model { get; set; }
         private IConnectorViewModel currentConnectorViewModel;
+
+        private ILog logger;
 
         public MainWindowViewModel(IKernel ioc)
         {
             this.IsLoading = false;
 
             this.Ioc = ioc;
+
+            this.logger = this.Ioc.TryGet<ILog>();
 
             this.Connectors = new ObservableCollection<IConnectorViewModel>(this.Ioc.GetAll<IConnectorViewModel>());
 
@@ -125,25 +131,6 @@ namespace DependenciesVisualizer.ViewModels
             Properties.Settings.Default.Save();
         }
 
-
-        //public int SelectedVMIndex
-        //{
-        //    get => this.selectedVMIndex;
-
-        //    set
-        //    {
-        //        if (this.selectedVMIndex == value && this.CurrentConnectorViewModel != null)
-        //        {
-        //            return;
-        //        }
-
-        //        this.selectedVMIndex = value;
-        //        this.OnPropertyChanged("SelectedVMIndex");
-
-        //        this.CurrentConnectorViewModel = this.connectorViewModels[this.selectedVMIndex];
-        //    }
-        //}
-
         public ICommand SelectConnector { get; private set; }
 
         private void ExecuteConfigureConnector(string connectorName)
@@ -219,7 +206,22 @@ namespace DependenciesVisualizer.ViewModels
         }
 
         public Dictionary<int, DependencyItem> DependenciesModel => this.currentConnectorViewModel.DependenciesService.DependenciesModel;
-        public int DependenciesModelCount
+
+        public BitmapImage DependenciesImage
+        {
+            get
+            {
+                if (this.currentConnectorViewModel.DependenciesService != null && this.currentConnectorViewModel.DependenciesService.DependenciesModel != null && this.currentConnectorViewModel.DependenciesService.DependenciesModel.Count > 0)
+                {
+                    return this.dependenciesImage;
+                }
+
+                return null;
+            }
+        }
+        private BitmapImage dependenciesImage;
+
+        private int DependenciesModelCount
         {
             get
             {
@@ -252,8 +254,49 @@ namespace DependenciesVisualizer.ViewModels
 
         private void DependenciesModelChangedHandler(object sender, EventArgs e)
         {
-            this.OnPropertyChanged("DependenciesModel");
-            this.OnPropertyChanged("DependenciesModelCount");
+            try
+            {
+                var graph = GraphVizHelper.CreateDependencyGraph(
+                    this.currentConnectorViewModel.DependenciesService.DependenciesModel,
+                    Properties.Settings.Default.maxLineLength);
+
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
+
+                    // We wait synchronously for the memStream to be filled up
+                    Task.Run(async () => { await renderer.RunAsync(graph, memStream, RendererLayouts.Dot, RendererFormats.Png, CancellationToken.None); }).Wait();
+
+                    this.dependenciesImage = new BitmapImage();
+                    this.dependenciesImage.BeginInit();
+                    this.dependenciesImage.CacheOption = BitmapCacheOption.OnLoad;
+                    this.dependenciesImage.StreamSource = memStream;
+                    this.dependenciesImage.EndInit();
+                    this.dependenciesImage.Freeze();
+                }
+
+                //var encoder = new PngBitmapEncoder();
+                //var colorImageWritableBitmap = new WriteableBitmap(10, 10, 75, 75, PixelFormats.Bgr32, null);
+                //encoder.Frames.Add(BitmapFrame.Create(colorImageWritableBitmap));
+                //using (var stream = new FileStream("MyImage.png", FileMode.Create, FileAccess.Write))
+                //{
+                //    IRenderer renderer = new Renderer(Properties.Settings.Default.graphvizPath);
+                //    Task.Run(async () => { await renderer.RunAsync(graph, stream, RendererLayouts.Dot, RendererFormats.Png, CancellationToken.None); }).Wait();
+                //    encoder.Save(stream);
+                //}
+                //this.dependenciesImage = new BitmapImage(new Uri("MyImage.png", UriKind.Relative));
+                //this.dependenciesImage.Freeze();
+            }
+            catch (Exception ex)
+            {
+                // this is a bad idea, as we loose the exception (it is not logged)
+                this.logger.Error(string.Format(@"Could not render dependencies image: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                this.dependenciesImage = new BitmapImage(new Uri(@"pack://application:,,,/Resources/RenderError.png", UriKind.Absolute));
+                this.dependenciesImage.Freeze();
+            }
+
+            this.OnPropertyChanged("DependenciesImage");
+            //this.OnPropertyChanged("DependenciesModelCount");
             this.OnPropertyChanged("IsRenderable");
             this.IsLoading = false;
         }

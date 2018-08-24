@@ -280,5 +280,8 @@
   <ItemGroup>
     <Resource Include="Resources\Search_16x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\RenderError.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

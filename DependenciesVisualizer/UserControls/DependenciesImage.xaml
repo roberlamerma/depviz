@@ -57,9 +57,12 @@
             <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
 
+                <!--<Image
+                Stretch="None"
+                Source="{Binding Path=DependenciesModel, IsAsync=True, Mode=OneWay, Converter={StaticResource dependenciesToImageConverter}}">-->
                 <Image
                 Stretch="None"
-                Source="{Binding Path=DependenciesModel, IsAsync=True, Mode=OneWay, Converter={StaticResource dependenciesToImageConverter}}">
+                Source="{Binding Path=DependenciesImage, Mode=OneWay}">
 
                     <Image.RenderTransform>
                         <ScaleTransform ScaleX="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}" ScaleY="{Binding ElementName=zoomSlider, Path=Value, Mode=OneWay}"/>
