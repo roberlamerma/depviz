@@ -36,7 +36,7 @@ namespace DependenciesVisualizer.Helpers
 
         private static ImmutableDictionary<Id, Id> emptyDictionary = new Dictionary<Id, Id>().ToImmutableDictionary();
 
-        public static void AddGeneralStatements(ref List<Statement> statements)
+        private static void AddGeneralStatements(ref List<Statement> statements)
         {
             // Graph orientation: left to right
             var generalStyleSettings = new Dictionary<Id, Id>();
@@ -56,7 +56,7 @@ namespace DependenciesVisualizer.Helpers
             statements.Add(generalNodeStyleAttributes);
         }
 
-        public static void AddEdgeStatement(ref List<Statement> statements, int origin, int destination)
+        private static void AddEdgeStatement(ref List<Statement> statements, int origin, int destination)
         {
             var edge = new EdgeStatement(new NodeId(Convert.ToString(origin)),
                                          new NodeId(Convert.ToString(destination)),
@@ -66,7 +66,7 @@ namespace DependenciesVisualizer.Helpers
         }
 
         /*
-         digraph finite_state_machine {
+digraph finite_state_machine {
 	node [shape=Mrecord, style=filled, fontsize = 11];
     struct1 [label="<f0> left|<f1> mid&#92; dle|<f2> right"];
     struct2 [label="<f0> one|<f1> two"];
@@ -81,6 +81,11 @@ namespace DependenciesVisualizer.Helpers
     struct11 [color="black", fillcolor="papayawhip" label="{Cinco|Seis Siete|Ocho}"];
     struct1:f1 -> struct2:f0;
     struct1:f2 -> struct3:here;
+    struct12 [label="struct12 |{ [CheckPoint] OSAL 2 - Date/Time and Reboot/Shutdown and USB\n management And Network management | Sprint 89 }"];
+    struct13 [label="{struct13 |[CheckPoint] OSAL 2 - Date/Time and Reboot/Shutdown and USB\n management And Network management } |Sprint 89"];
+    struct14 [label="{struct14 |{[CheckPoint] OSAL 2 - Date/Time and Reboot/Shutdown and USB\n management And Network management| Sprint 89 } }"];
+    struct12 -> struct13;
+    struct12 -> struct14;
 }
 
             https://graphviz.gitlab.io/_pages/doc/info/colors.html
@@ -115,7 +120,7 @@ namespace DependenciesVisualizer.Helpers
             return null;
         }
 
-        private static void DefineNode(ref List<Statement> statements, int nodeId, string title, Color nodeColor, Color textColor, bool outerBold, ushort maxLineLength)
+        private static void DefineNode(ref List<Statement> statements, int nodeId, string title, string comment, Color nodeColor, Color textColor, bool outerBold, ushort maxLineLength)
         {
             Dictionary<Id, Id> nodeStyleSettings = null;
             Dictionary<Id, Id> nodeLabelSettings = null;
@@ -137,7 +142,16 @@ namespace DependenciesVisualizer.Helpers
 
 
             title = string.Concat(title.Split(badChars, StringSplitOptions.RemoveEmptyEntries));
-            nodeStyleSettings.Add(new Id("label"), new Id("{ " + Convert.ToString(nodeId) + " | " + GraphVizHelper.SplitInLines(title, maxLineLength) + "}"));
+            if (string.IsNullOrWhiteSpace(comment)) {
+                nodeStyleSettings.Add(new Id("label"), new Id("{ " + Convert.ToString(nodeId) + " | " + GraphVizHelper.SplitInLines(title, maxLineLength) + "}"));
+            } else
+            {
+                //nodeStyleSettings.Add(new Id("label"), new Id(Convert.ToString(nodeId) + " | { " + GraphVizHelper.SplitInLines(title, maxLineLength) + " | " + comment + " } "));
+                nodeStyleSettings.Add(new Id("label"), new Id("{" + Convert.ToString(nodeId) + "| { " + GraphVizHelper.SplitInLines(title, maxLineLength) + " | " + comment + " } }"));
+
+                //{ struct14 |{[CheckPoint] OSAL 2 - Date/Time and Reboot/Shutdown and USB\n management And Network management| Sprint 89 }}
+                //struct12 |{ [CheckPoint] OSAL 2 - Date/Time and Reboot/Shutdown and USB\n management And Network management | Sprint 89 }
+            }
             // nodeStyleSettings.Add(new Id("label"), new Id(@"two\nlines\nMore long lines\ncheck how this looks like")); FUNCIONA...
             //nodeStyleSettings.Add(new Id("label"), new Id("{<<TABLE>< TR >< TD > AAAA </ TD ></ TR >< TR >< TD > caption </ TD ></ TR ></ TABLE >>}")); NO FUNCIONA
 
@@ -152,7 +166,7 @@ namespace DependenciesVisualizer.Helpers
             statements.Add(node);
         }
 
-        public static void SetNodeAndTextColors(string state, out Color nodeColor, out Color textColor)
+        private static void SetNodeAndTextColors(string state, out Color nodeColor, out Color textColor)
         {
             nodeColor = Color.Lightgray;
             textColor = Color.Black;
@@ -216,7 +230,7 @@ namespace DependenciesVisualizer.Helpers
                         } 
                     }
 
-                    DefineNode(ref statements, entry.Value.Id, entry.Value.Title, nodeColor, textColor, outerBold, maxLineLength);
+                    DefineNode(ref statements, entry.Value.Id, entry.Value.Title, entry.Value.Comment, nodeColor, textColor, outerBold, maxLineLength);
 
                     //else
                     //{

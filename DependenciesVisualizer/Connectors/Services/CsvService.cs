@@ -73,6 +73,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     tempItem = new DependencyItem(
                         csvDependency.Id,
                         csvDependency.Title,
+                        csvDependency.Comment,
                         csvDependency.SuccessorIds ?? new List<int>(),
                         csvDependency.Tags ?? new List<string>());
 

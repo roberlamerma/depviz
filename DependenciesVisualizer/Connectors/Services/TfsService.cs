@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using DependenciesVisualizer.Contracts;
 using DependenciesVisualizer.Helpers;
 using DependenciesVisualizer.Model;
@@ -60,7 +61,7 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 var theModel = new Dictionary<int, DependencyItem>();
 
-                DependencyItem mainDependencyItem = new DependencyItem(pbiId) { Title = workItem.Title, State = workItem.State };
+                DependencyItem mainDependencyItem = new DependencyItem(pbiId) { Title = workItem.Title, State = workItem.State, Comment = Path.GetFileName(workItem.IterationPath) };
                 mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
                 theModel.Add(pbiId, mainDependencyItem);
 
@@ -179,6 +180,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     var workItem = this.WorkItemStore.GetWorkItem(entry.Key);
                     entry.Value.Title = workItem.Title;
                     entry.Value.State = workItem.State;
+                    entry.Value.Comment = Path.GetFileName(workItem.IterationPath);
 
                     entry.Value.Tags.AddRange(TfsHelper.GetTags(workItem));
                 }
@@ -189,7 +191,7 @@ namespace DependenciesVisualizer.Connectors.Services
                     if (!dependenciesModel.ContainsKey(successor))
                     {
                         var workItem = this.WorkItemStore.GetWorkItem(successor);
-                        var dependencyItem = new DependencyItem(successor) { Title = workItem.Title, State = workItem.State };
+                        var dependencyItem = new DependencyItem(successor) { Title = workItem.Title, State = workItem.State, Comment = Path.GetFileName(workItem.IterationPath) };
                         dependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
 
                         successorsThatAreNotParents.Add(dependencyItem);
@@ -227,7 +229,7 @@ namespace DependenciesVisualizer.Connectors.Services
 
                 if (!dependenciesModel.ContainsKey(workItem.Id))
                 {
-                    DependencyItem mainDependencyItem = new DependencyItem(workItem.Id) { Title = workItem.Title, State = workItem.State };
+                    DependencyItem mainDependencyItem = new DependencyItem(workItem.Id) { Title = workItem.Title, State = workItem.State, Comment = Path.GetFileName(workItem.IterationPath) };
                     mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
                     dependenciesModel.Add(workItem.Id, mainDependencyItem);
 
@@ -256,7 +258,7 @@ namespace DependenciesVisualizer.Connectors.Services
 
             foreach (var predecessor in predecessors)
             {
-                innerDependencyItem = new DependencyItem(predecessor.Id) { Title = predecessor.Title, State = predecessor.State };
+                innerDependencyItem = new DependencyItem(predecessor.Id) { Title = predecessor.Title, State = predecessor.State, Comment = Path.GetFileName(predecessor.IterationPath) };
                 innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(predecessor));
 
 
@@ -295,7 +297,7 @@ namespace DependenciesVisualizer.Connectors.Services
             var successors = this.GetSuccessorsFromTfs(parent);
             foreach (var successor in successors)
             {
-                innerDependencyItem = new DependencyItem(successor.Id) { Title = successor.Title, State = successor.State };
+                innerDependencyItem = new DependencyItem(successor.Id) { Title = successor.Title, State = successor.State, Comment = Path.GetFileName(successor.IterationPath) };
                 innerDependencyItem.Tags.AddRange(TfsHelper.GetTags(successor));
 
                 try

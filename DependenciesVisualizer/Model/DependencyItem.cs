@@ -9,20 +9,22 @@ namespace DependenciesVisualizer.Model
             this.Id = id;
             this.Successors = new List<int>();
             this.Tags = new List<string>();
+            this.Comment = string.Empty;
         }
 
-        public DependencyItem(int id, string title, List<int> successors, List<string> tags)
+        public DependencyItem(int id, string title, string comment, List<int> successors, List<string> tags)
         {
             this.Id = id;
             this.Title = title;
+            this.Comment = comment;
             this.Successors = successors;
             this.Tags = tags;
         }
 
         public int Id { get; }
         public string Title { get; set; }
-
         public string State { get; set; }
+        public string Comment { get; set; }
 
         //public string ReducedTitle {
         //    get
@@ -48,7 +50,7 @@ namespace DependenciesVisualizer.Model
 
         public override string ToString()
         {
-            return string.Format(@"<{0}> State: {1} | Title: {2}", this.Id, this.State, this.Title);
+            return string.Format(@"<{0}> State: {1} | Title: {2} | Comment: {3}", this.Id, this.State, this.Title, this.Comment);
             //var longTitle = this.Title;
             //try
             //{

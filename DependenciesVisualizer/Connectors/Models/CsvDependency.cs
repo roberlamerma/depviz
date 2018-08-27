@@ -12,6 +12,7 @@ namespace DependenciesVisualizer.Connectors.Models
     {
         public string Title;
         public int Id;
+        public string Comment;
 
         [FieldConverter(typeof(CommaSeparatedtoIntListConverter))]
         public List<int> SuccessorIds;
