@@ -8,12 +8,13 @@ Tool that allows a graphical visualization of dependencies between items (i.g. n
 **CSV:** ![Configure TFS](images/csv_example1.png)
 
 ## How it does it?
-The tool uses different (currently **TFS** and **CSV**) repositories in order to obtain the **Items** (nodes), its **Successors**, **States** and **Tags**.
+The tool uses different (currently **TFS** and **CSV**) repositories in order to obtain the **Items** (nodes), its **Successors**, **States** (optional), **Tags** (optional) and **Comments** (optional).
 
 * **Items**: the "box" with its ID and Title.
 * **Succesors**: the successor (connected with an arrow) "box"
 * **States**: possible states (the default are the TFS ones: _New_, _Approved_, _Committed_, _In Progress_ and _Done_. These are used to color the "box"
 * **Tags**: item tags. These are used to change the line/color of the line "box"
+* **Comments**: comments. If present, it is an extra text shown on the node (currently on TFS connector is the Iteration/Sprint)
 
 # Getting Started
 
@@ -24,7 +25,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 * Install the [Team Foundation Server 2012 Update 4 Object Model](https://marketplace.visualstudio.com/items?itemName=ErinDormierMSFT.TeamFoundationServer2012Update4ObjectModelInstalle)
 
 ## Installation
-1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.3.1/Depviz_v0.3.1.zip)
+1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.3.2/Depviz_v0.3.2.zip)
 1. Or build the tool yourself
 
 ## Configuration
