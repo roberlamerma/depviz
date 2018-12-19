@@ -232,10 +232,12 @@ namespace DependenciesVisualizer.Connectors.Services
                     DependencyItem mainDependencyItem = new DependencyItem(workItem.Id) { Title = workItem.Title, State = workItem.State, Comment = Path.GetFileName(workItem.IterationPath) };
                     mainDependencyItem.Tags.AddRange(TfsHelper.GetTags(workItem));
                     dependenciesModel.Add(workItem.Id, mainDependencyItem);
-
-                    this.GetPredecessorsRec(dependenciesModel, workItem, predecessorsDepth);
-                    this.GetSuccessorsRec(dependenciesModel, workItem, successorsDepth);
                 }
+
+                // Todo: optimize this rec's, these used to be inside the if above
+                this.GetPredecessorsRec(dependenciesModel, workItem, predecessorsDepth);
+                this.GetSuccessorsRec(dependenciesModel, workItem, successorsDepth);
+                
             }
 
             if (pbis == 0)
