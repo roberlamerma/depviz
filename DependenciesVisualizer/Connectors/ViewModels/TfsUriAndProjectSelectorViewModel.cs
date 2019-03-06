@@ -40,7 +40,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             }
             set
             {
-                if (!string.IsNullOrWhiteSpace(value) && IsTfsUrlValid(value, out tempTfsUrlUri))
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     //Properties.Settings.Default.tfsUrl = value;
                     this.tempTfsUrlString = value;
@@ -107,22 +107,27 @@ namespace DependenciesVisualizer.Connectors.ViewModels
             try
             {
                 // If any of the settings has changed, we need to verify against TFS
-                if (Properties.Settings.Default.tfsUrl != this.tempTfsUrlString || Properties.Settings.Default.tfsprojectName != this.tempProjectName)
+                if (Properties.Settings.Default.tfsUrl != this.TfsUri || Properties.Settings.Default.tfsprojectName != this.ProjectName)
                 {
                     this.HaveSettingsChanged = true;
 
-                    var store = TfsHelper.GetWorkItemStore(this.tempTfsUrlUri);
+                    if (!IsTfsUrlValid(this.TfsUri, out tempTfsUrlUri))
+                    {
+                        throw new Exception(string.Format(@"The url '{0}' is not valid", this.TfsUri));
+                    }
+
+                    var store = TfsHelper.GetWorkItemStore(new Uri(this.TfsUri));
 
                     if (store == null)
                     {
-                        throw new CannotConnectException(string.Format(@"Cannot connect to TFS uri: {0}", this.tempTfsUrlUri.ToString()));
+                        throw new CannotConnectException(string.Format(@"Cannot connect to TFS uri: {0}", this.TfsUri));
                     }
 
                     var project = store.Projects[this.tempProjectName];
 
                     // If no exceptions are captured, the values are saved
-                    Properties.Settings.Default.tfsUrl = this.tempTfsUrlString;
-                    Properties.Settings.Default.tfsprojectName = this.tempProjectName;
+                    Properties.Settings.Default.tfsUrl = this.TfsUri;
+                    Properties.Settings.Default.tfsprojectName = this.ProjectName;
 
                     // Save the settings
                     Properties.Settings.Default.Save();
