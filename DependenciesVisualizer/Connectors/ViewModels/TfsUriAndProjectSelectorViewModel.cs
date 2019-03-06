@@ -90,10 +90,7 @@ namespace DependenciesVisualizer.Connectors.ViewModels
 
         private bool IsTfsUrlValid(string tfsUrl, out Uri uriResult)
         {
-            bool result = Uri.TryCreate(tfsUrl, UriKind.Absolute, out uriResult)
-                          && uriResult.Scheme == Uri.UriSchemeHttp;
-
-            return result;
+            return Uri.TryCreate(tfsUrl, UriKind.Absolute, out uriResult);
         }
 
         private void ExecuteCancel(object obj)
