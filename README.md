@@ -7,7 +7,7 @@ Tool that allows a graphical visualization of dependencies between items (i.g. n
 **TFS:** ![Configure TFS](images/tfs_example1.png)
 **CSV:** ![Configure TFS](images/csv_example1.png)
 
-## How it does it?
+## How does it do it?
 The tool uses different (currently **TFS** and **CSV**) repositories in order to obtain the **Items** (nodes), its **Successors**, **States** (optional), **Tags** (optional) and **Comments** (optional).
 
 * **Items**: the "box" with its ID and Title.
@@ -23,6 +23,7 @@ The tool uses different (currently **TFS** and **CSV**) repositories in order to
 * Install [Graphviz](https://graphviz.gitlab.io/download/)
    * Annotate the binaries installation path (i.g. C:\Program Files (x86)\Graphviz2.38\bin)
 * Install the [Team Foundation Server 2012 Update 4 Object Model](https://marketplace.visualstudio.com/items?itemName=ErinDormierMSFT.TeamFoundationServer2012Update4ObjectModelInstalle)
+   * If you experience problems installing the Object Model 2012 (above), then install first [Visual Studio Team Foundation Server 2012 - Update 4](https://www.microsoft.com/es-es/download/details.aspx?id=38185). Thanks *Antonio J. Ríos* for figuring this out! 
 
 ## Installation
 1. [Download the binaries](https://github.com/roberlamerma/depviz/releases/download/v0.3.5/Depviz_v0.3.5.zip)
